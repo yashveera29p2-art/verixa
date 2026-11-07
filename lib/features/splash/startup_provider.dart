@@ -1,13 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../app/router.dart';
+import '../auth/application/auth_providers.dart';
+import '../auth/application/session.dart';
 
 /// Decides where the app goes after the splash. Read as soon as the splash
-/// starts, so the answer is ready when the animation finishes.
+/// starts, so the answer is usually ready before the animation finishes.
 ///
-/// Phase 1: everyone goes to Welcome.
-/// Phase 2: check the Firebase Auth session here and return
-/// [AppRoutes.home] for signed-in users.
+/// Waits for Firebase to restore any saved session, then:
+/// signed out → Welcome, profile incomplete → Onboarding, else → Home.
 final startupDestinationProvider = FutureProvider<String>((ref) async {
-  return AppRoutes.welcome;
+  final auth = ref.read(authServiceProvider);
+  final user = await auth.authStateChanges().first;
+  return routeForUser(user, ref.read(userRepositoryProvider));
 });

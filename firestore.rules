@@ -1,0 +1,48 @@
+rules_version = '2';
+
+// Verixa Firestore rules.
+// Each user can read and write ONLY their own profile at users/{uid}.
+// Everything else is denied until a later phase adds rules for it.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // Checks the onboarding fields. Extra profile fields added later
+    // (education, skills, ...) are allowed through untouched.
+    function validProfile(uid) {
+      let d = request.resource.data;
+      return d.uid == uid
+        && d.phone == request.auth.token.phone_number
+        && d.fullName is string && d.fullName.size() >= 2 && d.fullName.size() <= 100
+        && d.status in ['student', 'fresher', 'working_professional']
+        && d.organisation is string && d.organisation.size() >= 1 && d.organisation.size() <= 150;
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+
+      allow create: if isOwner(uid)
+        && validProfile(uid)
+        && request.resource.data.createdAt == request.time;
+
+      allow update: if isOwner(uid)
+        && validProfile(uid)
+        && request.resource.data.createdAt == resource.data.createdAt;
+
+      // Account deletion will go through a trusted backend later.
+      allow delete: if false;
+    }
+
+    // Deny everything not matched above.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

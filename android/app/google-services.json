@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "530503472620",
+    "project_id": "verixa-app",
+    "storage_bucket": "verixa-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:530503472620:android:e4c807b152c902def81cc9",
+        "android_client_info": {
+          "package_name": "com.verixa.verixa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvlB3u4I6rn2LX8s7_hRFB6kmJvNZID0A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

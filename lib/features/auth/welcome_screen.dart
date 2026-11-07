@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/routes.dart';
 import '../../core/theme/theme.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/verixa_monogram.dart';
 
-/// First screen for signed-out users. Buttons are wired up in Phase 2.
+/// First screen for signed-out users. Both buttons lead to the phone OTP
+/// flow; only the wording differs.
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
@@ -111,14 +114,16 @@ class _ActionsPanel extends StatelessWidget {
               AppButton(
                 label: 'Create account',
                 onDark: true,
-                onPressed: () {}, // Phase 2: phone sign-up
+                onPressed: () =>
+                    context.push(AppRoutes.phoneFor(isLogin: false)),
               ),
               const SizedBox(height: AppSpacing.sm),
               AppButton(
                 label: 'Log in',
                 style: AppButtonStyle.outlined,
                 onDark: true,
-                onPressed: () {}, // Phase 2: phone login
+                onPressed: () =>
+                    context.push(AppRoutes.phoneFor(isLogin: true)),
               ),
             ],
           ),

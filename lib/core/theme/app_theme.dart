@@ -31,6 +31,52 @@ abstract final class AppTheme {
         color: AppColors.stone,
         thickness: AppSizes.borderWidth,
       ),
+      inputDecorationTheme: _inputTheme,
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: AppColors.botanicalGreen,
+        selectionColor: AppColors.softSage,
+        selectionHandleColor: AppColors.botanicalGreen,
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: AppColors.ivory,
+        foregroundColor: AppColors.charcoal,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: AppColors.ivory,
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AppColors.charcoal,
+        contentTextStyle:
+            AppTypography.bodyMedium.copyWith(color: AppColors.ivory),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  static OutlineInputBorder _border(Color color, [double width = 1]) =>
+      OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: BorderSide(color: color, width: width),
+      );
+
+  static InputDecorationTheme get _inputTheme {
+    return InputDecorationTheme(
+      filled: true,
+      fillColor: AppColors.white,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.md,
+      ),
+      labelStyle: AppTypography.bodyMedium.copyWith(color: AppColors.mutedText),
+      floatingLabelStyle:
+          AppTypography.labelLarge.copyWith(color: AppColors.botanicalGreen),
+      hintStyle: AppTypography.bodyLarge.copyWith(color: AppColors.softSage),
+      errorStyle: AppTypography.bodySmall.copyWith(color: AppColors.charcoal),
+      border: _border(AppColors.stone),
+      enabledBorder: _border(AppColors.stone),
+      focusedBorder: _border(AppColors.botanicalGreen, 1.5),
+      errorBorder: _border(AppColors.charcoal),
+      focusedErrorBorder: _border(AppColors.charcoal, 1.5),
     );
   }
 }

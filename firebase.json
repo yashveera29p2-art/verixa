@@ -1,0 +1,25 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "verixa-app",
+          "appId": "1:530503472620:android:e4c807b152c902def81cc9",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "verixa-app",
+          "configurations": {
+            "android": "1:530503472620:android:e4c807b152c902def81cc9"
+          }
+        }
+      }
+    }
+  }
+}

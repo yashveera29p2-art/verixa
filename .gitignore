@@ -57,3 +57,8 @@ android/key.properties
 
 # Editors
 .vscode/
+
+# Firebase CLI
+firebase-debug.log
+firestore-debug.log
+.firebase/
