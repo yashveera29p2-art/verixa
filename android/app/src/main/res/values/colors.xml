@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Native Android can't read Dart tokens. This mirrors
+         AppColors.splashBgBottom in lib/core/theme/app_colors.dart —
+         keep the two in sync. -->
+    <color name="verixa_splash_bg">#001F1E</color>
+</resources>
