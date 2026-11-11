@@ -40,4 +40,12 @@ enum CompanyCategory {
     }
     return null;
   }
+
+  /// Parses the `category` field in companies.json ("MNC", "SME", "Startup").
+  static CompanyCategory? fromLabel(String? label) {
+    for (final c in values) {
+      if (c.title == label) return c;
+    }
+    return null;
+  }
 }

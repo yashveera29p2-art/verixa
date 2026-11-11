@@ -9,6 +9,7 @@ import '../features/auth/presentation/phone_screen.dart';
 import '../features/auth/welcome_screen.dart';
 import '../features/companies/domain/company_category.dart';
 import '../features/companies/presentation/category_screen.dart';
+import '../features/companies/presentation/company_detail_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/splash/splash_screen.dart';
@@ -92,6 +93,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => CategoryScreen(
           category: CompanyCategory.fromId(state.pathParameters['category'])!,
         ),
+        routes: [
+          GoRoute(
+            path: ':companyId',
+            parentNavigatorKey: _rootKey,
+            builder: (context, state) => CompanyDetailScreen(
+              companyId: state.pathParameters['companyId']!,
+            ),
+          ),
+        ],
       ),
     ],
   );

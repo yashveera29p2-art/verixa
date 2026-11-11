@@ -20,6 +20,10 @@ abstract final class AppRoutes {
 
   static String companiesFor(String categoryId) => '$companies/$categoryId';
 
+  /// Company detail: /companies/mnc/tcs
+  static String companyDetail(String categoryId, String companyId) =>
+      '$companies/$categoryId/$companyId';
+
   /// True for routes that need a signed-in user.
   static bool isProtected(String path) =>
       path == onboarding ||
