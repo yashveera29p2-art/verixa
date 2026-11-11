@@ -27,6 +27,7 @@ import '../features/resume/presentation/scan_detail_screen.dart';
 import '../features/resume/presentation/scan_history_screen.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/splash/splash_timings.dart';
+import '../core/theme/theme.dart';
 import 'app_shell.dart';
 import 'routes.dart';
 
@@ -75,9 +76,12 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // Main tabs with the glass bottom bar. Each tab keeps its own
       // navigation stack and scroll position.
-      StatefulShellRoute.indexedStack(
+      StatefulShellRoute(
         pageBuilder: (context, state, shell) =>
             _fadePage(state, AppShell(navigationShell: shell)),
+        // Fade-through when switching between Home and Profile.
+        navigatorContainerBuilder: (context, shell, children) =>
+            FadeThroughStack(index: shell.currentIndex, children: children),
         branches: [
           StatefulShellBranch(
             routes: [
@@ -226,6 +230,9 @@ CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child) {
     child: child,
     transitionDuration: SplashTimings.fadeOut,
     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        FadeTransition(opacity: animation, child: child),
+        FadeTransition(
+          opacity: CurvedAnimation(parent: animation, curve: AppMotion.enter),
+          child: child,
+        ),
   );
 }

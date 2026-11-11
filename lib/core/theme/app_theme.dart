@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
+import 'app_motion.dart';
 import 'app_spacing.dart';
 import 'app_typography.dart';
 
@@ -27,6 +28,17 @@ abstract final class AppTheme {
       colorScheme: scheme,
       scaffoldBackgroundColor: AppColors.ivory,
       textTheme: AppTypography.textTheme,
+      // One calm page transition on every platform (see app_motion.dart).
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: VerixaPageTransitionsBuilder(),
+          TargetPlatform.iOS: VerixaPageTransitionsBuilder(),
+        },
+      ),
+      // Soft, brand-tinted tap feedback instead of the default grey splash.
+      splashFactory: InkRipple.splashFactory,
+      splashColor: AppColors.botanicalGreen.withValues(alpha: 0.10),
+      highlightColor: AppColors.botanicalGreen.withValues(alpha: 0.04),
       dividerTheme: const DividerThemeData(
         color: AppColors.stone,
         thickness: AppSizes.borderWidth,
@@ -46,8 +58,9 @@ abstract final class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.charcoal,
-        contentTextStyle:
-            AppTypography.bodyMedium.copyWith(color: AppColors.ivory),
+        contentTextStyle: AppTypography.bodyMedium.copyWith(
+          color: AppColors.ivory,
+        ),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -68,8 +81,9 @@ abstract final class AppTheme {
         vertical: AppSpacing.md,
       ),
       labelStyle: AppTypography.bodyMedium.copyWith(color: AppColors.mutedText),
-      floatingLabelStyle:
-          AppTypography.labelLarge.copyWith(color: AppColors.botanicalGreen),
+      floatingLabelStyle: AppTypography.labelLarge.copyWith(
+        color: AppColors.botanicalGreen,
+      ),
       hintStyle: AppTypography.bodyLarge.copyWith(color: AppColors.softSage),
       errorStyle: AppTypography.bodySmall.copyWith(color: AppColors.charcoal),
       border: _border(AppColors.stone),

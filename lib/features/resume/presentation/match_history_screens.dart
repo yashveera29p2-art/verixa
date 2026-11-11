@@ -79,62 +79,64 @@ class _MatchTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final r = record.report;
     final title = r.jobTitle.isNotEmpty ? r.jobTitle : record.jdSnippet;
-    return Material(
-      color: AppColors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        side: const BorderSide(color: AppColors.stone),
-      ),
-      child: InkWell(
-        onTap: () => context.push(AppRoutes.matchDetail(record.id)),
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            children: [
-              Container(
-                width: 52,
-                height: 52,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AppColors.botanicalGreen,
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                ),
-                child: Text(
-                  '${r.matchScore}%',
-                  style: AppTypography.labelLarge.copyWith(
-                    color: AppColors.ivory,
-                    fontSize: 16,
+    return PressScale(
+      child: Material(
+        color: AppColors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          side: const BorderSide(color: AppColors.stone),
+        ),
+        child: InkWell(
+          onTap: () => context.push(AppRoutes.matchDetail(record.id)),
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.botanicalGreen,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                  ),
+                  child: Text(
+                    '${r.matchScore}%',
+                    style: AppTypography.labelLarge.copyWith(
+                      color: AppColors.ivory,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTypography.labelLarge.copyWith(fontSize: 16),
-                    ),
-                    Text(
-                      r.verdict.label,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.botanicalGreen,
-                      ),
-                    ),
-                    if (record.createdAt != null)
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        DateFormatting.dateTime(record.createdAt!),
-                        style: AppTypography.bodySmall,
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.labelLarge.copyWith(fontSize: 16),
                       ),
-                  ],
+                      Text(
+                        r.verdict.label,
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.botanicalGreen,
+                        ),
+                      ),
+                      if (record.createdAt != null)
+                        Text(
+                          DateFormatting.dateTime(record.createdAt!),
+                          style: AppTypography.bodySmall,
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              const Icon(Icons.chevron_right, color: AppColors.softSage),
-            ],
+                const Icon(Icons.chevron_right, color: AppColors.softSage),
+              ],
+            ),
           ),
         ),
       ),

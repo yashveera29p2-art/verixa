@@ -12,6 +12,7 @@ Future<void> showResumeActionsSheet(BuildContext context) {
     useRootNavigator: true,
     // Size to content (the default caps the sheet at ~56% of the screen).
     isScrollControlled: true,
+    sheetAnimationStyle: AppMotion.sheet,
     backgroundColor: AppColors.ivory,
     barrierColor: AppColors.charcoal.withValues(alpha: 0.4),
     shape: const RoundedRectangleBorder(
@@ -121,58 +122,67 @@ class _ActionRow extends StatelessWidget {
       button: enabled,
       label: enabled ? action.title : '${action.title}. Coming soon.',
       excludeSemantics: true,
-      child: Material(
-        color: AppColors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          side: BorderSide(
-            color: enabled ? AppColors.botanicalGreen : AppColors.stone,
+      child: PressScale(
+        child: Material(
+          color: AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            side: BorderSide(
+              color: enabled ? AppColors.botanicalGreen : AppColors.stone,
+            ),
           ),
-        ),
-        child: InkWell(
-          onTap: enabled ? () => _open(context) : null,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: enabled
-                        ? AppColors.botanicalGreen
-                        : AppColors.softSage.withValues(alpha: 0.35),
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
+          child: InkWell(
+            onTap: enabled ? () => _open(context) : null,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: enabled
+                          ? AppColors.botanicalGreen
+                          : AppColors.softSage.withValues(alpha: 0.35),
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
+                    ),
+                    child: Icon(
+                      action.icon,
+                      color: enabled
+                          ? AppColors.ivory
+                          : AppColors.botanicalGreen,
+                    ),
                   ),
-                  child: Icon(
-                    action.icon,
-                    color: enabled ? AppColors.ivory : AppColors.botanicalGreen,
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          action.title,
+                          style: AppTypography.labelLarge.copyWith(
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          action.description,
+                          style: AppTypography.bodySmall,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        action.title,
-                        style: AppTypography.labelLarge.copyWith(fontSize: 16),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(action.description, style: AppTypography.bodySmall),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                if (enabled)
-                  const Icon(
-                    Icons.chevron_right,
-                    color: AppColors.botanicalGreen,
-                  )
-                else
-                  const _ComingSoonTag(),
-              ],
+                  const SizedBox(width: AppSpacing.sm),
+                  if (enabled)
+                    const Icon(
+                      Icons.chevron_right,
+                      color: AppColors.botanicalGreen,
+                    )
+                  else
+                    const _ComingSoonTag(),
+                ],
+              ),
             ),
           ),
         ),

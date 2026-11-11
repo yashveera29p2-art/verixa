@@ -108,39 +108,41 @@ class _VersionTile extends StatelessWidget {
       v.template.label,
       if (v.updatedAt != null) DateFormatting.date(v.updatedAt!),
     ].where((s) => s.isNotEmpty).join(' · ');
-    return Material(
-      color: AppColors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        side: const BorderSide(color: AppColors.stone),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        onTap: () => context.push(AppRoutes.resumeEdit(v.id)),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.description_outlined,
-                color: AppColors.botanicalGreen,
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      v.name,
-                      style: AppTypography.labelLarge.copyWith(fontSize: 16),
-                    ),
-                    Text(details, style: AppTypography.bodySmall),
-                  ],
+    return PressScale(
+      child: Material(
+        color: AppColors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          side: const BorderSide(color: AppColors.stone),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          onTap: () => context.push(AppRoutes.resumeEdit(v.id)),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.description_outlined,
+                  color: AppColors.botanicalGreen,
                 ),
-              ),
-              if (v.alignmentScore != null)
-                AlignmentBadge(score: v.alignmentScore!),
-            ],
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        v.name,
+                        style: AppTypography.labelLarge.copyWith(fontSize: 16),
+                      ),
+                      Text(details, style: AppTypography.bodySmall),
+                    ],
+                  ),
+                ),
+                if (v.alignmentScore != null)
+                  AlignmentBadge(score: v.alignmentScore!),
+              ],
+            ),
           ),
         ),
       ),

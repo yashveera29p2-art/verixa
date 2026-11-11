@@ -85,71 +85,73 @@ class _HistoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final r = record.report;
     final threats = r.threats.length;
-    return Material(
-      color: AppColors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        side: BorderSide(
-          color: r.riskLevel == RiskLevel.high
-              ? AppColors.charcoal
-              : AppColors.stone,
+    return PressScale(
+      child: Material(
+        color: AppColors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          side: BorderSide(
+            color: r.riskLevel == RiskLevel.high
+                ? AppColors.charcoal
+                : AppColors.stone,
+          ),
         ),
-      ),
-      child: InkWell(
-        onTap: () => context.push(AppRoutes.scanDetail(record.id)),
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            children: [
-              Container(
-                width: 52,
-                height: 52,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AppColors.botanicalGreen,
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                ),
-                child: Text(
-                  '${r.atsScore}',
-                  style: AppTypography.titleLarge.copyWith(
-                    color: AppColors.ivory,
+        child: InkWell(
+          onTap: () => context.push(AppRoutes.scanDetail(record.id)),
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.botanicalGreen,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                  ),
+                  child: Text(
+                    '${r.atsScore}',
+                    style: AppTypography.titleLarge.copyWith(
+                      color: AppColors.ivory,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      record.fileName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTypography.labelLarge.copyWith(fontSize: 16),
-                    ),
-                    Text(
-                      [
-                        r.riskLevel.label,
-                        if (threats > 0)
-                          '$threats ${threats == 1 ? 'threat' : 'threats'}',
-                      ].join(' · '),
-                      style: AppTypography.bodySmall.copyWith(
-                        color: r.riskLevel == RiskLevel.clean
-                            ? AppColors.botanicalGreen
-                            : AppColors.charcoal,
-                      ),
-                    ),
-                    if (record.createdAt != null)
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        DateFormatting.dateTime(record.createdAt!),
-                        style: AppTypography.bodySmall,
+                        record.fileName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.labelLarge.copyWith(fontSize: 16),
                       ),
-                  ],
+                      Text(
+                        [
+                          r.riskLevel.label,
+                          if (threats > 0)
+                            '$threats ${threats == 1 ? 'threat' : 'threats'}',
+                        ].join(' · '),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: r.riskLevel == RiskLevel.clean
+                              ? AppColors.botanicalGreen
+                              : AppColors.charcoal,
+                        ),
+                      ),
+                      if (record.createdAt != null)
+                        Text(
+                          DateFormatting.dateTime(record.createdAt!),
+                          style: AppTypography.bodySmall,
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              const Icon(Icons.chevron_right, color: AppColors.softSage),
-            ],
+                const Icon(Icons.chevron_right, color: AppColors.softSage),
+              ],
+            ),
           ),
         ),
       ),

@@ -44,33 +44,33 @@ class AppButton extends StatelessWidget {
           )
         : Text(label);
 
-    return switch (style) {
+    final button = switch (style) {
       AppButtonStyle.filled => FilledButton(
-          onPressed: callback,
-          style: FilledButton.styleFrom(
-            backgroundColor: accent,
-            foregroundColor: onAccent,
-            disabledBackgroundColor:
-                isLoading ? accent : AppColors.softSage,
-            disabledForegroundColor: onAccent,
-            minimumSize: size,
-            shape: shape,
-            textStyle: AppTypography.button,
-            elevation: 0,
-          ),
-          child: child,
+        onPressed: callback,
+        style: FilledButton.styleFrom(
+          backgroundColor: accent,
+          foregroundColor: onAccent,
+          disabledBackgroundColor: isLoading ? accent : AppColors.softSage,
+          disabledForegroundColor: onAccent,
+          minimumSize: size,
+          shape: shape,
+          textStyle: AppTypography.button,
+          elevation: 0,
         ),
+        child: child,
+      ),
       AppButtonStyle.outlined => OutlinedButton(
-          onPressed: callback,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: accent,
-            minimumSize: size,
-            shape: shape,
-            textStyle: AppTypography.button,
-            side: BorderSide(color: accent, width: AppSizes.borderWidth),
-          ),
-          child: child,
+        onPressed: callback,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: accent,
+          minimumSize: size,
+          shape: shape,
+          textStyle: AppTypography.button,
+          side: BorderSide(color: accent, width: AppSizes.borderWidth),
         ),
+        child: child,
+      ),
     };
+    return PressScale(enabled: callback != null, child: button);
   }
 }
