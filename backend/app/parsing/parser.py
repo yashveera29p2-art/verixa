@@ -38,12 +38,15 @@ def _comma_items(lines: list[str]) -> list[str]:
 
 
 def parse_resume(doc: ExtractedDocument) -> ParsedResume:
-    sections = split_sections(doc.lines)
+    """Parses the VISIBLE text only, so hidden keywords or instructions
+    never reach the user's profile."""
+    lines = doc.visible_lines
+    sections = split_sections(lines)
     result = ParsedResume()
     warnings: list[str] = []
     conf: dict[str, float] = {}
 
-    result.contact, conf["contact"] = parse_contact(sections.header, doc.lines)
+    result.contact, conf["contact"] = parse_contact(sections.header, lines)
     if not result.contact.fullName:
         warnings.append("Couldn't find your name — please add it.")
 
@@ -66,7 +69,7 @@ def parse_resume(doc: ExtractedDocument) -> ParsedResume:
         conf["projects"] = 0.85 if result.projects else 0.2
 
     result.skills, conf["skills"], inferred = parse_skills(
-        sections.get("skills"), sections.get("languages"), doc.text
+        sections.get("skills"), sections.get("languages"), doc.visible_text
     )
     if inferred:
         warnings.append("No skills section found; skills were picked up from the "
@@ -91,7 +94,7 @@ def parse_resume(doc: ExtractedDocument) -> ParsedResume:
     result.meta = Meta(
         fileType=doc.file_type,
         pages=doc.pages,
-        lines=len(doc.lines),
+        lines=len(lines),
         sectionsFound=sections.found,
     )
     return result

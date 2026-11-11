@@ -18,6 +18,11 @@ abstract final class AppRoutes {
   /// Upload an existing resume and import it into the profile.
   static const resumeImport = '/resume/import';
 
+  /// Security scan + ATS report, and past reports.
+  static const resumeScan = '/resume/scan';
+  static const scanHistory = '/resume/history';
+  static String scanDetail(String scanId) => '$scanHistory/$scanId';
+
   static String phoneFor({required bool isLogin}) =>
       isLogin ? '$phone?mode=login' : phone;
 

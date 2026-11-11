@@ -7,12 +7,40 @@ import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/auth_page.dart';
 import '../application/resume_import_controller.dart';
+import '../domain/parsed_resume.dart';
 import 'widgets/import_section_card.dart';
+
+/// A parse result handed over from the scan report, so the user goes
+/// straight to reviewing the genuine (visible-text) details.
+class ImportArgs {
+  const ImportArgs(this.result, this.fileName);
+  final ParsedResume result;
+  final String fileName;
+}
 
 /// Upload an existing resume, review what was found, and import the
 /// chosen sections into the profile (feature 6).
-class ResumeImportScreen extends ConsumerWidget {
-  const ResumeImportScreen({super.key});
+class ResumeImportScreen extends ConsumerStatefulWidget {
+  const ResumeImportScreen({super.key, this.initial});
+
+  /// When set, skip the upload step and review this result.
+  final ImportArgs? initial;
+
+  @override
+  ConsumerState<ResumeImportScreen> createState() => _ResumeImportScreenState();
+}
+
+class _ResumeImportScreenState extends ConsumerState<ResumeImportScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final initial = widget.initial;
+    if (initial != null) {
+      Future.microtask(() => ref
+          .read(resumeImportControllerProvider.notifier)
+          .loadResult(initial.result, initial.fileName));
+    }
+  }
 
   Future<void> _import(BuildContext context, WidgetRef ref) async {
     final ok =
@@ -24,7 +52,7 @@ class ResumeImportScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final state = ref.watch(resumeImportControllerProvider);
     final controller = ref.read(resumeImportControllerProvider.notifier);
     final result = state.result;

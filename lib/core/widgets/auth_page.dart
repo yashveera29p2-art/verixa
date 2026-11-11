@@ -14,6 +14,7 @@ class AuthPage extends StatelessWidget {
     required this.bottom,
     this.showBack = true,
     this.eyebrow,
+    this.actions,
   });
 
   final String title;
@@ -25,12 +26,15 @@ class AuthPage extends StatelessWidget {
   /// Small label above the title, e.g. "Step 1 of 1".
   final String? eyebrow;
 
+  /// Optional app bar buttons (e.g. a history icon).
+  final List<Widget>? actions;
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        appBar: AppBar(automaticallyImplyLeading: showBack),
+        appBar: AppBar(automaticallyImplyLeading: showBack, actions: actions),
         body: SafeArea(
           top: false,
           child: Column(

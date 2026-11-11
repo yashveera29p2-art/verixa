@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 import '../domain/parsed_resume.dart';
+import '../domain/scan_report.dart';
 
 /// A failure the user can understand (shown as-is in the UI).
 class ResumeApiException implements Exception {
@@ -36,7 +37,22 @@ class ResumeApi {
   Future<ParsedResume> parse({
     required Uint8List bytes,
     required String fileName,
-  }) async {
+  }) async =>
+      ParsedResume.fromJson(await _upload('parse', bytes, fileName));
+
+  /// Uploads a PDF/DOCX for a security scan and ATS report.
+  Future<ScanReport> scan({
+    required Uint8List bytes,
+    required String fileName,
+  }) async =>
+      ScanReport.fromJson(await _upload('scan', bytes, fileName));
+
+  /// POSTs the file to /v1/resumes/[endpoint] and returns the JSON body.
+  Future<Map<String, dynamic>> _upload(
+    String endpoint,
+    Uint8List bytes,
+    String fileName,
+  ) async {
     final String? token;
     try {
       token = await idToken().timeout(const Duration(seconds: 20));
@@ -49,7 +65,7 @@ class ResumeApi {
     }
     final request = http.MultipartRequest(
       'POST',
-      Uri.parse('$baseUrl/v1/resumes/parse'),
+      Uri.parse('$baseUrl/v1/resumes/$endpoint'),
     )
       ..headers['Authorization'] = 'Bearer $token'
       ..files.add(http.MultipartFile.fromBytes('file', bytes, filename: fileName));
@@ -69,8 +85,7 @@ class ResumeApi {
     }
 
     if (response.statusCode == 200) {
-      final json = jsonDecode(utf8.decode(response.bodyBytes));
-      return ParsedResume.fromJson(json as Map<String, dynamic>);
+      return jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
     }
     throw ResumeApiException(_messageFor(response));
   }

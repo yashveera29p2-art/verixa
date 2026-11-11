@@ -88,6 +88,33 @@ class Meta(BaseModel):
     sectionsFound: list[str]
 
 
+class ThreatLocation(BaseModel):
+    page: int | None = None  # PDF page (1-based)
+    section: str | None = None  # resume section, e.g. "skills"
+    line: int | None = None  # line number in the extracted text (1-based)
+
+
+class Threat(BaseModel):
+    id: str
+    # hidden_text | prompt_injection | keyword_stuffing | invisible_characters
+    # | homoglyphs | metadata_stuffing
+    technique: str
+    severity: str  # "high" | "medium" | "low"
+    title: str
+    description: str
+    evidence: str = ""  # short quote of the suspicious content
+    location: ThreatLocation = Field(default_factory=ThreatLocation)
+    hidden: bool = False  # was the content invisible to a human reader?
+
+
+class AtsComponent(BaseModel):
+    key: str
+    label: str
+    score: int
+    max: int
+    notes: list[str] = []
+
+
 class ParsedResume(BaseModel):
     contact: Contact = Field(default_factory=Contact)
     careerGoal: CareerGoal = Field(default_factory=CareerGoal)
@@ -101,3 +128,15 @@ class ParsedResume(BaseModel):
     # Things the user should double-check.
     warnings: list[str] = []
     meta: Meta | None = None
+
+
+class ScanReport(BaseModel):
+    """Security scan + ATS report (features 1–4)."""
+
+    atsScore: int  # 0–100, estimated
+    riskLevel: str  # "clean" | "low" | "medium" | "high"
+    threats: list[Threat] = []
+    atsBreakdown: list[AtsComponent] = []
+    suggestions: list[str] = []
+    # Parsed from the VISIBLE text only — safe to import into the profile.
+    parsed: ParsedResume

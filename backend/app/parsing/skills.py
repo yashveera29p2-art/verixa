@@ -4,9 +4,12 @@ and find dictionary skills mentioned anywhere (spaCy PhraseMatcher)."""
 from __future__ import annotations
 
 import re
+from collections import Counter
 from functools import lru_cache
 
 from spacy.matcher import PhraseMatcher
+from spacy.tokens import Span
+from spacy.util import filter_spans
 
 from ..models import Skills
 from .common import load_list, nlp, strip_bullet, tidy
@@ -78,6 +81,16 @@ def classify(items_lines: list[str]) -> Skills:
                 category, display = "technical", item
             getattr(skills, category).append(display)
     return skills
+
+
+def skill_counts(text: str) -> Counter:
+    """How many times each dictionary skill/tool occurs in [text].
+    Overlapping matches keep the longest ("Data Structures and Algorithms"
+    is not also counted as "Data Structures")."""
+    doc = nlp().make_doc(text)
+    spans = [Span(doc, start, end, label=match_id)
+             for match_id, start, end in _matcher()(doc)]
+    return Counter(nlp().vocab.strings[s.label] for s in filter_spans(spans))
 
 
 def mentioned_skills(text: str) -> list[str]:

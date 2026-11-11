@@ -80,6 +80,17 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                 ],
+                const SizedBox(height: AppSpacing.md),
+                Text('RESUMES',
+                    style: AppTypography.labelMedium
+                        .copyWith(color: AppColors.mutedText)),
+                const SizedBox(height: AppSpacing.sm),
+                _LinkTile(
+                  icon: Icons.history,
+                  title: 'Scan history',
+                  subtitle: 'Past security scans and ATS scores',
+                  onTap: () => context.push(AppRoutes.scanHistory),
+                ),
               ],
               const SizedBox(height: AppSpacing.lg),
               AppButton(
@@ -121,6 +132,56 @@ class _Header extends StatelessWidget {
           style: AppTypography.bodyMedium.copyWith(color: AppColors.mutedText),
         ),
       ],
+    );
+  }
+}
+
+/// A plain navigation row, e.g. "Scan history".
+class _LinkTile extends StatelessWidget {
+  const _LinkTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        side: const BorderSide(color: AppColors.stone),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Row(
+            children: [
+              Icon(icon, color: AppColors.botanicalGreen),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        style: AppTypography.labelLarge.copyWith(fontSize: 16)),
+                    Text(subtitle, style: AppTypography.bodySmall),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right, color: AppColors.softSage),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -94,6 +94,16 @@ class ResumeImportController extends Notifier<ResumeImportState> {
     }
   }
 
+  /// Starts reviewing a result that was already fetched (e.g. by a scan).
+  void loadResult(ParsedResume result, String fileName) {
+    state = ResumeImportState(
+      phase: ImportPhase.review,
+      fileName: fileName,
+      result: result,
+      selected: result.availableSections.toSet(),
+    );
+  }
+
   void toggle(ProfileSection section) {
     final next = {...state.selected};
     if (!next.remove(section)) next.add(section);

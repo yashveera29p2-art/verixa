@@ -40,8 +40,8 @@ const _actions = [
   _ResumeAction(
     Icons.document_scanner_outlined,
     'Upload & scan resume',
-    'Import your details from an existing resume. Security scan comes next.',
-    route: AppRoutes.resumeImport,
+    'Check for hidden text, prompt injection and keyword stuffing, and get an ATS score.',
+    route: AppRoutes.resumeScan,
   ),
   _ResumeAction(
     Icons.compare_arrows,

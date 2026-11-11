@@ -34,10 +34,11 @@ def test_detects_file_type_by_content():
         detect_file_type(b"just some text")
 
 
-def test_pdf_keeps_word_styles_for_the_security_scanner():
+def test_clean_pdf_has_no_hidden_text():
     doc = extract(make_pdf(STUDENT))
-    assert doc.words and doc.words[0].size == pytest.approx(10)
     assert doc.lines[0] == "PRIYA SHARMA"
+    assert doc.hidden_spans == []
+    assert doc.visible_lines == doc.lines
 
 
 def test_empty_pdf_is_rejected():

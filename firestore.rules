@@ -59,6 +59,28 @@ service cloud.firestore {
 
       // Account deletion will go through a trusted backend later.
       allow delete: if false;
+
+      // Scan history (Phase 7): reports only, never resume files or text.
+      // Owners can read, add and delete their own reports; reports are
+      // never edited after they're created.
+      match /scans/{scanId} {
+        allow read, delete: if isOwner(uid);
+        allow create: if isOwner(uid) && validScan(request.resource.data);
+        allow update: if false;
+      }
+    }
+
+    function validScan(d) {
+      return d.keys().hasOnly(['fileName', 'createdAt', 'atsScore', 'riskLevel',
+                               'threatCount', 'threats', 'breakdown', 'suggestions'])
+        && d.fileName is string && d.fileName.size() <= 200
+        && d.createdAt == request.time
+        && d.atsScore is int && d.atsScore >= 0 && d.atsScore <= 100
+        && d.riskLevel in ['clean', 'low', 'medium', 'high']
+        && d.threatCount is int && d.threatCount >= 0
+        && d.threats is list && d.threats.size() <= 50
+        && d.breakdown is list && d.breakdown.size() <= 10
+        && d.suggestions is list && d.suggestions.size() <= 20;
     }
 
     // Deny everything not matched above.

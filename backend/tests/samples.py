@@ -138,3 +138,84 @@ def make_pdf(text: str, lines_per_page: int = 52) -> bytes:
     out.write(b"trailer\n<< /Size %d /Root %d 0 R >>\nstartxref\n%d\n%%%%EOF\n"
               % (len(objects) + 1, catalog, xref))
     return out.getvalue()
+
+
+# ── Manipulated resumes for the security scanner ───────────────────────────
+# Each entry is (text, style). Styles: "" normal, "white", "tiny", "offpage",
+# "banner" (white text on a dark filled box — legitimate design).
+
+def make_styled_pdf(lines: list[tuple[str, str]], metadata: dict | None = None) -> bytes:
+    """One-page PDF with per-line styling, for hidden-text tests."""
+    ops: list[bytes] = []
+    y = 800
+    for text, style in lines:
+        size, color, x = 10, b"0 0 0", 50
+        if style == "white":
+            color = b"1 1 1"
+        elif style == "tiny":
+            size = 1
+        elif style == "offpage":
+            x = -900
+        elif style == "banner":
+            ops.append(b"0.2 0.36 0.28 rg 40 %d 515 18 re f" % (y - 5))
+            color = b"1 1 1"
+        ops.append(b"BT /F1 %d Tf %s rg 1 0 0 1 %d %d Tm (%s) Tj ET"
+                   % (size, color, x, y, _pdf_escape(text)))
+        y -= 14
+    stream = b"\n".join(ops)
+
+    objects = [
+        b"<< /Type /Catalog /Pages 2 0 R >>",
+        b"<< /Type /Pages /Kids [4 0 R] /Count 1 >>",
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+        b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] "
+        b"/Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>",
+        b"<< /Length %d >>\nstream\n" % len(stream) + stream + b"\nendstream",
+    ]
+    info_ref = b""
+    if metadata:
+        entries = b" ".join(b"/%s (%s)" % (k.encode(), _pdf_escape(v))
+                            for k, v in metadata.items())
+        objects.append(b"<< " + entries + b" >>")
+        info_ref = b" /Info %d 0 R" % len(objects)
+
+    out = io.BytesIO()
+    out.write(b"%PDF-1.4\n")
+    offsets = []
+    for i, obj in enumerate(objects, start=1):
+        offsets.append(out.tell())
+        out.write(b"%d 0 obj\n" % i + obj + b"\nendobj\n")
+    xref = out.tell()
+    out.write(b"xref\n0 %d\n0000000000 65535 f \n" % (len(objects) + 1))
+    for off in offsets:
+        out.write(b"%010d 00000 n \n" % off)
+    out.write(b"trailer\n<< /Size %d /Root 1 0 R%s >>\nstartxref\n%d\n%%%%EOF\n"
+              % (len(objects) + 1, info_ref, xref))
+    return out.getvalue()
+
+
+def plain(text: str) -> list[tuple[str, str]]:
+    return [(line, "") for line in text.splitlines()]
+
+
+def make_manipulated_docx(text: str, hidden_runs: list[tuple[str, str]],
+                          keywords: str = "") -> bytes:
+    """DOCX with extra runs: ("text", "hidden" | "white" | "tiny")."""
+    from docx.shared import Pt, RGBColor
+
+    doc = Document()
+    for line in text.splitlines():
+        doc.add_paragraph(line)
+    for run_text, style in hidden_runs:
+        run = doc.add_paragraph().add_run(run_text)
+        if style == "hidden":
+            run.font.hidden = True
+        elif style == "white":
+            run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+        elif style == "tiny":
+            run.font.size = Pt(1)
+    if keywords:
+        doc.core_properties.keywords = keywords
+    buf = io.BytesIO()
+    doc.save(buf)
+    return buf.getvalue()

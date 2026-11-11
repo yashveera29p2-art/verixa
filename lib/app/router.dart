@@ -15,6 +15,9 @@ import '../features/profile/domain/profile_section.dart';
 import '../features/profile/presentation/editors/profile_edit_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
 import '../features/resume/presentation/resume_import_screen.dart';
+import '../features/resume/presentation/resume_scan_screen.dart';
+import '../features/resume/presentation/scan_detail_screen.dart';
+import '../features/resume/presentation/scan_history_screen.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/splash/splash_timings.dart';
 import 'app_shell.dart';
@@ -105,7 +108,26 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.resumeImport,
         parentNavigatorKey: _rootKey,
-        builder: (context, state) => const ResumeImportScreen(),
+        builder: (context, state) =>
+            ResumeImportScreen(initial: state.extra as ImportArgs?),
+      ),
+      GoRoute(
+        path: AppRoutes.resumeScan,
+        parentNavigatorKey: _rootKey,
+        builder: (context, state) => const ResumeScanScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.scanHistory,
+        parentNavigatorKey: _rootKey,
+        builder: (context, state) => const ScanHistoryScreen(),
+        routes: [
+          GoRoute(
+            path: ':scanId',
+            parentNavigatorKey: _rootKey,
+            builder: (context, state) =>
+                ScanDetailScreen(scanId: state.pathParameters['scanId']!),
+          ),
+        ],
       ),
 
       // Full-screen pages opened from Home (above the bottom bar).
