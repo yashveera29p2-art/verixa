@@ -15,6 +15,9 @@ abstract final class AppRoutes {
   /// Company list for a category: /companies/mnc, /companies/sme, ...
   static const companies = '/companies';
 
+  /// Upload an existing resume and import it into the profile.
+  static const resumeImport = '/resume/import';
+
   static String phoneFor({required bool isLogin}) =>
       isLogin ? '$phone?mode=login' : phone;
 
@@ -35,5 +38,6 @@ abstract final class AppRoutes {
       path == home ||
       path == profile ||
       path.startsWith('$profile/') ||
-      path.startsWith('$companies/');
+      path.startsWith('$companies/') ||
+      path.startsWith('/resume/');
 }

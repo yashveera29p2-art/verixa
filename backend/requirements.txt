@@ -1,0 +1,15 @@
+# Verixa backend — runtime dependencies (approved in Phase 6).
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+pdfplumber>=0.11
+python-docx>=1.1
+spacy>=3.7,<4
+firebase-admin>=6.5
+# Installed with firebase-admin; listed because app/auth.py imports them.
+google-auth>=2.30
+requests>=2.32
+cachecontrol>=0.14
+
+# spaCy English model (small, ~13 MB)
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl

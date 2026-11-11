@@ -52,4 +52,41 @@ class ProfileRepository {
 
   Future<void> saveExtras(String uid, Extras extras) =>
       _update(uid, {'extras': extras.toMap()});
+
+  /// Saves several sections in one write (used by resume import).
+  /// Sections left null are not touched.
+  Future<void> saveSections(
+    String uid, {
+    ContactInfo? contact,
+    StatusDetails? status,
+    EducationHistory? education,
+    CareerGoal? careerGoal,
+    ExperienceHistory? experience,
+    List<ProjectEntry>? projects,
+    SkillSet? skills,
+    Extras? extras,
+  }) {
+    final fields = <String, dynamic>{
+      if (contact != null) ...{
+        'contact': contact.toMap(),
+        if (contact.fullName.trim().length >= 2)
+          'fullName': contact.fullName.trim(),
+      },
+      if (status != null) ...{
+        'statusDetails': status.toMap(),
+        'status': status.status.id,
+        if (status.organisation.trim().isNotEmpty)
+          'organisation': status.organisation.trim(),
+      },
+      if (education != null) 'education': education.toMap(),
+      if (careerGoal != null) 'careerGoal': careerGoal.toMap(),
+      if (experience != null) 'experience': experience.toMap(),
+      if (projects != null)
+        'projects': projects.map((p) => p.toMap()).toList(),
+      if (skills != null) 'skills': skills.toMap(),
+      if (extras != null) 'extras': extras.toMap(),
+    };
+    if (fields.isEmpty) return Future.value();
+    return _update(uid, fields);
+  }
 }

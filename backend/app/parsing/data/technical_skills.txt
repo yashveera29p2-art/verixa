@@ -1,0 +1,144 @@
+# One skill per line. Matching is case-insensitive; the spelling here is
+# what the app shows. Add more as needed.
+C
+C++
+C#
+Java
+Python
+JavaScript
+TypeScript
+Kotlin
+Swift
+Dart
+Go
+Rust
+Ruby
+PHP
+R
+Scala
+MATLAB
+SQL
+NoSQL
+HTML
+CSS
+Sass
+Bash
+Shell scripting
+Embedded C
+Verilog
+VHDL
+Assembly
+Data Structures
+Algorithms
+Data Structures and Algorithms
+Object-Oriented Programming
+DBMS
+Operating Systems
+Computer Networks
+System Design
+Machine Learning
+Deep Learning
+Natural Language Processing
+NLP
+Computer Vision
+Data Analysis
+Data Science
+Data Visualization
+Statistics
+Artificial Intelligence
+Generative AI
+Large Language Models
+Cloud Computing
+DevOps
+Microservices
+REST APIs
+GraphQL
+Web Development
+Mobile Development
+Android Development
+iOS Development
+Cybersecurity
+Networking
+Blockchain
+IoT
+Embedded Systems
+Digital Electronics
+VLSI
+Signal Processing
+React
+React Native
+Angular
+Vue.js
+Next.js
+Node.js
+Express.js
+Django
+Flask
+FastAPI
+Spring
+Spring Boot
+Hibernate
+.NET
+ASP.NET
+Laravel
+Flutter
+Firebase
+Bootstrap
+Tailwind CSS
+jQuery
+Redux
+TensorFlow
+PyTorch
+Keras
+scikit-learn
+Pandas
+NumPy
+Matplotlib
+OpenCV
+spaCy
+NLTK
+Hugging Face
+LangChain
+MySQL
+PostgreSQL
+MongoDB
+SQLite
+Oracle
+Redis
+Cassandra
+Elasticsearch
+DynamoDB
+AWS
+Azure
+Google Cloud
+GCP
+Docker
+Kubernetes
+Terraform
+Ansible
+Linux
+Unix
+Kafka
+RabbitMQ
+Spark
+Hadoop
+Airflow
+Tableau
+Power BI
+Excel
+Salesforce
+SAP
+Selenium
+JUnit
+Pytest
+Unit Testing
+CI/CD
+Agile
+Scrum
+Arduino
+Raspberry Pi
+AutoCAD
+SolidWorks
+CATIA
+ANSYS
+Simulink

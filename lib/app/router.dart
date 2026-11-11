@@ -14,6 +14,7 @@ import '../features/home/home_screen.dart';
 import '../features/profile/domain/profile_section.dart';
 import '../features/profile/presentation/editors/profile_edit_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
+import '../features/resume/presentation/resume_import_screen.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/splash/splash_timings.dart';
 import 'app_shell.dart';
@@ -99,6 +100,12 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
           ]),
         ],
+      ),
+
+      GoRoute(
+        path: AppRoutes.resumeImport,
+        parentNavigatorKey: _rootKey,
+        builder: (context, state) => const ResumeImportScreen(),
       ),
 
       // Full-screen pages opened from Home (above the bottom bar).

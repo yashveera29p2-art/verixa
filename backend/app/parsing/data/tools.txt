@@ -1,0 +1,50 @@
+# Developer and productivity tools (shown under "Tools" in the profile).
+Git
+GitHub
+GitLab
+Bitbucket
+VS Code
+Visual Studio
+IntelliJ IDEA
+Android Studio
+Xcode
+Eclipse
+PyCharm
+Jupyter
+Jupyter Notebook
+Google Colab
+Postman
+Swagger
+Jira
+Confluence
+Trello
+Notion
+Figma
+Adobe XD
+Photoshop
+Illustrator
+Canva
+Blender
+Unity
+Unreal Engine
+Jenkins
+GitHub Actions
+Maven
+Gradle
+npm
+Webpack
+Vercel
+Netlify
+Heroku
+MS Office
+Microsoft Office
+Word
+PowerPoint
+Google Sheets
+Keil
+Proteus
+LTspice
+Multisim
+Wireshark
+Burp Suite
+Packet Tracer

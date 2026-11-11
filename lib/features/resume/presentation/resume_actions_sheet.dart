@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/routes.dart';
 import '../../../core/theme/theme.dart';
 
 /// Opens the sheet behind the centre document button (CLAUDE.md §3.3).
-/// The three actions are built in later phases; for now each shows
-/// a "Coming soon" state.
+/// Actions that aren't built yet show a "Coming soon" state.
 Future<void> showResumeActionsSheet(BuildContext context) {
   return showModalBottomSheet<void>(
     context: context,
@@ -21,11 +22,13 @@ Future<void> showResumeActionsSheet(BuildContext context) {
 }
 
 class _ResumeAction {
-  const _ResumeAction(this.icon, this.title, this.description, this.phase);
+  const _ResumeAction(this.icon, this.title, this.description, {this.route});
   final IconData icon;
   final String title;
   final String description;
-  final String phase;
+
+  /// Where tapping goes; null means "Coming soon".
+  final String? route;
 }
 
 const _actions = [
@@ -33,19 +36,17 @@ const _actions = [
     Icons.edit_note_outlined,
     'Create resume',
     'Build an ATS-friendly resume from your profile.',
-    'Phase 9',
   ),
   _ResumeAction(
     Icons.document_scanner_outlined,
     'Upload & scan resume',
-    'Check for hidden text, prompt injection and keyword stuffing.',
-    'Phase 7',
+    'Import your details from an existing resume. Security scan comes next.',
+    route: AppRoutes.resumeImport,
   ),
   _ResumeAction(
     Icons.compare_arrows,
     'Match with a job description',
     'See how well your profile fits a specific role.',
-    'Phase 8',
   ),
 ];
 
@@ -97,51 +98,73 @@ class _ResumeActionsSheet extends StatelessWidget {
   }
 }
 
-/// One action, shown disabled with a "Coming soon" tag until it's built.
+/// One action. Built actions are tappable; the rest show "Coming soon".
 class _ActionRow extends StatelessWidget {
   const _ActionRow({required this.action});
 
   final _ResumeAction action;
 
+  void _open(BuildContext context) {
+    final router = GoRouter.of(context); // grab before the sheet closes
+    Navigator.of(context).pop();
+    router.push(action.route!);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final enabled = action.route != null;
     return Semantics(
-      enabled: false,
-      label: '${action.title}. Coming soon.',
+      enabled: enabled,
+      button: enabled,
+      label: enabled ? action.title : '${action.title}. Coming soon.',
       excludeSemantics: true,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: AppColors.white,
+      child: Material(
+        color: AppColors.white,
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: AppColors.stone),
+          side: BorderSide(
+            color: enabled ? AppColors.botanicalGreen : AppColors.stone,
+          ),
         ),
-        child: Row(
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: AppColors.softSage.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(AppRadius.sm),
-              ),
-              child: Icon(action.icon, color: AppColors.botanicalGreen),
+        child: InkWell(
+          onTap: enabled ? () => _open(context) : null,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: enabled
+                        ? AppColors.botanicalGreen
+                        : AppColors.softSage.withValues(alpha: 0.35),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                  ),
+                  child: Icon(action.icon,
+                      color: enabled ? AppColors.ivory : AppColors.botanicalGreen),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(action.title,
+                          style: AppTypography.labelLarge.copyWith(fontSize: 16)),
+                      const SizedBox(height: 2),
+                      Text(action.description, style: AppTypography.bodySmall),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                if (enabled)
+                  const Icon(Icons.chevron_right, color: AppColors.botanicalGreen)
+                else
+                  const _ComingSoonTag(),
+              ],
             ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(action.title,
-                      style: AppTypography.labelLarge.copyWith(fontSize: 16)),
-                  const SizedBox(height: 2),
-                  Text(action.description, style: AppTypography.bodySmall),
-                ],
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            const _ComingSoonTag(),
-          ],
+          ),
         ),
       ),
     );
