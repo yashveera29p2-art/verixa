@@ -1,0 +1,16 @@
+# Render Blueprint: deploys the Verixa backend from this repo (free plan).
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: verixa-api
+    runtime: docker
+    plan: free
+    region: singapore
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: VERIXA_FIREBASE_PROJECT
+        value: verixa-app

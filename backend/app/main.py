@@ -31,7 +31,7 @@ log = logging.getLogger("verixa")
 @asynccontextmanager
 async def _lifespan(_: FastAPI):
     nlp()  # load spaCy once at startup, not on the first request
-    semantic_available()  # load the sentence-transformers model (Phase 8)
+    semantic_available()  # load the MiniLM matching model (Phase 8)
     yield
 
 

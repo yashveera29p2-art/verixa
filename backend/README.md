@@ -8,7 +8,7 @@ parsing (feature 6). Uploaded files are processed in memory and never stored.
 ```powershell
 cd backend
 python -m venv .venv
-.venv\Scripts\python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+.venv\Scripts\python -m 
 .venv\Scripts\python -m pip install -r requirements-dev.txt
 ```
 
@@ -75,3 +75,15 @@ mix up section order.
 
 PDFs are generated on the phone (Flutter `pdf` package); DOCX here with
 python-docx. Nothing is stored on the server.
+
+## Hosting (Render, free)
+
+`render.yaml` at the repo root deploys this folder's Dockerfile as the web
+service `verixa-api` (free plan, 512 MB). Every push to `main` redeploys.
+The matching model runs through fastembed/ONNX (no PyTorch) to fit the
+memory limit. Free services sleep after ~15 minutes idle; the next request
+wakes them in about a minute.
+
+The app is built against the hosted URL with
+`--dart-define=VERIXA_API_URL=https://verixa-api.onrender.com`
+(see `tool/phone.ps1` and `tool/release.ps1`).

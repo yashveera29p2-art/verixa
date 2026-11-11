@@ -11,7 +11,9 @@ from __future__ import annotations
 import io
 
 from docx import Document
-from docx.enum.text import WD_TAB_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 from docx.shared import Pt, RGBColor, Cm
 from pydantic import BaseModel, Field
 
@@ -42,16 +44,31 @@ class ResumeIn(BaseModel):
     template: str = "classic"
 
 
-def _setup(doc: Document, compact: bool) -> None:
+FONTS = {"classic": "Cambria", "modern": "Calibri", "compact": "Arial"}
+
+
+def _setup(doc: Document, compact: bool, font: str = "Calibri") -> None:
     section = doc.sections[0]
     margin = Cm(1.2 if compact else 1.6)
     section.left_margin = section.right_margin = margin
     section.top_margin = section.bottom_margin = margin
     style = doc.styles["Normal"]
-    style.font.name = "Calibri"
+    style.font.name = font
     style.font.size = Pt(9.5 if compact else 10.5)
     style.font.color.rgb = CHARCOAL
     style.paragraph_format.space_after = Pt(0)
+
+
+def _bottom_border(paragraph, color: str) -> None:
+    """A thin rule under a section heading (real paragraph border, ATS-safe)."""
+    p_pr = paragraph._p.get_or_add_pPr()
+    borders = OxmlElement("w:pBdr")
+    bottom = OxmlElement("w:bottom")
+    for key, value in (("w:val", "single"), ("w:sz", "6"), ("w:space", "1"),
+                       ("w:color", color)):
+        bottom.set(qn(key), value)
+    borders.append(bottom)
+    p_pr.append(borders)
 
 
 def _para(doc: Document, text: str = "", *, bold=False, italic=False, size=None,
@@ -70,19 +87,28 @@ def _para(doc: Document, text: str = "", *, bold=False, italic=False, size=None,
 
 def resume_docx(r: ResumeIn) -> bytes:
     compact = r.template == "compact"
-    accent = GREEN if r.template == "modern" else CHARCOAL
+    classic = r.template == "classic"
+    accent = CHARCOAL if classic else GREEN
     doc = Document()
-    _setup(doc, compact)
+    _setup(doc, compact, FONTS.get(r.template, "Calibri"))
     width = doc.sections[0].page_width - doc.sections[0].left_margin \
         - doc.sections[0].right_margin
 
-    _para(doc, r.name, bold=True, size=18 if compact else 22, color=CHARCOAL)
+    header = [
+        _para(doc, r.name.upper() if classic else r.name, bold=True,
+              size=18 if compact else 22, color=GREEN if r.template == "modern" else CHARCOAL),
+    ]
     if r.headline:
-        _para(doc, r.headline, size=11, color=accent)
-    _para(doc, "  |  ".join(r.contact), size=9, color=MUTED, after=4)
+        header.append(_para(doc, r.headline, italic=classic, size=11, color=accent))
+    header.append(_para(doc, "  ·  ".join(r.contact), size=9, color=MUTED, after=4))
+    if classic:
+        for p in header:
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
     for block in r.blocks:
-        heading = _para(doc, block.title.upper(), bold=True, size=11, color=accent)
+        heading = _para(doc, block.title.upper() if not r.template == "modern" else block.title,
+                        bold=True, size=10 if compact else 11.5, color=accent)
+        _bottom_border(heading, "000000" if classic else "365C47")
         heading.paragraph_format.space_before = Pt(6 if compact else 10)
         heading.paragraph_format.space_after = Pt(3)
         for item in block.items:

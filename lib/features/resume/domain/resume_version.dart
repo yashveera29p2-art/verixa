@@ -25,9 +25,9 @@ enum ResumeSectionKind {
 /// Visual style of the exported resume. All templates are single-column
 /// with real text, so they stay ATS-friendly.
 enum ResumeTemplate {
-  classic('Classic', 'Black and white, serif headings'),
-  modern('Modern', 'Green accents, clean sans-serif'),
-  compact('Compact', 'Tighter spacing to fit one page');
+  classic('Classic', 'Centred serif header and ruled headings. The safest choice for ATS and mass hiring.'),
+  modern('Modern', 'Green header band, accent headings and skill tags. Good for startups and product roles.'),
+  compact('Compact', 'Section titles in a side column and dense spacing. Fits more on one page.');
 
   const ResumeTemplate(this.label, this.description);
   final String label;

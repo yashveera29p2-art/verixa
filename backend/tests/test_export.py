@@ -30,10 +30,10 @@ def _text(data: bytes) -> str:
 
 def test_resume_docx_keeps_all_content_in_reading_order():
     text = _text(resume_docx(ResumeIn(**RESUME)))
-    for expected in ["Asha Rao", "SKILLS", "Technical: Java, Python", "PROJECTS",
+    for expected in ["Asha Rao", "Skills", "Technical: Java, Python", "Projects",
                      "Verixa", "Built a resume scanner.", "AWS Cloud Practitioner"]:
         assert expected in text
-    assert text.index("SKILLS") < text.index("PROJECTS") < text.index("CERTIFICATIONS")
+    assert text.index("Skills") < text.index("Projects") < text.index("Certifications")
 
 
 def test_export_endpoints():
@@ -49,3 +49,9 @@ def test_export_endpoints():
         assert "I am applying." in _text(r.content)
     finally:
         app.dependency_overrides.clear()
+
+
+def test_every_template_exports():
+    for template in ("classic", "modern", "compact"):
+        text = _text(resume_docx(ResumeIn(**{**RESUME, "template": template})))
+        assert "Verixa" in text

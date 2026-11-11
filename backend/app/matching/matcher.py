@@ -1,7 +1,8 @@
 """Matches a profile against a job description (feature 8).
 
 Skills are checked exactly first (is "Docker" in the profile?). Anything
-not covered exactly is compared by meaning with sentence-transformers, so
+not covered exactly is compared by meaning with MiniLM sentence embeddings
+(run through fastembed/ONNX — small enough for a 512 MB server), so
 "built REST services in Spring Boot" can satisfy "experience designing
 APIs". If the model can't load, a simple word-overlap similarity is used
 and the report says so (semantic=False).
@@ -10,8 +11,11 @@ and the report says so (semantic=False).
 from __future__ import annotations
 
 import logging
+import os
 import re
 from functools import lru_cache
+
+import numpy as np
 
 from ..models import JobSummary, MatchReport, MissingSkill, RequirementResult
 from .jd import JobAnalysis, Requirement, analyze_jd
@@ -35,11 +39,16 @@ CREDIT = {"met": 1.0, "partial": 0.5, "missing": 0.0}
 def _model():
     """Loads MiniLM once (downloads ~90 MB on first use). None if unavailable."""
     try:
-        from sentence_transformers import SentenceTransformer
-        return SentenceTransformer(MODEL_NAME, device="cpu")
+        from fastembed import TextEmbedding
+        return TextEmbedding(MODEL_NAME, cache_dir=os.getenv("VERIXA_MODEL_DIR"))
     except Exception as exc:  # no package, no network on first run, …
         log.warning("Semantic model unavailable, using word overlap: %s", exc)
         return None
+
+
+def _embed(model, texts: list[str]) -> np.ndarray:
+    vectors = np.array(list(model.embed(texts)), dtype=np.float32)
+    return vectors / np.linalg.norm(vectors, axis=1, keepdims=True).clip(min=1e-9)
 
 
 def semantic_available() -> bool:
@@ -55,9 +64,7 @@ def _similarity(queries: list[str], docs: list[str]) -> list[list[float]]:
         return [[0.0] * len(docs) for _ in queries]
     model = _model()
     if model is not None:
-        q = model.encode(queries, normalize_embeddings=True, convert_to_tensor=True)
-        d = model.encode(docs, normalize_embeddings=True, convert_to_tensor=True)
-        return (q @ d.T).tolist()
+        return (_embed(model, queries) @ _embed(model, docs).T).tolist()
     # Fallback: Jaccard word overlap (scaled to land near the same thresholds).
     out = []
     for query in queries:

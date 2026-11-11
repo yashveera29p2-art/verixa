@@ -5,17 +5,16 @@ python-multipart>=0.0.9
 pdfplumber>=0.11
 python-docx>=1.1
 spacy>=3.7,<4
-firebase-admin>=6.5
-# Installed with firebase-admin; listed because app/auth.py imports them.
+# Firebase ID token verification (app/auth.py).
 google-auth>=2.30
 requests>=2.32
 cachecontrol>=0.14
 
-# Phase 8: semantic job matching (model all-MiniLM-L6-v2, ~90 MB, downloaded
-# on first run). Install the CPU-only PyTorch build FIRST to avoid the much
-# larger GPU build:
-#   pip install torch --index-url https://download.pytorch.org/whl/cpu
-sentence-transformers>=3,<6
+# Phase 8: semantic job matching with all-MiniLM-L6-v2 (~90 MB, downloaded
+# on first run) through ONNX Runtime — no PyTorch, so the whole backend
+# fits in a 512 MB server.
+fastembed>=0.5
+numpy>=1.26
 
 # spaCy English model (small, ~13 MB)
 en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
