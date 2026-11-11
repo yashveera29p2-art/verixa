@@ -11,7 +11,9 @@ import '../features/companies/domain/company_category.dart';
 import '../features/companies/presentation/category_screen.dart';
 import '../features/companies/presentation/company_detail_screen.dart';
 import '../features/home/home_screen.dart';
-import '../features/profile/profile_screen.dart';
+import '../features/profile/domain/profile_section.dart';
+import '../features/profile/presentation/editors/profile_edit_screen.dart';
+import '../features/profile/presentation/profile_screen.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/splash/splash_timings.dart';
 import 'app_shell.dart';
@@ -77,6 +79,23 @@ final routerProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: AppRoutes.profile,
               builder: (context, state) => const ProfileScreen(),
+              routes: [
+                // Full-screen editors, above the bottom bar.
+                GoRoute(
+                  path: 'edit/:section',
+                  parentNavigatorKey: _rootKey,
+                  redirect: (context, state) => ProfileSection.fromId(
+                              state.pathParameters['section']) ==
+                          null
+                      ? AppRoutes.profile
+                      : null,
+                  builder: (context, state) => ProfileEditScreen(
+                    section:
+                        ProfileSection.fromId(state.pathParameters['section'])!,
+                    guided: state.uri.queryParameters['guided'] == '1',
+                  ),
+                ),
+              ],
             ),
           ]),
         ],

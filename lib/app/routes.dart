@@ -24,10 +24,16 @@ abstract final class AppRoutes {
   static String companyDetail(String categoryId, String companyId) =>
       '$companies/$categoryId/$companyId';
 
+  /// Profile section editor: /profile/edit/skills. With [guided], saving
+  /// moves on to the next unfinished section.
+  static String profileEdit(String sectionId, {bool guided = false}) =>
+      '$profile/edit/$sectionId${guided ? '?guided=1' : ''}';
+
   /// True for routes that need a signed-in user.
   static bool isProtected(String path) =>
       path == onboarding ||
       path == home ||
       path == profile ||
+      path.startsWith('$profile/') ||
       path.startsWith('$companies/');
 }

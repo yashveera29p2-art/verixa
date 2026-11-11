@@ -14,15 +14,36 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == uid;
     }
 
-    // Checks the onboarding fields. Extra profile fields added later
-    // (education, skills, ...) are allowed through untouched.
+    // Checks the onboarding fields that every profile must have.
     function validProfile(uid) {
       let d = request.resource.data;
       return d.uid == uid
         && d.phone == request.auth.token.phone_number
         && d.fullName is string && d.fullName.size() >= 2 && d.fullName.size() <= 100
         && d.status in ['student', 'fresher', 'working_professional']
-        && d.organisation is string && d.organisation.size() >= 1 && d.organisation.size() <= 150;
+        && d.organisation is string && d.organisation.size() >= 1 && d.organisation.size() <= 150
+        && validSections(d);
+    }
+
+    // Profile sections (Phase 5): only known fields, each the right type,
+    // with sensible size caps so a document can't be stuffed with junk.
+    function validSections(d) {
+      return d.keys().hasOnly([
+          'uid', 'phone', 'fullName', 'status', 'organisation',
+          'createdAt', 'updatedAt',
+          'contact', 'statusDetails', 'education', 'careerGoal',
+          'experience', 'projects', 'skills', 'extras'])
+        && (!('contact' in d) || d.contact is map)
+        && (!('statusDetails' in d) || d.statusDetails is map)
+        && (!('education' in d) || (d.education is map
+              && (!('additional' in d.education) || d.education.additional.size() <= 5)))
+        && (!('careerGoal' in d) || (d.careerGoal is map
+              && (!('objective' in d.careerGoal) || d.careerGoal.objective.size() <= 300)))
+        && (!('experience' in d) || (d.experience is map
+              && (!('entries' in d.experience) || d.experience.entries.size() <= 20)))
+        && (!('projects' in d) || (d.projects is list && d.projects.size() <= 20))
+        && (!('skills' in d) || d.skills is map)
+        && (!('extras' in d) || d.extras is map);
     }
 
     match /users/{uid} {
