@@ -47,6 +47,9 @@ project owner. Ask them to add your number and give you your code.
   backend; the first request after a quiet period can take about a minute.
 - Your resume files are processed in memory and never stored.
 "@
-$flags = @('--title', "Verixa $Version", '--notes', $notes)
+# Notes go through a file: PowerShell 5 mangles quotes in long arguments.
+$notesFile = Join-Path $out 'notes.md'
+$notes | Set-Content -Encoding utf8 $notesFile
+$flags = @('--title', "Verixa $Version", '--notes-file', $notesFile)
 if ($Draft) { $flags += '--draft' }
 gh release create "v$Version" "$out\Verixa-$Version-arm64.apk" "$out\Verixa-$Version-universal.apk" @flags
