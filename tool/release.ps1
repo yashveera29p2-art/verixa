@@ -1,10 +1,14 @@
-# Builds the shareable APKs and publishes them as a GitHub Release.
+# Builds the shareable APK and publishes it as a GitHub Release.
 #
-#   .\tool\release.ps1 -ApiUrl https://<user>-verixa-api.hf.space -Version 1.0.0
+#   .\tool\release.ps1 -ApiUrl https://verixa-api.onrender.com -Version 1.2.0
 #
-# Produces:
-#   Verixa-<version>-arm64.apk     most phones from the last ~7 years (smaller)
-#   Verixa-<version>-universal.apk any Android phone (larger)
+# Bump `version:` in pubspec.yaml first so phones accept the update.
+#
+# Produces ONE file, Verixa.apk (~42 MB), for every real Android phone
+# (32- and 64-bit ARM; emulator-only x86 code is left out to keep it small).
+# The asset is always named Verixa.apk, so the download page and this link
+# never change between versions:
+#   https://github.com/yashveera29p2-art/verixa/releases/latest/download/Verixa.apk
 
 param(
   [Parameter(Mandatory = $true)][string]$ApiUrl,
@@ -14,42 +18,29 @@ param(
 
 $ErrorActionPreference = 'Stop'
 Set-Location (Join-Path $PSScriptRoot '..')
-$define = "--dart-define=VERIXA_API_URL=$ApiUrl"
 $out = 'build\release-apks'
 if (Test-Path $out) { Remove-Item -Recurse -Force $out }
 New-Item -ItemType Directory $out | Out-Null
 
-flutter build apk --release $define --split-per-abi
+flutter build apk --release "--dart-define=VERIXA_API_URL=$ApiUrl" --target-platform android-arm,android-arm64
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-Copy-Item build\app\outputs\flutter-apk\app-arm64-v8a-release.apk "$out\Verixa-$Version-arm64.apk"
-
-flutter build apk --release $define
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-Copy-Item build\app\outputs\flutter-apk\app-release.apk "$out\Verixa-$Version-universal.apk"
+Copy-Item build\app\outputs\flutter-apk\app-release.apk "$out\Verixa.apk"
+New-Item -ItemType Directory release -Force | Out-Null
+Copy-Item "$out\Verixa.apk" "release\Verixa-$Version.apk"
 
 $notes = @"
-Verixa $Version - AI resume intelligence and builder (academic NLP project).
+Verixa $Version - one APK for every Android phone.
 
-## Install
-1. Download **Verixa-$Version-arm64.apk** (works on most phones). If it says
-   "App not installed", use the **universal** APK instead.
-2. Open the file. If Android asks, allow **Install unknown apps** for your
-   browser or file manager, then tap **Install**.
-3. If Play Protect warns that the app is unknown, tap **More details ->
-   Install anyway** (the app isn't on the Play Store).
+**Easiest install:** open https://yashveera29p2-art.github.io/verixa on the phone and tap Download.
 
-## Log in
-During this project phase, sign-in uses phone numbers registered by the
-project owner. Ask them to add your number and give you your code.
+Or download **Verixa.apk** below, open it, and tap **Install** (or **Update**).
+If Play Protect warns, tap **More details -> Install anyway**.
 
-## Notes
-- Resume upload, scanning, job matching and Word export use the hosted
-  backend; the first request after a quiet period can take about a minute.
-- Your resume files are processed in memory and never stored.
+Sign-in uses phone numbers registered by the project owner.
 "@
 # Notes go through a file: PowerShell 5 mangles quotes in long arguments.
 $notesFile = Join-Path $out 'notes.md'
 $notes | Set-Content -Encoding utf8 $notesFile
-$flags = @('--title', "Verixa $Version", '--notes-file', $notesFile)
+$flags = @('--title', "Verixa $Version", '--notes-file', $notesFile, '--latest')
 if ($Draft) { $flags += '--draft' }
-gh release create "v$Version" "$out\Verixa-$Version-arm64.apk" "$out\Verixa-$Version-universal.apk" @flags
+gh release create "v$Version" "$out\Verixa.apk" @flags
