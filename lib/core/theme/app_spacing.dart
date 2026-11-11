@@ -24,4 +24,17 @@ abstract final class AppRadius {
 abstract final class AppSizes {
   static const double buttonHeight = 52;
   static const double borderWidth = 1;
+
+  // ── Glass bottom navigation bar ──────────────────────────────────────────
+  static const double navBarHeight = 68;
+
+  /// The centre document button is slightly larger than the bar items.
+  static const double navCentreButton = 58;
+  static const double navIcon = 24;
+
+  /// Background blur strength behind the frosted bar.
+  static const double glassBlur = 18;
+
+  /// Translucency of the ivory glass (0 = clear, 1 = solid).
+  static const double glassOpacity = 0.78;
 }

@@ -1,107 +1,99 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
 import '../../core/theme/theme.dart';
-import '../../core/utils/phone_utils.dart';
-import '../../core/widgets/app_button.dart';
+import '../../core/utils/greeting.dart';
 import '../auth/application/auth_providers.dart';
+import '../companies/domain/company_category.dart';
+import 'widgets/category_card.dart';
 
-/// Placeholder Home for Phase 2. The real Home (greeting, MNC/SME/Startup
-/// cards, glass nav bar) is built in Phase 3.
+/// Home: time-of-day greeting and the three company-type cards.
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
-  Future<void> _signOut(BuildContext context, WidgetRef ref) async {
-    await ref.read(authServiceProvider).signOut();
-    if (context.mounted) context.go(AppRoutes.welcome);
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(currentProfileProvider);
-    final user = ref.watch(authStateProvider).value;
+    final firstName = ref.watch(currentProfileProvider).value?.firstName;
+    final navInset = AppSizes.navBarHeight + MediaQuery.paddingOf(context).bottom;
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.pageGutter),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: AppSpacing.xl),
-                Text(
-                  profile.when(
-                    data: (p) => p == null ? 'Hello' : 'Hello, ${p.firstName}',
-                    loading: () => 'Hello',
-                    error: (_, _) => 'Hello',
-                  ),
-                  style: AppTypography.displayMedium,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'You’re signed in. Home arrives in Phase 3.',
-                  style: AppTypography.bodyLarge
-                      .copyWith(color: AppColors.mutedText),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                _AccountCard(
-                  phone: user?.phoneNumber,
-                  status: profile.value?.status.label,
-                  organisation: profile.value?.organisation,
-                ),
-                const Spacer(),
-                AppButton(
-                  label: 'Sign out',
-                  style: AppButtonStyle.outlined,
-                  onPressed: () => _signOut(context, ref),
-                ),
-              ],
-            ),
+    return Scaffold(
+      body: SafeArea(
+        bottom: false,
+        child: ListView(
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.pageGutter,
+            AppSpacing.xl,
+            AppSpacing.pageGutter,
+            navInset + AppSpacing.lg,
           ),
+          children: [
+            _Greeting(firstName: firstName),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Where are you applying? Pick a company type to see what they '
+              'look for and how to shape your resume.',
+              style: AppTypography.bodyLarge.copyWith(color: AppColors.mutedText),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            Text(
+              'COMPANY TYPES',
+              style: AppTypography.labelMedium
+                  .copyWith(color: AppColors.mutedText),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            for (final category in CompanyCategory.values) ...[
+              CategoryCard(
+                category: category,
+                onTap: () => context.push(AppRoutes.companiesFor(category.id)),
+              ),
+              const SizedBox(height: AppSpacing.md),
+            ],
+          ],
         ),
       ),
     );
   }
 }
 
-/// Botanical green summary card of the signed-in account.
-class _AccountCard extends StatelessWidget {
-  const _AccountCard({this.phone, this.status, this.organisation});
+/// "Good morning, Asha" — re-checks the clock every minute so the
+/// greeting changes if the app stays open across 12:00, 17:00 or 04:00.
+class _Greeting extends StatefulWidget {
+  const _Greeting({required this.firstName});
 
-  final String? phone;
-  final String? status;
-  final String? organisation;
+  final String? firstName;
+
+  @override
+  State<_Greeting> createState() => _GreetingState();
+}
+
+class _GreetingState extends State<_Greeting> {
+  late Timer _timer;
+  DateTime _now = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(minutes: 1), (_) {
+      final now = DateTime.now();
+      if (greetingFor(now) != greetingFor(_now)) setState(() => _now = now);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final muted = AppTypography.bodyMedium
-        .copyWith(color: AppColors.ivory.withValues(alpha: 0.8));
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColors.botanicalGreen,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Your account',
-                style: AppTypography.titleLarge
-                    .copyWith(color: AppColors.ivory)),
-            const SizedBox(height: AppSpacing.sm),
-            if (phone != null)
-              Text(PhoneUtils.pretty(phone!), style: muted),
-            if (status != null && organisation != null)
-              Text('$status · $organisation', style: muted),
-          ],
-        ),
-      ),
+    return Text(
+      greetingWithName(_now, widget.firstName),
+      style: AppTypography.displayMedium,
     );
   }
 }

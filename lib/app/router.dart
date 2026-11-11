@@ -7,23 +7,29 @@ import '../features/auth/presentation/onboarding_screen.dart';
 import '../features/auth/presentation/otp_screen.dart';
 import '../features/auth/presentation/phone_screen.dart';
 import '../features/auth/welcome_screen.dart';
+import '../features/companies/domain/company_category.dart';
+import '../features/companies/presentation/category_screen.dart';
 import '../features/home/home_screen.dart';
+import '../features/profile/profile_screen.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/splash/splash_timings.dart';
+import 'app_shell.dart';
 import 'routes.dart';
 
 export 'routes.dart';
 
+final _rootKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
+    navigatorKey: _rootKey,
     initialLocation: AppRoutes.splash,
-    // Simple guard: signed-out users can't open Home or Onboarding.
-    // Which of those a signed-in user sees is decided by the splash and
+    // Simple guard: signed-out users can't open the main app.
+    // Which page a signed-in user lands on is decided by the splash and
     // the OTP screen (see features/auth/application/session.dart).
     redirect: (context, state) {
       final signedIn = ref.read(authServiceProvider).currentUser != null;
-      final path = state.matchedLocation;
-      if (!signedIn && AppRoutes.protected.contains(path)) {
+      if (!signedIn && AppRoutes.isProtected(state.matchedLocation)) {
         return AppRoutes.welcome;
       }
       return null;
@@ -53,9 +59,39 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) =>
             _fadePage(state, const OnboardingScreen()),
       ),
+
+      // Main tabs with the glass bottom bar. Each tab keeps its own
+      // navigation stack and scroll position.
+      StatefulShellRoute.indexedStack(
+        pageBuilder: (context, state, shell) =>
+            _fadePage(state, AppShell(navigationShell: shell)),
+        branches: [
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: AppRoutes.home,
+              builder: (context, state) => const HomeScreen(),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: AppRoutes.profile,
+              builder: (context, state) => const ProfileScreen(),
+            ),
+          ]),
+        ],
+      ),
+
+      // Full-screen pages opened from Home (above the bottom bar).
       GoRoute(
-        path: AppRoutes.home,
-        pageBuilder: (context, state) => _fadePage(state, const HomeScreen()),
+        path: '${AppRoutes.companies}/:category',
+        parentNavigatorKey: _rootKey,
+        redirect: (context, state) =>
+            CompanyCategory.fromId(state.pathParameters['category']) == null
+                ? AppRoutes.home
+                : null,
+        builder: (context, state) => CategoryScreen(
+          category: CompanyCategory.fromId(state.pathParameters['category'])!,
+        ),
       ),
     ],
   );
