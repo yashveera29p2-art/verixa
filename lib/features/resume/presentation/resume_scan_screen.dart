@@ -32,8 +32,9 @@ class ResumeScanScreen extends ConsumerWidget {
       return AuthPage(
         title: 'Scan your resume',
         subtitle: const Text(
-            'We check for tricks that recruiters and ATS software flag, and '
-            'estimate how well your resume will be read.'),
+          'We check for tricks that recruiters and ATS software flag, and '
+          'estimate how well your resume will be read.',
+        ),
         actions: [historyButton],
         bottom: AppButton(
           label: 'Choose PDF or DOCX',
@@ -54,10 +55,12 @@ class ResumeScanScreen extends ConsumerWidget {
     final canImport = parsed != null && parsed.availableSections.isNotEmpty;
     return AuthPage(
       title: 'Scan report',
-      subtitle: Text([
-        state.fileName ?? 'Your resume',
-        if (state.savedToHistory) 'Saved to history',
-      ].join(' · ')),
+      subtitle: Text(
+        [
+          state.fileName ?? 'Your resume',
+          if (state.savedToHistory) 'Saved to history',
+        ].join(' · '),
+      ),
       actions: [historyButton],
       bottom: Column(
         mainAxisSize: MainAxisSize.min,
@@ -103,16 +106,31 @@ class _WhatWeCheck extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const checks = [
-      (Icons.visibility_off_outlined, 'Hidden text',
-          'White, microscopic or off-page text.'),
-      (Icons.smart_toy_outlined, 'Prompt injection',
-          'Instructions aimed at AI screening tools.'),
-      (Icons.repeat, 'Keyword stuffing',
-          'Repeated keywords and hidden keyword lists.'),
-      (Icons.text_fields, 'Invisible characters',
-          'Zero-width and look-alike characters.'),
-      (Icons.speed_outlined, 'ATS score',
-          'An estimate of how well software reads your resume.'),
+      (
+        Icons.visibility_off_outlined,
+        'Hidden text',
+        'White, microscopic or off-page text.',
+      ),
+      (
+        Icons.smart_toy_outlined,
+        'Prompt injection',
+        'Instructions aimed at AI screening tools.',
+      ),
+      (
+        Icons.repeat,
+        'Keyword stuffing',
+        'Repeated keywords and hidden keyword lists.',
+      ),
+      (
+        Icons.text_fields,
+        'Invisible characters',
+        'Zero-width and look-alike characters.',
+      ),
+      (
+        Icons.speed_outlined,
+        'ATS score',
+        'An estimate of how well software reads your resume.',
+      ),
     ];
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -131,16 +149,24 @@ class _WhatWeCheck extends StatelessWidget {
                   Icon(icon, color: AppColors.ivory, size: 22),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
-                    child: Text.rich(TextSpan(children: [
+                    child: Text.rich(
                       TextSpan(
-                          text: '$title  ',
-                          style: AppTypography.labelLarge
-                              .copyWith(color: AppColors.ivory)),
-                      TextSpan(
-                          text: text,
-                          style: AppTypography.bodyMedium.copyWith(
-                              color: AppColors.ivory.withValues(alpha: 0.8))),
-                    ])),
+                        children: [
+                          TextSpan(
+                            text: '$title  ',
+                            style: AppTypography.labelLarge.copyWith(
+                              color: AppColors.ivory,
+                            ),
+                          ),
+                          TextSpan(
+                            text: text,
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: AppColors.ivory.withValues(alpha: 0.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -154,7 +180,8 @@ class _WhatWeCheck extends StatelessWidget {
                 child: Text(
                   'Your file is processed and discarded. Only the report is saved.',
                   style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.ivory.withValues(alpha: 0.8)),
+                    color: AppColors.ivory.withValues(alpha: 0.8),
+                  ),
                 ),
               ),
             ],
@@ -184,7 +211,9 @@ class _ScanningCard extends StatelessWidget {
           const SizedBox.square(
             dimension: 24,
             child: CircularProgressIndicator(
-                strokeWidth: 2.5, color: AppColors.botanicalGreen),
+              strokeWidth: 2.5,
+              color: AppColors.botanicalGreen,
+            ),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(

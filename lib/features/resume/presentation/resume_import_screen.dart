@@ -36,18 +36,24 @@ class _ResumeImportScreenState extends ConsumerState<ResumeImportScreen> {
     super.initState();
     final initial = widget.initial;
     if (initial != null) {
-      Future.microtask(() => ref
-          .read(resumeImportControllerProvider.notifier)
-          .loadResult(initial.result, initial.fileName));
+      Future.microtask(
+        () => ref
+            .read(resumeImportControllerProvider.notifier)
+            .loadResult(initial.result, initial.fileName),
+      );
     }
   }
 
   Future<void> _import(BuildContext context, WidgetRef ref) async {
-    final ok =
-        await ref.read(resumeImportControllerProvider.notifier).importSelected();
+    final ok = await ref
+        .read(resumeImportControllerProvider.notifier)
+        .importSelected();
     if (!ok || !context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Imported into your profile. Review each section.')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Imported into your profile. Review each section.'),
+      ),
+    );
     context.go(AppRoutes.profile);
   }
 
@@ -56,16 +62,19 @@ class _ResumeImportScreenState extends ConsumerState<ResumeImportScreen> {
     final state = ref.watch(resumeImportControllerProvider);
     final controller = ref.read(resumeImportControllerProvider.notifier);
     final result = state.result;
-    final reviewing = result != null &&
-        (state.phase == ImportPhase.review || state.phase == ImportPhase.importing);
+    final reviewing =
+        result != null &&
+        (state.phase == ImportPhase.review ||
+            state.phase == ImportPhase.importing);
 
     if (!reviewing) {
       final uploading = state.phase == ImportPhase.uploading;
       return AuthPage(
         title: 'Import your resume',
         subtitle: const Text(
-            'Upload an existing resume and we’ll fill in your profile for you. '
-            'You choose what gets imported.'),
+          'Upload an existing resume and we’ll fill in your profile for you. '
+          'You choose what gets imported.',
+        ),
         bottom: AppButton(
           label: 'Choose PDF or DOCX',
           isLoading: uploading,
@@ -84,9 +93,11 @@ class _ResumeImportScreenState extends ConsumerState<ResumeImportScreen> {
     final available = result.availableSections;
     return AuthPage(
       title: 'Here’s what we found',
-      subtitle: Text('From ${state.fileName ?? 'your resume'}. Untick anything '
-          'you don’t want. Importing only fills empty fields — it never '
-          'replaces what you’ve already entered.'),
+      subtitle: Text(
+        'From ${state.fileName ?? 'your resume'}. Untick anything '
+        'you don’t want. Importing only fills empty fields — it never '
+        'replaces what you’ve already entered.',
+      ),
       bottom: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -96,9 +107,11 @@ class _ResumeImportScreenState extends ConsumerState<ResumeImportScreen> {
             label: state.selected.isEmpty
                 ? 'Select sections to import'
                 : 'Import ${state.selected.length} '
-                    '${state.selected.length == 1 ? 'section' : 'sections'}',
+                      '${state.selected.length == 1 ? 'section' : 'sections'}',
             isLoading: state.phase == ImportPhase.importing,
-            onPressed: state.selected.isEmpty ? null : () => _import(context, ref),
+            onPressed: state.selected.isEmpty
+                ? null
+                : () => _import(context, ref),
           ),
           TextButton(
             onPressed: state.phase == ImportPhase.importing
@@ -118,8 +131,10 @@ class _ResumeImportScreenState extends ConsumerState<ResumeImportScreen> {
           const SizedBox(height: AppSpacing.md),
         ],
         if (available.isEmpty)
-          Text('We couldn’t find anything to import from this file.',
-              style: AppTypography.bodyLarge),
+          Text(
+            'We couldn’t find anything to import from this file.',
+            style: AppTypography.bodyLarge,
+          ),
         for (final section in available) ...[
           ImportSectionCard(
             section: section,
@@ -141,12 +156,16 @@ class _HowItWorks extends StatelessWidget {
   Widget build(BuildContext context) {
     const points = [
       (Icons.upload_file_outlined, 'PDF or DOCX, up to 5 MB.'),
-      (Icons.auto_awesome_outlined,
-          'We read your contact details, education, experience, projects '
-              'and skills.'),
+      (
+        Icons.auto_awesome_outlined,
+        'We read your contact details, education, experience, projects '
+            'and skills.',
+      ),
       (Icons.checklist_outlined, 'You review everything before it’s saved.'),
-      (Icons.lock_outline,
-          'Your file is processed and then discarded — we don’t store it.'),
+      (
+        Icons.lock_outline,
+        'Your file is processed and then discarded — we don’t store it.',
+      ),
     ];
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -165,9 +184,12 @@ class _HowItWorks extends StatelessWidget {
                   Icon(icon, color: AppColors.ivory, size: 22),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
-                    child: Text(text,
-                        style: AppTypography.bodyMedium
-                            .copyWith(color: AppColors.ivory)),
+                    child: Text(
+                      text,
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: AppColors.ivory,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -197,7 +219,9 @@ class _UploadingCard extends StatelessWidget {
           const SizedBox.square(
             dimension: 24,
             child: CircularProgressIndicator(
-                strokeWidth: 2.5, color: AppColors.botanicalGreen),
+              strokeWidth: 2.5,
+              color: AppColors.botanicalGreen,
+            ),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -232,9 +256,12 @@ class _Warnings extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Please double-check',
-              style: AppTypography.labelLarge
-                  .copyWith(color: AppColors.botanicalGreen)),
+          Text(
+            'Please double-check',
+            style: AppTypography.labelLarge.copyWith(
+              color: AppColors.botanicalGreen,
+            ),
+          ),
           const SizedBox(height: AppSpacing.xxs),
           for (final w in warnings)
             Padding(

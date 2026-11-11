@@ -40,7 +40,8 @@ class CategoryScreen extends ConsumerWidget {
                   hasScrollBody: false,
                   child: Center(
                     child: CircularProgressIndicator(
-                        color: AppColors.botanicalGreen),
+                      color: AppColors.botanicalGreen,
+                    ),
                   ),
                 ),
               ],
@@ -58,7 +59,8 @@ class CategoryScreen extends ConsumerWidget {
                   ? [
                       const SliverToBoxAdapter(
                         child: _Message(
-                            text: 'No companies in this category yet.'),
+                          text: 'No companies in this category yet.',
+                        ),
                       ),
                     ]
                   : [
@@ -127,9 +129,10 @@ class _Message extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(text,
-              style: AppTypography.bodyLarge
-                  .copyWith(color: AppColors.mutedText)),
+          Text(
+            text,
+            style: AppTypography.bodyLarge.copyWith(color: AppColors.mutedText),
+          ),
           if (actionLabel != null)
             TextButton(
               onPressed: onAction,

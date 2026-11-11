@@ -23,6 +23,22 @@ abstract final class AppRoutes {
   static const scanHistory = '/resume/history';
   static String scanDetail(String scanId) => '$scanHistory/$scanId';
 
+  /// Job description matching (Phase 8) and past matches.
+  static const jdMatch = '/resume/match';
+  static const matchHistory = '/resume/matches';
+  static String matchDetail(String id) => '$matchHistory/$id';
+
+  /// Resume builder (Phase 9): saved versions, a new tailored resume
+  /// (`?company=<id>` preselects a company), one version's editor,
+  /// its PDF preview and cover letter.
+  static const resumes = '/resume/builder';
+  static const resumeNew = '/resume/new';
+  static String resumeNewFor(String companyId) =>
+      '$resumeNew?company=$companyId';
+  static String resumeEdit(String id) => '$resumes/$id';
+  static String resumePreview(String id) => '$resumes/$id/preview';
+  static String coverLetter(String id) => '$resumes/$id/cover';
+
   static String phoneFor({required bool isLogin}) =>
       isLogin ? '$phone?mode=login' : phone;
 

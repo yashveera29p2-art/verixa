@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../app/routes.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_button.dart';
@@ -40,13 +43,8 @@ class _Body extends StatelessWidget {
 
   final Company company;
 
-  void _buildResume(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Resume building arrives in a later update.'),
-      ),
-    );
-  }
+  void _buildResume(BuildContext context) =>
+      context.push(AppRoutes.resumeNewFor(company.id));
 
   @override
   Widget build(BuildContext context) {
@@ -139,8 +137,9 @@ class _Header extends StatelessWidget {
                   const SizedBox(height: AppSpacing.xxs),
                   Text(
                     '${company.category.title} · ${company.sector}',
-                    style: AppTypography.labelMedium
-                        .copyWith(color: AppColors.botanicalGreen),
+                    style: AppTypography.labelMedium.copyWith(
+                      color: AppColors.botanicalGreen,
+                    ),
                   ),
                 ],
               ),

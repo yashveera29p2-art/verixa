@@ -130,6 +130,41 @@ class ParsedResume(BaseModel):
     meta: Meta | None = None
 
 
+class JobSummary(BaseModel):
+    title: str = ""
+    seniority: str = ""
+    yearsRequired: int | None = None
+    education: str = ""
+
+
+class RequirementResult(BaseModel):
+    text: str
+    importance: str  # "required" | "preferred"
+    kind: str  # "skill" | "experience" | "education" | "responsibility"
+    status: str  # "met" | "partial" | "missing"
+    score: float  # 0–1 similarity / coverage
+    evidence: str = ""  # which profile item satisfies it
+
+
+class MissingSkill(BaseModel):
+    skill: str
+    importance: str
+
+
+class MatchReport(BaseModel):
+    """Job description match (feature 8)."""
+
+    matchScore: int  # 0–100
+    skillCoverage: int | None = None  # % of JD skills in the profile
+    verdict: str  # "strong" | "good" | "partial" | "low"
+    job: JobSummary
+    requirements: list[RequirementResult] = []
+    matchedSkills: list[str] = []
+    missingSkills: list[MissingSkill] = []
+    suggestions: list[str] = []
+    semantic: bool = True  # False if the fallback word matcher was used
+
+
 class ScanReport(BaseModel):
     """Security scan + ATS report (features 1–4)."""
 

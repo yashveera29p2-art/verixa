@@ -85,12 +85,15 @@ class ParsedResume {
         graduationYear: _s(deg, 'graduationYear'),
       ),
       education: EducationHistory.fromMap(edu),
-      careerGoal: CareerGoal(objective: _s(_m(json['careerGoal']), 'objective')),
+      careerGoal: CareerGoal(
+        objective: _s(_m(json['careerGoal']), 'objective'),
+      ),
       experience: _l(json['experience'])
           .map((e) => ExperienceEntry.fromMap(_m(e)))
           .toList(),
-      projects:
-          _l(json['projects']).map((e) => ProjectEntry.fromMap(_m(e))).toList(),
+      projects: _l(json['projects'])
+          .map((e) => ProjectEntry.fromMap(_m(e)))
+          .toList(),
       skills: SkillSet.fromMap(skills),
       extras: Extras({
         for (final key in Extras.fields.keys) key: _ls(extras, key),
@@ -104,26 +107,26 @@ class ParsedResume {
 
   /// Profile sections this resume has something for.
   List<ProfileSection> get availableSections => [
-        if (contact.fullName.isNotEmpty ||
-            contact.city.isNotEmpty ||
-            contact.linkedin.isNotEmpty ||
-            contact.github.isNotEmpty)
-          ProfileSection.contact,
-        if (!degree.isEmpty) ProfileSection.status,
-        if (education.class10.year.isNotEmpty ||
-            education.class12.year.isNotEmpty ||
-            education.class10.score.isNotEmpty ||
-            education.class12.score.isNotEmpty ||
-            education.additional.isNotEmpty)
-          ProfileSection.education,
-        if (careerGoal.objective.isNotEmpty) ProfileSection.careerGoal,
-        if (experience.isNotEmpty) ProfileSection.experience,
-        if (projects.isNotEmpty) ProfileSection.projects,
-        if (skills.technical.isNotEmpty ||
-            skills.tools.isNotEmpty ||
-            skills.soft.isNotEmpty ||
-            skills.languages.isNotEmpty)
-          ProfileSection.skills,
-        if (extras.itemCount > 0) ProfileSection.extras,
-      ];
+    if (contact.fullName.isNotEmpty ||
+        contact.city.isNotEmpty ||
+        contact.linkedin.isNotEmpty ||
+        contact.github.isNotEmpty)
+      ProfileSection.contact,
+    if (!degree.isEmpty) ProfileSection.status,
+    if (education.class10.year.isNotEmpty ||
+        education.class12.year.isNotEmpty ||
+        education.class10.score.isNotEmpty ||
+        education.class12.score.isNotEmpty ||
+        education.additional.isNotEmpty)
+      ProfileSection.education,
+    if (careerGoal.objective.isNotEmpty) ProfileSection.careerGoal,
+    if (experience.isNotEmpty) ProfileSection.experience,
+    if (projects.isNotEmpty) ProfileSection.projects,
+    if (skills.technical.isNotEmpty ||
+        skills.tools.isNotEmpty ||
+        skills.soft.isNotEmpty ||
+        skills.languages.isNotEmpty)
+      ProfileSection.skills,
+    if (extras.itemCount > 0) ProfileSection.extras,
+  ];
 }

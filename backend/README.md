@@ -8,6 +8,7 @@ parsing (feature 6). Uploaded files are processed in memory and never stored.
 ```powershell
 cd backend
 python -m venv .venv
+.venv\Scripts\python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 .venv\Scripts\python -m pip install -r requirements-dev.txt
 ```
 
@@ -34,6 +35,8 @@ cd backend
 | Method | Path | Notes |
 |---|---|---|
 | GET | `/health` | Liveness check |
+| POST | `/v1/resumes/scan` | Multipart `file`. Security scan + estimated ATS score + visible-text parse. |
+| POST | `/v1/jobs/match` | JSON `{jobDescription, profile}`. JD analysis and semantic match. |
 | POST | `/v1/resumes/parse` | Multipart `file` (PDF or DOCX, ≤ 5 MB). Requires `Authorization: Bearer <Firebase ID token>`. |
 
 ## Settings (environment variables)
@@ -62,3 +65,13 @@ cd backend
 
 Known limits: scanned image-only PDFs have no text; two-column layouts can
 mix up section order.
+
+## Export (Phase 9)
+
+- `POST /v1/export/resume.docx` — body: the resume the app built from the
+  user's profile (`name`, `headline`, `contact`, `blocks`, `template`).
+  Returns a single-column, ATS-friendly DOCX.
+- `POST /v1/export/cover-letter.docx` — body: `name`, `contact`, `text`.
+
+PDFs are generated on the phone (Flutter `pdf` package); DOCX here with
+python-docx. Nothing is stored on the server.

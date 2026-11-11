@@ -13,15 +13,17 @@ final scanHistoryRepositoryProvider = Provider<ScanHistoryRepository>(
 
 /// The signed-in user's past scans, newest first.
 final scanHistoryProvider = StreamProvider<List<ScanRecord>>((ref) {
-  final user = ref.watch(authStateProvider).value;
+  final user = ref.watch(currentUserProvider);
   if (user == null) return Stream.value(const []);
   return ref.watch(scanHistoryRepositoryProvider).watch(user.uid);
 });
 
 /// One saved scan, by id.
-final scanRecordProvider =
-    StreamProvider.family<ScanRecord?, String>((ref, scanId) {
-  final user = ref.watch(authStateProvider).value;
+final scanRecordProvider = StreamProvider.family<ScanRecord?, String>((
+  ref,
+  scanId,
+) {
+  final user = ref.watch(currentUserProvider);
   if (user == null) return Stream.value(null);
   return ref.watch(scanHistoryRepositoryProvider).watchOne(user.uid, scanId);
 });
@@ -48,7 +50,8 @@ class ResumeScanState {
 
 final resumeScanControllerProvider =
     NotifierProvider.autoDispose<ResumeScanController, ResumeScanState>(
-        ResumeScanController.new);
+      ResumeScanController.new,
+    );
 
 /// Pick → scan → show report → save to history.
 class ResumeScanController extends Notifier<ResumeScanState> {
@@ -69,7 +72,10 @@ class ResumeScanController extends Notifier<ResumeScanState> {
           .scan(bytes: picked.bytes, fileName: picked.name);
       if (!ref.mounted) return;
       state = ResumeScanState(
-          phase: ScanPhase.done, fileName: picked.name, report: report);
+        phase: ScanPhase.done,
+        fileName: picked.name,
+        report: report,
+      );
       await _saveToHistory(picked.name, report);
     } on ResumeApiException catch (e) {
       if (!ref.mounted) return;
@@ -77,7 +83,8 @@ class ResumeScanController extends Notifier<ResumeScanState> {
     } catch (_) {
       if (!ref.mounted) return;
       state = const ResumeScanState(
-          error: 'Something went wrong while scanning. Please try again.');
+        error: 'Something went wrong while scanning. Please try again.',
+      );
     }
   }
 

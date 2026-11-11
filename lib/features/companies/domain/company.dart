@@ -40,12 +40,12 @@ class ResumePattern {
   final String atsNotes;
 
   factory ResumePattern.fromJson(Map<String, dynamic> json) => ResumePattern(
-        length: json['length'] as String? ?? '',
-        sectionOrder: _stringList(json['sectionOrder']),
-        emphasise: _stringList(json['emphasise']),
-        avoid: _stringList(json['avoid']),
-        atsNotes: json['atsNotes'] as String? ?? '',
-      );
+    length: json['length'] as String? ?? '',
+    sectionOrder: _stringList(json['sectionOrder']),
+    emphasise: _stringList(json['emphasise']),
+    avoid: _stringList(json['avoid']),
+    atsNotes: json['atsNotes'] as String? ?? '',
+  );
 }
 
 /// One company from `assets/data/companies.json`.
@@ -110,9 +110,11 @@ class Company {
       sector: json['sector'] as String? ?? '',
       summary: json['summary'] as String? ?? '',
       expectations: CompanyExpectations.fromJson(
-          json['expectations'] as Map<String, dynamic>? ?? const {}),
+        json['expectations'] as Map<String, dynamic>? ?? const {},
+      ),
       resumePattern: ResumePattern.fromJson(
-          json['resumePattern'] as Map<String, dynamic>? ?? const {}),
+        json['resumePattern'] as Map<String, dynamic>? ?? const {},
+      ),
       sources: _stringList(json['sources']),
       lastReviewed: reviewed,
     );

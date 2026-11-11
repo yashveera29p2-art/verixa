@@ -20,14 +20,14 @@ abstract final class ProfileImport {
   }
 
   static ContactInfo contact(ContactInfo cur, ContactInfo inc) => ContactInfo(
-        fullName: _fill(cur.fullName, inc.fullName),
-        city: _fill(cur.city, inc.city),
-        state: cur.state,
-        linkedin: _fill(cur.linkedin, inc.linkedin),
-        github: _fill(cur.github, inc.github),
-        portfolio: _fill(cur.portfolio, inc.portfolio),
-        dateOfBirth: cur.dateOfBirth,
-      );
+    fullName: _fill(cur.fullName, inc.fullName),
+    city: _fill(cur.city, inc.city),
+    state: cur.state,
+    linkedin: _fill(cur.linkedin, inc.linkedin),
+    github: _fill(cur.github, inc.github),
+    portfolio: _fill(cur.portfolio, inc.portfolio),
+    dateOfBirth: cur.dateOfBirth,
+  );
 
   /// Only students and freshers have course details to fill.
   static StatusDetails status(StatusDetails cur, ParsedDegree deg) {
@@ -48,16 +48,21 @@ abstract final class ProfileImport {
     );
   }
 
-  static SchoolRecord _school(SchoolRecord cur, SchoolRecord inc) => SchoolRecord(
+  static SchoolRecord _school(SchoolRecord cur, SchoolRecord inc) =>
+      SchoolRecord(
         board: _fill(cur.board, inc.board),
         school: _fill(cur.school, inc.school),
         score: _fill(cur.score, inc.score),
         year: _fill(cur.year, inc.year),
       );
 
-  static EducationHistory education(EducationHistory cur, EducationHistory inc) {
-    final existing =
-        cur.additional.map((q) => q.qualification.toLowerCase()).toSet();
+  static EducationHistory education(
+    EducationHistory cur,
+    EducationHistory inc,
+  ) {
+    final existing = cur.additional
+        .map((q) => q.qualification.toLowerCase())
+        .toSet();
     return EducationHistory(
       class10: _school(cur.class10, inc.class10),
       class12: _school(cur.class12, inc.class12),
@@ -70,13 +75,15 @@ abstract final class ProfileImport {
   }
 
   static CareerGoal careerGoal(CareerGoal cur, CareerGoal inc) => CareerGoal(
-        targetRole: cur.targetRole,
-        domain: cur.domain,
-        objective: _fill(cur.objective, inc.objective),
-      );
+    targetRole: cur.targetRole,
+    domain: cur.domain,
+    objective: _fill(cur.objective, inc.objective),
+  );
 
   static ExperienceHistory experience(
-      ExperienceHistory cur, List<ExperienceEntry> inc) {
+    ExperienceHistory cur,
+    List<ExperienceEntry> inc,
+  ) {
     String key(ExperienceEntry e) =>
         '${e.company.toLowerCase()}|${e.role.toLowerCase()}';
     final seen = cur.entries.map(key).toSet();
@@ -85,11 +92,16 @@ abstract final class ProfileImport {
       for (final e in inc)
         if (seen.add(key(e))) e,
     ];
-    return ExperienceHistory(entries: entries, noneYet: entries.isEmpty && cur.noneYet);
+    return ExperienceHistory(
+      entries: entries,
+      noneYet: entries.isEmpty && cur.noneYet,
+    );
   }
 
   static List<ProjectEntry> projects(
-      List<ProjectEntry> cur, List<ProjectEntry> inc) {
+    List<ProjectEntry> cur,
+    List<ProjectEntry> inc,
+  ) {
     final seen = cur.map((p) => p.title.toLowerCase()).toSet();
     return [
       ...cur,
@@ -99,15 +111,15 @@ abstract final class ProfileImport {
   }
 
   static SkillSet skills(SkillSet cur, SkillSet inc) => SkillSet(
-        technical: _union(cur.technical, inc.technical),
-        tools: _union(cur.tools, inc.tools),
-        soft: _union(cur.soft, inc.soft),
-        languages: _union(cur.languages, inc.languages),
-      );
+    technical: _union(cur.technical, inc.technical),
+    tools: _union(cur.tools, inc.tools),
+    soft: _union(cur.soft, inc.soft),
+    languages: _union(cur.languages, inc.languages),
+  );
 
   static Extras extras(Extras cur, Extras inc) => Extras({
-        for (final key in Extras.fields.keys) key: _union(cur[key], inc[key]),
-      });
+    for (final key in Extras.fields.keys) key: _union(cur[key], inc[key]),
+  });
 
   /// Builds the merged value for each selected section, ready to save.
   static ImportPlan plan(

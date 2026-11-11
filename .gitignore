@@ -62,3 +62,4 @@ android/key.properties
 firebase-debug.log
 firestore-debug.log
 .firebase/
+/android/build/

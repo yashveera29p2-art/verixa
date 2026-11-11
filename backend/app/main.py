@@ -9,12 +9,19 @@ from __future__ import annotations
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
+from fastapi import Depends, FastAPI, File, HTTPException, Response, UploadFile, status
 
 from .auth import CurrentUser, current_user
 from .config import settings
+from .export import ResumeIn, cover_letter_docx, resume_docx
+from .export.docx_export import CoverLetterIn
 from .extraction import ExtractedDocument, UnsupportedFileError, extract
-from .models import ParsedResume, ScanReport
+from pydantic import BaseModel, Field
+
+from .matching import match_profile
+from .matching.matcher import semantic_available
+from .matching.profile import ProfileIn
+from .models import MatchReport, ParsedResume, ScanReport
 from .parsing import parse_resume
 from .parsing.common import nlp
 from .security import scan_resume
@@ -24,13 +31,14 @@ log = logging.getLogger("verixa")
 @asynccontextmanager
 async def _lifespan(_: FastAPI):
     nlp()  # load spaCy once at startup, not on the first request
+    semantic_available()  # load the sentence-transformers model (Phase 8)
     yield
 
 
 app = FastAPI(
     title="Verixa API",
-    version="0.7.0",
-    description="Resume parsing and security scanning for the Verixa app.",
+    version="0.9.0",
+    description="Resume parsing, security scanning, job matching and DOCX export for the Verixa app.",
     lifespan=_lifespan,
 )
 
@@ -85,3 +93,43 @@ async def scan(
              user.uid, document.file_type, report.riskLevel, len(report.threats),
              report.atsScore)
     return report
+
+
+class MatchRequest(BaseModel):
+    jobDescription: str = Field(min_length=50, max_length=20_000)
+    profile: ProfileIn
+
+
+@app.post("/v1/jobs/match", response_model=MatchReport)
+def match_job(
+    body: MatchRequest,
+    user: CurrentUser = Depends(current_user),
+) -> MatchReport:
+    """Analyses a job description and matches it against the user's profile
+    by meaning (feature 8). Runs in a worker thread: embedding is CPU work."""
+    report = match_profile(body.jobDescription, body.profile)
+    log.info("matched job uid=%s requirements=%d score=%d semantic=%s",
+             user.uid, len(report.requirements), report.matchScore, report.semantic)
+    return report
+
+
+DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+
+@app.post("/v1/export/resume.docx")
+def export_resume(
+    body: ResumeIn,
+    user: CurrentUser = Depends(current_user),
+) -> Response:
+    """Lays out a resume the app built from the user's profile as DOCX."""
+    log.info("export resume docx uid=%s blocks=%d", user.uid, len(body.blocks))
+    return Response(resume_docx(body), media_type=DOCX)
+
+
+@app.post("/v1/export/cover-letter.docx")
+def export_cover_letter(
+    body: CoverLetterIn,
+    user: CurrentUser = Depends(current_user),
+) -> Response:
+    log.info("export cover letter docx uid=%s", user.uid)
+    return Response(cover_letter_docx(body), media_type=DOCX)

@@ -71,11 +71,11 @@ class Threat {
 
   /// "Page 1 · Skills section · Line 12" (only the parts we know).
   String get locationLabel => [
-        if (page != null) 'Page $page',
-        if (section != null && section!.isNotEmpty)
-          '${section![0].toUpperCase()}${section!.substring(1)} section',
-        if (line != null) 'Line $line',
-      ].join(' · ');
+    if (page != null) 'Page $page',
+    if (section != null && section!.isNotEmpty)
+      '${section![0].toUpperCase()}${section!.substring(1)} section',
+    if (line != null) 'Line $line',
+  ].join(' · ');
 
   factory Threat.fromJson(Map<String, dynamic> j) {
     final loc = _m(j['location']);
@@ -94,16 +94,16 @@ class Threat {
 
   /// Flat shape stored in scan history.
   Map<String, dynamic> toFirestore() => {
-        'technique': technique,
-        'severity': severity.name,
-        'title': title,
-        'description': description,
-        'evidence': evidence.length > 160 ? evidence.substring(0, 160) : evidence,
-        'page': page,
-        'section': section,
-        'line': line,
-        'hidden': hidden,
-      };
+    'technique': technique,
+    'severity': severity.name,
+    'title': title,
+    'description': description,
+    'evidence': evidence.length > 160 ? evidence.substring(0, 160) : evidence,
+    'page': page,
+    'section': section,
+    'line': line,
+    'hidden': hidden,
+  };
 }
 
 /// One part of the ATS score, e.g. "Standard sections 17 / 25".
@@ -123,15 +123,20 @@ class AtsComponent {
   final List<String> notes;
 
   factory AtsComponent.fromJson(Map<String, dynamic> j) => AtsComponent(
-        key: _s(j, 'key'),
-        label: _s(j, 'label'),
-        score: _i(j, 'score') ?? 0,
-        max: _i(j, 'max') ?? 0,
-        notes: _l(j['notes']).cast<String>(),
-      );
+    key: _s(j, 'key'),
+    label: _s(j, 'label'),
+    score: _i(j, 'score') ?? 0,
+    max: _i(j, 'max') ?? 0,
+    notes: _l(j['notes']).cast<String>(),
+  );
 
-  Map<String, dynamic> toFirestore() =>
-      {'key': key, 'label': label, 'score': score, 'max': max, 'notes': notes};
+  Map<String, dynamic> toFirestore() => {
+    'key': key,
+    'label': label,
+    'score': score,
+    'max': max,
+    'notes': notes,
+  };
 }
 
 /// The security + ATS report (features 1–4).
@@ -155,17 +160,15 @@ class ScanReport {
   final ParsedResume? parsed;
 
   factory ScanReport.fromJson(Map<String, dynamic> j) => ScanReport(
-        atsScore: _i(j, 'atsScore') ?? 0,
-        riskLevel: RiskLevel.fromId(j['riskLevel'] as String?),
-        threats: _l(j['threats']).map((t) => Threat.fromJson(_m(t))).toList(),
-        breakdown: _l(j['atsBreakdown'] ?? j['breakdown'])
-            .map((c) => AtsComponent.fromJson(_m(c)))
-            .toList(),
-        suggestions: _l(j['suggestions']).cast<String>(),
-        parsed: j['parsed'] == null
-            ? null
-            : ParsedResume.fromJson(_m(j['parsed'])),
-      );
+    atsScore: _i(j, 'atsScore') ?? 0,
+    riskLevel: RiskLevel.fromId(j['riskLevel'] as String?),
+    threats: _l(j['threats']).map((t) => Threat.fromJson(_m(t))).toList(),
+    breakdown: _l(j['atsBreakdown'] ?? j['breakdown'])
+        .map((c) => AtsComponent.fromJson(_m(c)))
+        .toList(),
+    suggestions: _l(j['suggestions']).cast<String>(),
+    parsed: j['parsed'] == null ? null : ParsedResume.fromJson(_m(j['parsed'])),
+  );
 }
 
 /// A saved scan in `users/{uid}/scans` (feature 5). Stores the report and
@@ -184,18 +187,17 @@ class ScanRecord {
   final ScanReport report;
 
   static Map<String, dynamic> toFirestore(String fileName, ScanReport r) => {
-        'fileName': fileName.length > 200 ? fileName.substring(0, 200) : fileName,
-        'createdAt': FieldValue.serverTimestamp(),
-        'atsScore': r.atsScore,
-        'riskLevel': r.riskLevel.name,
-        'threatCount': r.threats.length,
-        'threats': r.threats.take(50).map((t) => t.toFirestore()).toList(),
-        'breakdown': r.breakdown.map((c) => c.toFirestore()).toList(),
-        'suggestions': r.suggestions.take(20).toList(),
-      };
+    'fileName': fileName.length > 200 ? fileName.substring(0, 200) : fileName,
+    'createdAt': FieldValue.serverTimestamp(),
+    'atsScore': r.atsScore,
+    'riskLevel': r.riskLevel.name,
+    'threatCount': r.threats.length,
+    'threats': r.threats.take(50).map((t) => t.toFirestore()).toList(),
+    'breakdown': r.breakdown.map((c) => c.toFirestore()).toList(),
+    'suggestions': r.suggestions.take(20).toList(),
+  };
 
-  factory ScanRecord.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> doc) {
+  factory ScanRecord.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     final d = doc.data() ?? const {};
     return ScanRecord(
       id: doc.id,

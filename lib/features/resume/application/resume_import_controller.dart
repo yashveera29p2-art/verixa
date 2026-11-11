@@ -17,8 +17,9 @@ final resumeApiProvider = Provider<ResumeApi>((ref) {
   );
 });
 
-final resumeFilePickerProvider =
-    Provider<ResumeFilePicker>((ref) => const ResumeFilePicker());
+final resumeFilePickerProvider = Provider<ResumeFilePicker>(
+  (ref) => const ResumeFilePicker(),
+);
 
 enum ImportPhase { idle, uploading, review, importing, done }
 
@@ -46,19 +47,19 @@ class ResumeImportState {
     Set<ProfileSection>? selected,
     String? error,
     bool clearError = false,
-  }) =>
-      ResumeImportState(
-        phase: phase ?? this.phase,
-        fileName: fileName ?? this.fileName,
-        result: result ?? this.result,
-        selected: selected ?? this.selected,
-        error: clearError ? null : (error ?? this.error),
-      );
+  }) => ResumeImportState(
+    phase: phase ?? this.phase,
+    fileName: fileName ?? this.fileName,
+    result: result ?? this.result,
+    selected: selected ?? this.selected,
+    error: clearError ? null : (error ?? this.error),
+  );
 }
 
 final resumeImportControllerProvider =
     NotifierProvider.autoDispose<ResumeImportController, ResumeImportState>(
-        ResumeImportController.new);
+      ResumeImportController.new,
+    );
 
 /// Pick → upload → review → import.
 class ResumeImportController extends Notifier<ResumeImportState> {
@@ -72,7 +73,10 @@ class ResumeImportController extends Notifier<ResumeImportState> {
       state = state.copyWith(error: 'Please choose a file under 5 MB.');
       return;
     }
-    state = ResumeImportState(phase: ImportPhase.uploading, fileName: picked.name);
+    state = ResumeImportState(
+      phase: ImportPhase.uploading,
+      fileName: picked.name,
+    );
     try {
       final result = await ref
           .read(resumeApiProvider)
@@ -90,7 +94,9 @@ class ResumeImportController extends Notifier<ResumeImportState> {
       // Anything unexpected must never leave the screen stuck on "Reading…".
       if (!ref.mounted) return;
       state = const ResumeImportState(
-          error: 'Something went wrong while reading your resume. Please try again.');
+        error:
+            'Something went wrong while reading your resume. Please try again.',
+      );
     }
   }
 
@@ -113,21 +119,27 @@ class ResumeImportController extends Notifier<ResumeImportState> {
   /// Merges the ticked sections into the profile. Returns true on success.
   Future<bool> importSelected() async {
     final result = state.result;
-    final current = ref.read(profileDataProvider).value;
-    final uid = ref.read(authServiceProvider).currentUser?.uid;
     if (result == null) return false;
+    state = state.copyWith(phase: ImportPhase.importing, clearError: true);
+    final current = await loadCurrentProfile(ref);
+    final uid = ref.read(authServiceProvider).currentUser?.uid;
+    if (!ref.mounted) return false;
     if (current == null || uid == null) {
       // Never fail silently: tell the user why nothing happened.
       state = state.copyWith(
-          error: 'Couldn’t load your profile to merge into. '
-              'Check your connection and try again.');
+        phase: ImportPhase.review,
+        error:
+            'Couldn’t load your profile to merge into. '
+            'Check your connection and try again.',
+      );
       return false;
     }
 
-    state = state.copyWith(phase: ImportPhase.importing, clearError: true);
     final plan = ProfileImport.plan(current, result, state.selected);
     try {
-      await ref.read(profileRepositoryProvider).saveSections(
+      await ref
+          .read(profileRepositoryProvider)
+          .saveSections(
             uid,
             contact: plan.contact,
             status: plan.status,

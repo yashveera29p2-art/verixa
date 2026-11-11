@@ -35,7 +35,8 @@ const _actions = [
   _ResumeAction(
     Icons.edit_note_outlined,
     'Create resume',
-    'Build an ATS-friendly resume from your profile.',
+    'Build an ATS-friendly resume from your profile — general, for a company, or for a job.',
+    route: AppRoutes.resumes,
   ),
   _ResumeAction(
     Icons.document_scanner_outlined,
@@ -47,6 +48,7 @@ const _actions = [
     Icons.compare_arrows,
     'Match with a job description',
     'See how well your profile fits a specific role.',
+    route: AppRoutes.jdMatch,
   ),
 ];
 
@@ -83,8 +85,9 @@ class _ResumeActionsSheet extends StatelessWidget {
             const SizedBox(height: AppSpacing.xxs),
             Text(
               'Choose what you’d like to do.',
-              style:
-                  AppTypography.bodyMedium.copyWith(color: AppColors.mutedText),
+              style: AppTypography.bodyMedium.copyWith(
+                color: AppColors.mutedText,
+              ),
             ),
             const SizedBox(height: AppSpacing.lg),
             for (final action in _actions) ...[
@@ -142,16 +145,20 @@ class _ActionRow extends StatelessWidget {
                         : AppColors.softSage.withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(AppRadius.sm),
                   ),
-                  child: Icon(action.icon,
-                      color: enabled ? AppColors.ivory : AppColors.botanicalGreen),
+                  child: Icon(
+                    action.icon,
+                    color: enabled ? AppColors.ivory : AppColors.botanicalGreen,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(action.title,
-                          style: AppTypography.labelLarge.copyWith(fontSize: 16)),
+                      Text(
+                        action.title,
+                        style: AppTypography.labelLarge.copyWith(fontSize: 16),
+                      ),
                       const SizedBox(height: 2),
                       Text(action.description, style: AppTypography.bodySmall),
                     ],
@@ -159,7 +166,10 @@ class _ActionRow extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 if (enabled)
-                  const Icon(Icons.chevron_right, color: AppColors.botanicalGreen)
+                  const Icon(
+                    Icons.chevron_right,
+                    color: AppColors.botanicalGreen,
+                  )
                 else
                   const _ComingSoonTag(),
               ],

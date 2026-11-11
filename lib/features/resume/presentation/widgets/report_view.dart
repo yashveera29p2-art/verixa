@@ -64,9 +64,12 @@ class _Heading extends StatelessWidget {
         children: [
           Expanded(child: Text(text, style: AppTypography.titleLarge)),
           if (trailing != null)
-            Text(trailing!,
-                style: AppTypography.labelLarge
-                    .copyWith(color: AppColors.mutedText)),
+            Text(
+              trailing!,
+              style: AppTypography.labelLarge.copyWith(
+                color: AppColors.mutedText,
+              ),
+            ),
         ],
       ),
     );
@@ -81,10 +84,10 @@ class ScoreCard extends StatelessWidget {
   final RiskLevel risk;
 
   IconData get _icon => switch (risk) {
-        RiskLevel.clean => Icons.verified_user_outlined,
-        RiskLevel.low || RiskLevel.medium => Icons.gpp_maybe_outlined,
-        RiskLevel.high => Icons.gpp_bad_outlined,
-      };
+    RiskLevel.clean => Icons.verified_user_outlined,
+    RiskLevel.low || RiskLevel.medium => Icons.gpp_maybe_outlined,
+    RiskLevel.high => Icons.gpp_bad_outlined,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -99,19 +102,28 @@ class ScoreCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('ATS SCORE · ESTIMATE',
-              style: AppTypography.labelMedium.copyWith(color: muted)),
+          Text(
+            'ATS SCORE · ESTIMATE',
+            style: AppTypography.labelMedium.copyWith(color: muted),
+          ),
           const SizedBox(height: AppSpacing.xs),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text('$score',
-                  style: AppTypography.displayLarge
-                      .copyWith(color: AppColors.ivory, fontSize: 56, height: 1)),
+              Text(
+                '$score',
+                style: AppTypography.displayLarge.copyWith(
+                  color: AppColors.ivory,
+                  fontSize: 56,
+                  height: 1,
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 6, left: 4),
-                child: Text('/ 100',
-                    style: AppTypography.bodyLarge.copyWith(color: muted)),
+                child: Text(
+                  '/ 100',
+                  style: AppTypography.bodyLarge.copyWith(color: muted),
+                ),
               ),
             ],
           ),
@@ -129,7 +141,9 @@ class ScoreCard extends StatelessWidget {
           // Risk: charcoal for problems, ivory for clean — no new colours.
           Container(
             padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs,
+            ),
             decoration: BoxDecoration(
               color: danger ? AppColors.charcoal : AppColors.ivory,
               borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -137,9 +151,11 @@ class ScoreCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(_icon,
-                    size: 18,
-                    color: danger ? AppColors.ivory : AppColors.botanicalGreen),
+                Icon(
+                  _icon,
+                  size: 18,
+                  color: danger ? AppColors.ivory : AppColors.botanicalGreen,
+                ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   risk.label,
@@ -165,19 +181,32 @@ class SeverityTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (bg, fg, border) = switch (severity) {
-      Severity.high => (AppColors.charcoal, AppColors.ivory, AppColors.charcoal),
-      Severity.medium => (AppColors.softSage, AppColors.charcoal, AppColors.softSage),
+      Severity.high => (
+        AppColors.charcoal,
+        AppColors.ivory,
+        AppColors.charcoal,
+      ),
+      Severity.medium => (
+        AppColors.softSage,
+        AppColors.charcoal,
+        AppColors.softSage,
+      ),
       Severity.low => (AppColors.white, AppColors.mutedText, AppColors.stone),
     };
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: 2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: 2,
+      ),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(AppRadius.sm),
         border: Border.all(color: border),
       ),
-      child: Text('${severity.label} risk',
-          style: AppTypography.labelMedium.copyWith(color: fg, fontSize: 11)),
+      child: Text(
+        '${severity.label} risk',
+        style: AppTypography.labelMedium.copyWith(color: fg, fontSize: 11),
+      ),
     );
   }
 }
@@ -210,30 +239,44 @@ class ThreatCard extends StatelessWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               SeverityTag(threat.severity),
-              Text(threat.techniqueName.toUpperCase(),
-                  style: AppTypography.labelMedium
-                      .copyWith(color: AppColors.botanicalGreen)),
+              Text(
+                threat.techniqueName.toUpperCase(),
+                style: AppTypography.labelMedium.copyWith(
+                  color: AppColors.botanicalGreen,
+                ),
+              ),
               if (threat.hidden)
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.visibility_off_outlined,
-                        size: 14, color: AppColors.mutedText),
+                    const Icon(
+                      Icons.visibility_off_outlined,
+                      size: 14,
+                      color: AppColors.mutedText,
+                    ),
                     const SizedBox(width: 2),
-                    Text('Hidden',
-                        style: AppTypography.labelMedium
-                            .copyWith(color: AppColors.mutedText)),
+                    Text(
+                      'Hidden',
+                      style: AppTypography.labelMedium.copyWith(
+                        color: AppColors.mutedText,
+                      ),
+                    ),
                   ],
                 ),
             ],
           ),
           const SizedBox(height: AppSpacing.xs),
-          Text(threat.title,
-              style: AppTypography.labelLarge.copyWith(fontSize: 16)),
+          Text(
+            threat.title,
+            style: AppTypography.labelLarge.copyWith(fontSize: 16),
+          ),
           const SizedBox(height: AppSpacing.xxs),
-          Text(threat.description,
-              style: AppTypography.bodyMedium
-                  .copyWith(color: AppColors.mutedText)),
+          Text(
+            threat.description,
+            style: AppTypography.bodyMedium.copyWith(
+              color: AppColors.mutedText,
+            ),
+          ),
           if (threat.evidence.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.sm),
             Container(
@@ -246,17 +289,23 @@ class ThreatCard extends StatelessWidget {
                   left: BorderSide(color: AppColors.botanicalGreen, width: 3),
                 ),
               ),
-              child: Text('“${threat.evidence}”',
-                  style: AppTypography.bodyMedium
-                      .copyWith(fontStyle: FontStyle.italic)),
+              child: Text(
+                '“${threat.evidence}”',
+                style: AppTypography.bodyMedium.copyWith(
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
             ),
           ],
           if (threat.locationLabel.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.xs),
             Row(
               children: [
-                const Icon(Icons.place_outlined,
-                    size: 14, color: AppColors.mutedText),
+                const Icon(
+                  Icons.place_outlined,
+                  size: 14,
+                  color: AppColors.mutedText,
+                ),
                 const SizedBox(width: 4),
                 Text(threat.locationLabel, style: AppTypography.bodySmall),
               ],
@@ -282,8 +331,10 @@ class _NoThreats extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.verified_user_outlined,
-              color: AppColors.botanicalGreen),
+          const Icon(
+            Icons.verified_user_outlined,
+            color: AppColors.botanicalGreen,
+          ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
@@ -313,10 +364,15 @@ class _BreakdownRow extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text(part.label, style: AppTypography.labelLarge)),
-              Text('${part.score} / ${part.max}',
-                  style: AppTypography.labelLarge.copyWith(
-                      color: full ? AppColors.botanicalGreen : AppColors.charcoal)),
+              Expanded(
+                child: Text(part.label, style: AppTypography.labelLarge),
+              ),
+              Text(
+                '${part.score} / ${part.max}',
+                style: AppTypography.labelLarge.copyWith(
+                  color: full ? AppColors.botanicalGreen : AppColors.charcoal,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.xxs),
@@ -360,8 +416,10 @@ class _Suggestion extends StatelessWidget {
               color: AppColors.botanicalGreen,
               shape: BoxShape.circle,
             ),
-            child: Text('$number',
-                style: AppTypography.labelMedium.copyWith(color: AppColors.ivory)),
+            child: Text(
+              '$number',
+              style: AppTypography.labelMedium.copyWith(color: AppColors.ivory),
+            ),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),

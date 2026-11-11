@@ -34,20 +34,25 @@ class CompanyTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(company.name,
-                        style:
-                            AppTypography.labelLarge.copyWith(fontSize: 16)),
+                    Text(
+                      company.name,
+                      style: AppTypography.labelLarge.copyWith(fontSize: 16),
+                    ),
                     const SizedBox(height: 2),
-                    Text(company.sector,
-                        style: AppTypography.labelMedium
-                            .copyWith(color: AppColors.botanicalGreen)),
+                    Text(
+                      company.sector,
+                      style: AppTypography.labelMedium.copyWith(
+                        color: AppColors.botanicalGreen,
+                      ),
+                    ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       company.summary,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTypography.bodyMedium
-                          .copyWith(color: AppColors.mutedText),
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: AppColors.mutedText,
+                      ),
                     ),
                   ],
                 ),

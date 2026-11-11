@@ -21,31 +21,46 @@ class ScanHistoryScreen extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(),
         body: ListView(
-          padding: const EdgeInsets.fromLTRB(AppSpacing.pageGutter, AppSpacing.xs,
-              AppSpacing.pageGutter, AppSpacing.xl),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.pageGutter,
+            AppSpacing.xs,
+            AppSpacing.pageGutter,
+            AppSpacing.xl,
+          ),
           children: [
             Text('Scan history', style: AppTypography.headlineLarge),
             const SizedBox(height: AppSpacing.xs),
-            Text('Reports from resumes you’ve scanned. Files themselves are '
-                'never stored.',
-                style: AppTypography.bodyLarge
-                    .copyWith(color: AppColors.mutedText)),
+            Text(
+              'Reports from resumes you’ve scanned. Files themselves are '
+              'never stored.',
+              style: AppTypography.bodyLarge.copyWith(
+                color: AppColors.mutedText,
+              ),
+            ),
             const SizedBox(height: AppSpacing.lg),
             ...history.when(
               loading: () => const [
-                Center(child: CircularProgressIndicator(
-                    color: AppColors.botanicalGreen)),
+                Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.botanicalGreen,
+                  ),
+                ),
               ],
               error: (_, _) => [
-                Text('Couldn’t load your history. Check your connection.',
-                    style: AppTypography.bodyLarge),
+                Text(
+                  'Couldn’t load your history. Check your connection.',
+                  style: AppTypography.bodyLarge,
+                ),
               ],
               data: (records) => records.isEmpty
                   ? [
-                      Text('No scans yet. Use the centre button → Upload & '
-                          'scan resume.',
-                          style: AppTypography.bodyLarge
-                              .copyWith(color: AppColors.mutedText)),
+                      Text(
+                        'No scans yet. Use the centre button → Upload & '
+                        'scan resume.',
+                        style: AppTypography.bodyLarge.copyWith(
+                          color: AppColors.mutedText,
+                        ),
+                      ),
                     ]
                   : [
                       for (final r in records) ...[
@@ -75,7 +90,9 @@ class _HistoryTile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.md),
         side: BorderSide(
-          color: r.riskLevel == RiskLevel.high ? AppColors.charcoal : AppColors.stone,
+          color: r.riskLevel == RiskLevel.high
+              ? AppColors.charcoal
+              : AppColors.stone,
         ),
       ),
       child: InkWell(
@@ -93,23 +110,29 @@ class _HistoryTile extends StatelessWidget {
                   color: AppColors.botanicalGreen,
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
-                child: Text('${r.atsScore}',
-                    style: AppTypography.titleLarge
-                        .copyWith(color: AppColors.ivory)),
+                child: Text(
+                  '${r.atsScore}',
+                  style: AppTypography.titleLarge.copyWith(
+                    color: AppColors.ivory,
+                  ),
+                ),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(record.fileName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.labelLarge.copyWith(fontSize: 16)),
+                    Text(
+                      record.fileName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.labelLarge.copyWith(fontSize: 16),
+                    ),
                     Text(
                       [
                         r.riskLevel.label,
-                        if (threats > 0) '$threats ${threats == 1 ? 'threat' : 'threats'}',
+                        if (threats > 0)
+                          '$threats ${threats == 1 ? 'threat' : 'threats'}',
                       ].join(' · '),
                       style: AppTypography.bodySmall.copyWith(
                         color: r.riskLevel == RiskLevel.clean
@@ -118,8 +141,10 @@ class _HistoryTile extends StatelessWidget {
                       ),
                     ),
                     if (record.createdAt != null)
-                      Text(DateFormatting.dateTime(record.createdAt!),
-                          style: AppTypography.bodySmall),
+                      Text(
+                        DateFormatting.dateTime(record.createdAt!),
+                        style: AppTypography.bodySmall,
+                      ),
                   ],
                 ),
               ),

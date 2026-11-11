@@ -24,10 +24,12 @@ class SubHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-        child: Text(text.toUpperCase(),
-            style: AppTypography.labelMedium.copyWith(color: color)),
-      );
+    padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+    child: Text(
+      text.toUpperCase(),
+      style: AppTypography.labelMedium.copyWith(color: color),
+    ),
+  );
 }
 
 /// Outlined chips for skills and traits.
@@ -89,9 +91,12 @@ class InfoRow extends StatelessWidget {
               children: [
                 Text(label, style: AppTypography.labelLarge),
                 const SizedBox(height: 2),
-                Text(text,
-                    style: AppTypography.bodyMedium
-                        .copyWith(color: AppColors.mutedText)),
+                Text(
+                  text,
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppColors.mutedText,
+                  ),
+                ),
               ],
             ),
           ),
@@ -121,13 +126,18 @@ class ResumePatternCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionTitle('Resume pattern that suits them',
-              color: AppColors.ivory),
+          const SectionTitle(
+            'Resume pattern that suits them',
+            color: AppColors.ivory,
+          ),
           const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
-              const Icon(Icons.description_outlined,
-                  size: 18, color: AppColors.ivory),
+              const Icon(
+                Icons.description_outlined,
+                size: 18,
+                color: AppColors.ivory,
+              ),
               const SizedBox(width: AppSpacing.xs),
               Expanded(child: Text(pattern.length, style: body)),
             ],
@@ -152,7 +162,8 @@ class ResumePatternCard extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 border: Border.all(
-                    color: AppColors.ivory.withValues(alpha: 0.35)),
+                  color: AppColors.ivory.withValues(alpha: 0.35),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,14 +195,18 @@ class _NumberedLine extends StatelessWidget {
         children: [
           SizedBox(
             width: 24,
-            child: Text('$number.',
-                style: AppTypography.labelLarge
-                    .copyWith(color: AppColors.ivory.withValues(alpha: 0.7))),
+            child: Text(
+              '$number.',
+              style: AppTypography.labelLarge.copyWith(
+                color: AppColors.ivory.withValues(alpha: 0.7),
+              ),
+            ),
           ),
           Expanded(
-            child: Text(text,
-                style: AppTypography.bodyMedium
-                    .copyWith(color: AppColors.ivory)),
+            child: Text(
+              text,
+              style: AppTypography.bodyMedium.copyWith(color: AppColors.ivory),
+            ),
           ),
         ],
       ),
@@ -218,9 +233,10 @@ class _MarkedLine extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.xs),
           Expanded(
-            child: Text(text,
-                style: AppTypography.bodyMedium
-                    .copyWith(color: AppColors.ivory)),
+            child: Text(
+              text,
+              style: AppTypography.bodyMedium.copyWith(color: AppColors.ivory),
+            ),
           ),
         ],
       ),
@@ -240,8 +256,18 @@ class GuidanceNote extends StatelessWidget {
   final DateTime lastReviewed;
 
   static const _months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
 
   String get _reviewed =>
@@ -261,12 +287,18 @@ class GuidanceNote extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.info_outline,
-                  size: 16, color: AppColors.mutedText),
+              const Icon(
+                Icons.info_outline,
+                size: 16,
+                color: AppColors.mutedText,
+              ),
               const SizedBox(width: AppSpacing.xs),
-              Text('About this guidance',
-                  style: AppTypography.labelMedium
-                      .copyWith(color: AppColors.mutedText)),
+              Text(
+                'About this guidance',
+                style: AppTypography.labelMedium.copyWith(
+                  color: AppColors.mutedText,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.xs),

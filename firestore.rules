@@ -68,6 +68,57 @@ service cloud.firestore {
         allow create: if isOwner(uid) && validScan(request.resource.data);
         allow update: if false;
       }
+
+      // JD match history (Phase 8): report plus a short JD snippet.
+      match /matches/{matchId} {
+        allow read, delete: if isOwner(uid);
+        allow create: if isOwner(uid) && validMatch(request.resource.data);
+        allow update: if false;
+      }
+
+      // Resume versions (Phase 9): only the user's choices (order, template,
+      // summary, cover letter). Content is rebuilt from the profile.
+      match /resumes/{resumeId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validResume(request.resource.data);
+      }
+    }
+
+    function validResume(d) {
+      return d.keys().hasOnly(['name', 'targetKind', 'targetLabel', 'companyId',
+                               'jobTitle', 'template', 'sectionOrder', 'hiddenSections',
+                               'summary', 'focusSkills', 'alignmentScore',
+                               'coverLetter', 'updatedAt'])
+        && d.name is string && d.name.size() >= 1 && d.name.size() <= 80
+        && d.targetKind in ['general', 'company', 'job']
+        && d.targetLabel is string && d.targetLabel.size() <= 160
+        && d.companyId is string && d.companyId.size() <= 80
+        && d.jobTitle is string && d.jobTitle.size() <= 160
+        && d.template in ['classic', 'modern', 'compact']
+        && d.sectionOrder is list && d.sectionOrder.size() <= 12
+        && d.hiddenSections is list && d.hiddenSections.size() <= 12
+        && d.summary is string && d.summary.size() <= 1000
+        && d.focusSkills is list && d.focusSkills.size() <= 60
+        && (d.alignmentScore == null
+            || (d.alignmentScore is int && d.alignmentScore >= 0 && d.alignmentScore <= 100))
+        && d.coverLetter is string && d.coverLetter.size() <= 8000
+        && d.updatedAt == request.time;
+    }
+
+    function validMatch(d) {
+      return d.keys().hasOnly(['jdSnippet', 'createdAt', 'matchScore', 'verdict',
+                               'jobTitle', 'seniority', 'yearsRequired', 'education',
+                               'skillCoverage', 'requirements', 'matchedSkills',
+                               'missingSkills', 'suggestions'])
+        && d.jdSnippet is string && d.jdSnippet.size() <= 300
+        && d.createdAt == request.time
+        && d.matchScore is int && d.matchScore >= 0 && d.matchScore <= 100
+        && d.verdict in ['strong', 'good', 'partial', 'low']
+        && d.jobTitle is string && d.jobTitle.size() <= 120
+        && d.requirements is list && d.requirements.size() <= 40
+        && d.matchedSkills is list && d.matchedSkills.size() <= 40
+        && d.missingSkills is list && d.missingSkills.size() <= 40
+        && d.suggestions is list && d.suggestions.size() <= 10;
     }
 
     function validScan(d) {

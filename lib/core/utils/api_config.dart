@@ -1,8 +1,8 @@
 /// Where the Verixa backend lives.
 ///
 /// Default: the Android emulator's alias for the PC running the backend.
-/// For a real phone on the same Wi-Fi, run the app with
-/// `--dart-define=VERIXA_API_URL=http://<your-pc-ip>:8001`.
+/// Phone builds (tool/phone.ps1) use `http://localhost:8001`, forwarded
+/// to the PC over USB with `adb reverse`.
 abstract final class ApiConfig {
   static const baseUrl = String.fromEnvironment(
     'VERIXA_API_URL',

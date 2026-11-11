@@ -12,21 +12,22 @@ class ScanHistoryRepository {
       _db.collection('users').doc(uid).collection('scans');
 
   /// Newest first.
-  Stream<List<ScanRecord>> watch(String uid, {int limit = 50}) => _scans(uid)
-      .orderBy('createdAt', descending: true)
-      .limit(limit)
-      .snapshots()
-      .map((q) => q.docs.map(ScanRecord.fromFirestore).toList());
+  Stream<List<ScanRecord>> watch(String uid, {int limit = 50}) =>
+      _scans(uid)
+          .orderBy('createdAt', descending: true)
+          .limit(limit)
+          .snapshots()
+          .map((q) => q.docs.map(ScanRecord.fromFirestore).toList());
 
-  Stream<ScanRecord?> watchOne(String uid, String scanId) => _scans(uid)
-      .doc(scanId)
-      .snapshots()
-      .map((d) => d.exists ? ScanRecord.fromFirestore(d) : null);
+  Stream<ScanRecord?> watchOne(String uid, String scanId) =>
+      _scans(uid)
+          .doc(scanId)
+          .snapshots()
+          .map((d) => d.exists ? ScanRecord.fromFirestore(d) : null);
 
   /// Returns the new scan's id.
   Future<String> add(String uid, String fileName, ScanReport report) async {
-    final ref =
-        await _scans(uid).add(ScanRecord.toFirestore(fileName, report));
+    final ref = await _scans(uid).add(ScanRecord.toFirestore(fileName, report));
     return ref.id;
   }
 

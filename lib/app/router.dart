@@ -14,8 +14,15 @@ import '../features/home/home_screen.dart';
 import '../features/profile/domain/profile_section.dart';
 import '../features/profile/presentation/editors/profile_edit_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
+import '../features/resume/presentation/cover_letter_screen.dart';
+import '../features/resume/presentation/jd_match_screen.dart';
+import '../features/resume/presentation/match_history_screens.dart';
 import '../features/resume/presentation/resume_import_screen.dart';
+import '../features/resume/presentation/new_resume_screen.dart';
+import '../features/resume/presentation/resume_editor_screen.dart';
+import '../features/resume/presentation/resume_preview_screen.dart';
 import '../features/resume/presentation/resume_scan_screen.dart';
+import '../features/resume/presentation/resumes_screen.dart';
 import '../features/resume/presentation/scan_detail_screen.dart';
 import '../features/resume/presentation/scan_history_screen.dart';
 import '../features/splash/splash_screen.dart';
@@ -53,9 +60,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.phone,
-        builder: (context, state) => PhoneScreen(
-          isLogin: state.uri.queryParameters['mode'] == 'login',
-        ),
+        builder: (context, state) =>
+            PhoneScreen(isLogin: state.uri.queryParameters['mode'] == 'login'),
       ),
       GoRoute(
         path: AppRoutes.otp,
@@ -73,35 +79,42 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state, shell) =>
             _fadePage(state, AppShell(navigationShell: shell)),
         branches: [
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.home,
-              builder: (context, state) => const HomeScreen(),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.profile,
-              builder: (context, state) => const ProfileScreen(),
-              routes: [
-                // Full-screen editors, above the bottom bar.
-                GoRoute(
-                  path: 'edit/:section',
-                  parentNavigatorKey: _rootKey,
-                  redirect: (context, state) => ProfileSection.fromId(
-                              state.pathParameters['section']) ==
-                          null
-                      ? AppRoutes.profile
-                      : null,
-                  builder: (context, state) => ProfileEditScreen(
-                    section:
-                        ProfileSection.fromId(state.pathParameters['section'])!,
-                    guided: state.uri.queryParameters['guided'] == '1',
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.profile,
+                builder: (context, state) => const ProfileScreen(),
+                routes: [
+                  // Full-screen editors, above the bottom bar.
+                  GoRoute(
+                    path: 'edit/:section',
+                    parentNavigatorKey: _rootKey,
+                    redirect: (context, state) =>
+                        ProfileSection.fromId(
+                              state.pathParameters['section'],
+                            ) ==
+                            null
+                        ? AppRoutes.profile
+                        : null,
+                    builder: (context, state) => ProfileEditScreen(
+                      section: ProfileSection.fromId(
+                        state.pathParameters['section'],
+                      )!,
+                      guided: state.uri.queryParameters['guided'] == '1',
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ]),
+                ],
+              ),
+            ],
+          ),
         ],
       ),
 
@@ -115,6 +128,57 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.resumeScan,
         parentNavigatorKey: _rootKey,
         builder: (context, state) => const ResumeScanScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.jdMatch,
+        parentNavigatorKey: _rootKey,
+        builder: (context, state) => const JdMatchScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.matchHistory,
+        parentNavigatorKey: _rootKey,
+        builder: (context, state) => const MatchHistoryScreen(),
+        routes: [
+          GoRoute(
+            path: ':matchId',
+            parentNavigatorKey: _rootKey,
+            builder: (context, state) =>
+                MatchDetailScreen(matchId: state.pathParameters['matchId']!),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: AppRoutes.resumeNew,
+        parentNavigatorKey: _rootKey,
+        builder: (context, state) =>
+            NewResumeScreen(companyId: state.uri.queryParameters['company']),
+      ),
+      GoRoute(
+        path: AppRoutes.resumes,
+        parentNavigatorKey: _rootKey,
+        builder: (context, state) => const ResumesScreen(),
+        routes: [
+          GoRoute(
+            path: ':resumeId',
+            parentNavigatorKey: _rootKey,
+            builder: (context, state) =>
+                ResumeEditorScreen(id: state.pathParameters['resumeId']!),
+            routes: [
+              GoRoute(
+                path: 'preview',
+                parentNavigatorKey: _rootKey,
+                builder: (context, state) =>
+                    ResumePreviewScreen(id: state.pathParameters['resumeId']!),
+              ),
+              GoRoute(
+                path: 'cover',
+                parentNavigatorKey: _rootKey,
+                builder: (context, state) =>
+                    CoverLetterScreen(id: state.pathParameters['resumeId']!),
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         path: AppRoutes.scanHistory,
@@ -136,8 +200,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootKey,
         redirect: (context, state) =>
             CompanyCategory.fromId(state.pathParameters['category']) == null
-                ? AppRoutes.home
-                : null,
+            ? AppRoutes.home
+            : null,
         builder: (context, state) => CategoryScreen(
           category: CompanyCategory.fromId(state.pathParameters['category'])!,
         ),

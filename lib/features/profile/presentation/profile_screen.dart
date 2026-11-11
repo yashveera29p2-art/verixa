@@ -26,7 +26,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileDataProvider);
-    final phone = ref.watch(authStateProvider).value?.phoneNumber;
+    final phone = ref.watch(currentUserProvider)?.phoneNumber;
     final navInset =
         AppSizes.navBarHeight + MediaQuery.paddingOf(context).bottom;
 
@@ -41,8 +41,9 @@ class ProfileScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(AppSpacing.pageGutter),
             child: Text(
               'Couldn’t load your profile. Check your connection.',
-              style: AppTypography.bodyLarge
-                  .copyWith(color: AppColors.mutedText),
+              style: AppTypography.bodyLarge.copyWith(
+                color: AppColors.mutedText,
+              ),
             ),
           ),
           data: (data) => ListView(
@@ -60,15 +61,20 @@ class ProfileScreen extends ConsumerWidget {
                   completion: data.completion,
                   completedCount: data.completedCoreCount,
                   next: data.nextIncomplete,
-                  onContinue: () => context.push(AppRoutes.profileEdit(
-                    data.nextIncomplete!.id,
-                    guided: true,
-                  )),
+                  onContinue: () => context.push(
+                    AppRoutes.profileEdit(
+                      data.nextIncomplete!.id,
+                      guided: true,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
-                Text('YOUR PROFILE',
-                    style: AppTypography.labelMedium
-                        .copyWith(color: AppColors.mutedText)),
+                Text(
+                  'YOUR PROFILE',
+                  style: AppTypography.labelMedium.copyWith(
+                    color: AppColors.mutedText,
+                  ),
+                ),
                 const SizedBox(height: AppSpacing.sm),
                 for (final section in ProfileSection.values) ...[
                   SectionTile(
@@ -81,15 +87,32 @@ class ProfileScreen extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.sm),
                 ],
                 const SizedBox(height: AppSpacing.md),
-                Text('RESUMES',
-                    style: AppTypography.labelMedium
-                        .copyWith(color: AppColors.mutedText)),
+                Text(
+                  'RESUMES',
+                  style: AppTypography.labelMedium.copyWith(
+                    color: AppColors.mutedText,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                _LinkTile(
+                  icon: Icons.description_outlined,
+                  title: 'My resumes',
+                  subtitle: 'Tailored versions, PDF/Word export, cover letters',
+                  onTap: () => context.push(AppRoutes.resumes),
+                ),
                 const SizedBox(height: AppSpacing.sm),
                 _LinkTile(
                   icon: Icons.history,
                   title: 'Scan history',
                   subtitle: 'Past security scans and ATS scores',
                   onTap: () => context.push(AppRoutes.scanHistory),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                _LinkTile(
+                  icon: Icons.compare_arrows,
+                  title: 'Match history',
+                  subtitle: 'Job descriptions you’ve matched against',
+                  onTap: () => context.push(AppRoutes.matchHistory),
                 ),
               ],
               const SizedBox(height: AppSpacing.lg),
@@ -171,8 +194,10 @@ class _LinkTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title,
-                        style: AppTypography.labelLarge.copyWith(fontSize: 16)),
+                    Text(
+                      title,
+                      style: AppTypography.labelLarge.copyWith(fontSize: 16),
+                    ),
                     Text(subtitle, style: AppTypography.bodySmall),
                   ],
                 ),
