@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-/// Result of asking Firebase to send an OTP.
+import 'otp_api.dart';
+
+/// Result of asking for an OTP.
 sealed class OtpRequestResult {
   const OtpRequestResult();
 }
@@ -20,51 +22,26 @@ class OtpAutoVerified extends OtpRequestResult {
   final User user;
 }
 
-/// Thin wrapper around [FirebaseAuth]. Phone number is the account identity;
-/// Google can be linked later but is never required.
+/// Sign-in service. Phone number is the account identity.
+///
+/// Codes are sent and checked by Verixa's own backend ([OtpApi]), which
+/// then hands back a Firebase custom token for the one account that owns
+/// the number. Firebase still stores the account and session.
 class AuthService {
-  AuthService(this._auth);
+  AuthService(this._auth, this._otp);
 
   final FirebaseAuth _auth;
+  final OtpApi _otp;
 
   Stream<User?> authStateChanges() => _auth.authStateChanges();
 
   User? get currentUser => _auth.currentUser;
 
-  /// Sends an OTP to [phoneNumber] (E.164, e.g. +919999999999).
-  /// Pass [resendToken] from a previous [OtpSent] to resend.
-  Future<OtpRequestResult> sendOtp(String phoneNumber, {int? resendToken}) {
-    final completer = Completer<OtpRequestResult>();
-
-    _auth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      forceResendingToken: resendToken,
-      timeout: const Duration(seconds: 60),
-      codeSent: (verificationId, token) {
-        if (!completer.isCompleted) {
-          completer.complete(
-            OtpSent(verificationId: verificationId, resendToken: token),
-          );
-        }
-      },
-      verificationFailed: (error) {
-        if (!completer.isCompleted) completer.completeError(error);
-      },
-      verificationCompleted: (credential) async {
-        // Android can read the SMS (or skip it) and verify on its own.
-        try {
-          final result = await _auth.signInWithCredential(credential);
-          if (!completer.isCompleted && result.user != null) {
-            completer.complete(OtpAutoVerified(result.user!));
-          }
-        } catch (e) {
-          if (!completer.isCompleted) completer.completeError(e);
-        }
-      },
-      codeAutoRetrievalTimeout: (_) {},
-    );
-
-    return completer.future;
+  /// Sends an OTP to [phoneNumber] (E.164, e.g. +919876543210).
+  /// [resendToken] is unused (kept so callers don't change).
+  Future<OtpRequestResult> sendOtp(String phoneNumber, {int? resendToken}) async {
+    final session = await _otp.start(phoneNumber);
+    return OtpSent(verificationId: session);
   }
 
   /// Signs in with the 6-digit [code] the user typed.
@@ -72,11 +49,8 @@ class AuthService {
     required String verificationId,
     required String code,
   }) async {
-    final credential = PhoneAuthProvider.credential(
-      verificationId: verificationId,
-      smsCode: code,
-    );
-    final result = await _auth.signInWithCredential(credential);
+    final token = await _otp.verify(session: verificationId, code: code);
+    final result = await _auth.signInWithCustomToken(token);
     return result.user!;
   }
 

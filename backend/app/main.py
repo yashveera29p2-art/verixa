@@ -9,12 +9,13 @@ from __future__ import annotations
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, File, HTTPException, Response, UploadFile, status
+from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile, status
 
 from .auth import CurrentUser, current_user
 from .config import settings
 from .export import ResumeIn, cover_letter_docx, resume_docx
 from .export.docx_export import CoverLetterIn
+from . import otp
 from .extraction import ExtractedDocument, UnsupportedFileError, extract
 from pydantic import BaseModel, Field
 
@@ -133,3 +134,47 @@ def export_cover_letter(
 ) -> Response:
     log.info("export cover letter docx uid=%s", user.uid)
     return Response(cover_letter_docx(body), media_type=DOCX)
+
+
+# ── Phone OTP login (no Firebase SMS) ──────────────────────────────────────
+
+class OtpStart(BaseModel):
+    phone: str = Field(min_length=10, max_length=20)
+
+
+class OtpVerify(BaseModel):
+    session: str = Field(min_length=10, max_length=600)
+    code: str = Field(min_length=4, max_length=10)
+
+
+def _client_ip(request: Request) -> str:
+    forwarded = request.headers.get("x-forwarded-for", "")
+    return forwarded.split(",")[0].strip() or (request.client.host if request.client else "?")
+
+
+def _otp_error(exc: otp.OtpError) -> HTTPException:
+    if isinstance(exc, otp.RateLimited):
+        return HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, str(exc),
+                             headers={"Retry-After": str(exc.retry_after)})
+    return HTTPException(status.HTTP_400_BAD_REQUEST, str(exc))
+
+
+@app.post("/v1/auth/otp/start")
+def otp_start(body: OtpStart, request: Request) -> dict:
+    """Sends a 6-digit code by SMS. Returns a session to send back with it."""
+    try:
+        phone, session = otp.start(body.phone, _client_ip(request))
+    except otp.OtpError as exc:
+        raise _otp_error(exc) from exc
+    return {"phone": phone, "session": session, "expiresIn": 300}
+
+
+@app.post("/v1/auth/otp/verify")
+def otp_verify(body: OtpVerify) -> dict:
+    """Checks the code and returns a Firebase custom token for the one
+    account that belongs to this phone number."""
+    try:
+        phone, token, is_new = otp.finish(body.session, body.code)
+    except otp.OtpError as exc:
+        raise _otp_error(exc) from exc
+    return {"phone": phone, "firebaseToken": token, "isNewUser": is_new}

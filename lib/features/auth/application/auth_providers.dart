@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/utils/api_config.dart';
 import '../data/auth_service.dart';
+import '../data/otp_api.dart';
 import '../data/user_repository.dart';
 import '../domain/user_profile.dart';
 
@@ -12,7 +14,10 @@ final firestoreProvider =
     Provider<FirebaseFirestore>((ref) => FirebaseFirestore.instance);
 
 final authServiceProvider =
-    Provider<AuthService>((ref) => AuthService(ref.watch(firebaseAuthProvider)));
+    Provider<AuthService>((ref) => AuthService(
+          ref.watch(firebaseAuthProvider),
+          OtpApi(baseUrl: ApiConfig.baseUrl),
+        ));
 
 final userRepositoryProvider =
     Provider<UserRepository>((ref) => UserRepository(ref.watch(firestoreProvider)));

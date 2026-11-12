@@ -1,7 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-/// Turns Firebase Auth errors into short messages a user can act on.
+import 'otp_api.dart';
+
+/// Turns login errors (backend OTP or Firebase) into short messages a user
+/// can act on.
 String friendlyAuthError(Object error) {
+  if (error is OtpApiException) return error.message;
   if (error is! FirebaseAuthException) {
     return 'Something went wrong. Please try again.';
   }

@@ -17,7 +17,7 @@ If something here conflicts with a request, ask before deviating.
 | App | Flutter (latest stable), Dart 3 |
 | State management | Riverpod |
 | Routing | go_router |
-| Auth | Firebase Authentication — phone number OTP (required); Google/Gmail sign-in optional, linkable later |
+| Auth | Phone number OTP (required), sent and checked by our backend (`/v1/auth/otp/*`, SMS via 2Factor.in); the backend returns a Firebase custom token, so Firebase Authentication still holds exactly one account per number. Google/Gmail sign-in optional, linkable later |
 | Database | Cloud Firestore |
 | File storage | Firebase Storage (uploaded resumes, generated PDFs) |
 | NLP backend (later phases) | Python + FastAPI, spaCy, sentence-transformers |
@@ -26,7 +26,8 @@ If something here conflicts with a request, ask before deviating.
 Rules:
 - Ask before adding any package not listed here.
 - Keep business logic out of widgets (layered: UI → providers/controllers → repositories → services).
-- During development use Firebase **test phone numbers** for OTP, not real SMS.
+- During development use the backend's **test numbers** (`VERIXA_TEST_PHONES`, e.g. +91 99999 99999 / 123456) or `VERIXA_SMS_PROVIDER=console`, not real SMS.
+- Never commit SMS API keys or the Firebase service-account JSON; they live only in the host's environment variables.
 
 ### Folder structure
 
