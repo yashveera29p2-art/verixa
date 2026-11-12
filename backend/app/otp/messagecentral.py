@@ -31,6 +31,8 @@ _WRONG = "That code is incorrect. Check and try again."
 
 def _auth_token(refresh: bool = False) -> str:
     global _token
+    if settings.mc_auth_token:  # long-lived token from their console
+        return settings.mc_auth_token
     with _lock:
         if not refresh and _token and _token[1] > time.time():
             return _token[0]
@@ -63,8 +65,11 @@ def _call(method: str, path: str, params: dict) -> tuple[int, dict]:
         except Exception as exc:
             log.error("%s failed: %s", path, exc)
             raise OtpError(_GENERIC) from exc
-        if r.status_code == 401 and attempt == 0:
+        if r.status_code == 401 and attempt == 0 and not settings.mc_auth_token:
             continue
+        if r.status_code == 401:
+            log.error("%s: Message Central rejected the auth token (401)", path)
+            raise OtpError(_GENERIC)
         try:
             body = r.json()
         except ValueError:

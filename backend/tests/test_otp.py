@@ -165,3 +165,25 @@ def test_verifynow_response_mapping(monkeypatch):
     monkeypatch.setattr(mc, "_call", lambda *a: (200, {"responseCode": 200, "data": {
         "verificationStatus": "VERIFICATION_COMPLETED"}}))
     mc.validate("99", "123456")
+
+
+def test_console_auth_token_is_used_directly(monkeypatch):
+    from app.config import settings
+    from app.otp import messagecentral as mc
+    object.__setattr__(settings, "mc_auth_token", "console-token")
+    try:
+        seen = {}
+
+        class R:
+            status_code = 200
+            def json(self):
+                return {"responseCode": 200, "data": {"verificationId": 7}}
+
+        def fake_request(method, url, params, timeout, headers):
+            seen.update(headers)
+            return R()
+        monkeypatch.setattr(mc.requests, "request", fake_request)
+        assert mc.send("+919876543210") == "7"
+        assert seen["authToken"] == "console-token"
+    finally:
+        object.__setattr__(settings, "mc_auth_token", "")

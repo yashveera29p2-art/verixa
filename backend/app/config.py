@@ -20,8 +20,11 @@ class Settings:
     # "console" only logs the code (local development and tests).
     sms_provider: str = os.getenv("VERIXA_SMS_PROVIDER", "console")
     twofactor_api_key: str = os.getenv("VERIXA_2FACTOR_API_KEY", "")
-    # Message Central: customer id and password/key from their console.
+    # Message Central: customer id plus EITHER the auth token generated in
+    # their console (Developer Guide → API Credentials) OR the account
+    # password/key (we then fetch tokens ourselves).
     mc_customer_id: str = os.getenv("VERIXA_MC_CUSTOMER_ID", "")
+    mc_auth_token: str = os.getenv("VERIXA_MC_AUTH_TOKEN", "")
     mc_key: str = os.getenv("VERIXA_MC_KEY", "")
     # Optional 2Factor template name (their default OTP template is used if empty).
     twofactor_template: str = os.getenv("VERIXA_2FACTOR_TEMPLATE", "")
