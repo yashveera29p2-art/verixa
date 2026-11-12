@@ -42,8 +42,8 @@ abstract final class AppSizes {
   static const double navIcon = 24;
 
   /// Background blur strength behind the glass.
-  static const double glassBlur = 26;
+  static const double glassBlur = 32;
 
   /// Translucency of the ivory glass (0 = clear, 1 = solid).
-  static const double glassOpacity = 0.58;
+  static const double glassOpacity = 0.30;
 }

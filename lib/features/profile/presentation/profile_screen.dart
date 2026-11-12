@@ -53,7 +53,7 @@ class ProfileScreen extends ConsumerWidget {
               AppSpacing.pageGutter,
               navInset + AppSpacing.lg,
             ),
-            children: [
+            children: staggered([
               if (data != null) ...[
                 _Header(data: data, phone: phone),
                 const SizedBox(height: AppSpacing.lg),
@@ -121,7 +121,7 @@ class ProfileScreen extends ConsumerWidget {
                 style: AppButtonStyle.outlined,
                 onPressed: () => _signOut(context, ref),
               ),
-            ],
+            ]),
           ),
         ),
       ),

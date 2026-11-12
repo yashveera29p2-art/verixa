@@ -29,7 +29,7 @@ class CompanyTile extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CompanyAvatar(initials: company.initials),
+                CompanyAvatar(initials: company.initials, domain: company.logoDomain),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(

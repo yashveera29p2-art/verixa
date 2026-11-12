@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
@@ -22,9 +23,13 @@ class GlassNavItem {
 ///
 /// Layout: [left item] [centre scan button] [right item]. A soft green
 /// bubble slides under the active item; icons bounce when tapped. Glass =
-/// translucent ivory + strong background blur + a thin light edge. No glow,
-/// no heavy shadow (CLAUDE.md §2).
-class GlassNavBar extends StatelessWidget {
+/// very translucent ivory + strong background blur + a thin green rim.
+///
+/// With [playIntro], the pill starts as a halo around the centre button
+/// and springs outward to full width (overshoot, settle, slight squash),
+/// then the icons rise in. Used right after the splash, where the V lands
+/// in the centre button.
+class GlassNavBar extends StatefulWidget {
   const GlassNavBar({
     super.key,
     required this.left,
@@ -35,6 +40,8 @@ class GlassNavBar extends StatelessWidget {
     this.centreOpen = false,
     this.centreIcon = Icons.document_scanner_outlined,
     this.centreLabel = 'Resume actions',
+    this.playIntro = false,
+    this.introDelay = Duration.zero,
   });
 
   final GlassNavItem left;
@@ -45,10 +52,54 @@ class GlassNavBar extends StatelessWidget {
   final ValueChanged<int> onTap;
   final VoidCallback onCentreTap;
 
-  /// Whether the centre menu is open (the button turns into a close ×).
+  /// Whether the centre menu is open (the button turns into a close x).
   final bool centreOpen;
   final IconData centreIcon;
   final String centreLabel;
+  final bool playIntro;
+  final Duration introDelay;
+
+  @override
+  State<GlassNavBar> createState() => _GlassNavBarState();
+}
+
+/// A damped spring: rises fast, overshoots ~10%, wobbles once and settles
+/// at 1.
+class _SpringCurve extends Curve {
+  const _SpringCurve();
+
+  @override
+  double transformInternal(double t) =>
+      1 - math.exp(-6.5 * t) * math.cos(10.5 * t);
+}
+
+class _GlassNavBarState extends State<GlassNavBar>
+    with SingleTickerProviderStateMixin {
+  late final _intro = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+    value: widget.playIntro ? 0 : 1,
+  );
+  bool _waiting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.playIntro) {
+      _waiting = true;
+      Future.delayed(widget.introDelay, () {
+        if (!mounted) return;
+        setState(() => _waiting = false);
+        _intro.forward();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _intro.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,62 +107,135 @@ class GlassNavBar extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.fromLTRB(AppSizes.navPillSide, 0, AppSizes.navPillSide,
           bottomInset + AppSizes.navPillGap),
-      child: GlassPill(
-        child: SizedBox(
-          height: AppSizes.navPillHeight,
-          child: LayoutBuilder(builder: (context, c) {
-            final side = (c.maxWidth - AppSizes.navCentreButton - 2 * AppSpacing.md) / 2;
-            return Stack(
-              children: [
-                // The sliding "selected" bubble.
-                AnimatedPositioned(
-                  duration: AppMotion.page,
-                  curve: Curves.easeOutBack,
-                  // Centred under the item (items are side + 6 wide).
-                  left: currentIndex == 0 ? 3 : c.maxWidth - side - 3,
-                  top: 6,
-                  bottom: 6,
-                  width: side,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: AppColors.botanicalGreen.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(AppSizes.navPillHeight),
+      child: SizedBox(
+        height: AppSizes.navPillHeight + 8, // room for the bounce
+        child: LayoutBuilder(builder: (context, c) {
+          final full = c.maxWidth;
+          final content = _content(full);
+          return AnimatedBuilder(
+            animation: _intro,
+            builder: (context, _) {
+              if (_waiting) return const SizedBox.shrink();
+              final t = _intro.value;
+              final spring = const _SpringCurve().transform(t);
+              const start = AppSizes.navCentreButton + 14;
+              final width = start + (full - start) * spring;
+              // Squash-and-stretch: a little flat as it stretches out,
+              // a little tall as it snaps back.
+              final scaleY = 1 + 0.07 * math.sin(math.pi * t * 2) * (1 - t);
+              final items = const Interval(0.38, 0.85, curve: Curves.easeOutCubic)
+                  .transform(t);
+              return Align(
+                alignment: Alignment.bottomCenter,
+                child: Transform.scale(
+                  scaleY: scaleY,
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    width: width.clamp(start, full * 1.06),
+                    height: AppSizes.navPillHeight,
+                    child: GlassPill(
+                      child: OverflowBox(
+                        minWidth: full,
+                        maxWidth: full,
+                        child: _IntroItems(progress: items, child: content),
+                      ),
                     ),
                   ),
                 ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: side + 6,
-                      child: _SideItem(
-                        item: left,
-                        active: currentIndex == 0,
-                        onTap: () => onTap(0),
-                      ),
-                    ),
-                    const Spacer(),
-                    _CentreButton(
-                      icon: centreIcon,
-                      label: centreLabel,
-                      open: centreOpen,
-                      onTap: onCentreTap,
-                    ),
-                    const Spacer(),
-                    SizedBox(
-                      width: side + 6,
-                      child: _SideItem(
-                        item: right,
-                        active: currentIndex == 1,
-                        onTap: () => onTap(1),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            );
-          }),
-        ),
+              );
+            },
+          );
+        }),
       ),
+    );
+  }
+
+  Widget _content(double width) {
+    final w = widget;
+    final side = (width - AppSizes.navCentreButton - 2 * AppSpacing.md) / 2;
+    return Stack(
+      children: [
+        // The sliding "selected" bubble.
+        AnimatedPositioned(
+          duration: AppMotion.page,
+          curve: Curves.easeOutBack,
+          // Centred under the item (items are side + 6 wide).
+          left: w.currentIndex == 0 ? 3 : width - side - 3,
+          top: 6,
+          bottom: 6,
+          width: side,
+          child: _SideFade(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: AppColors.botanicalGreen.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(AppSizes.navPillHeight),
+              ),
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            SizedBox(
+              width: side + 6,
+              child: _SideFade(
+                child: _SideItem(
+                  item: w.left,
+                  active: w.currentIndex == 0,
+                  onTap: () => w.onTap(0),
+                ),
+              ),
+            ),
+            const Spacer(),
+            _CentreButton(
+              icon: w.centreIcon,
+              label: w.centreLabel,
+              open: w.centreOpen,
+              onTap: w.onCentreTap,
+            ),
+            const Spacer(),
+            SizedBox(
+              width: side + 6,
+              child: _SideFade(
+                child: _SideItem(
+                  item: w.right,
+                  active: w.currentIndex == 1,
+                  onTap: () => w.onTap(1),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Passes the intro's "items" progress down to the side items.
+class _IntroItems extends InheritedWidget {
+  const _IntroItems({required this.progress, required super.child});
+
+  final double progress;
+
+  static double of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_IntroItems>()?.progress ?? 1;
+
+  @override
+  bool updateShouldNotify(_IntroItems old) => old.progress != progress;
+}
+
+/// Side items and the bubble fade and rise in during the intro.
+class _SideFade extends StatelessWidget {
+  const _SideFade({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _IntroItems.of(context);
+    if (p >= 1) return child;
+    return Opacity(
+      opacity: p,
+      child: Transform.translate(offset: Offset(0, 10 * (1 - p)), child: child),
     );
   }
 }
@@ -144,9 +268,22 @@ class GlassPill extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: AppSizes.glassBlur, sigmaY: AppSizes.glassBlur),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.ivory.withValues(alpha: AppSizes.glassOpacity),
+              // Very light frosting: most of the colour comes from what's
+              // blurred behind, which is what makes it read as glass.
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.white.withValues(alpha: AppSizes.glassOpacity + 0.12),
+                  AppColors.ivory.withValues(alpha: AppSizes.glassOpacity),
+                ],
+              ),
               borderRadius: _radius,
-              border: Border.all(color: AppColors.white.withValues(alpha: 0.65)),
+              // The thin botanical-green line around the pill.
+              border: Border.all(
+                color: AppColors.botanicalGreen.withValues(alpha: 0.75),
+                width: 1,
+              ),
             ),
             // A thin highlight across the top, as light catches glass.
             foregroundDecoration: BoxDecoration(
@@ -155,7 +292,7 @@ class GlassPill extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.center,
                 colors: [
-                  AppColors.white.withValues(alpha: 0.28),
+                  AppColors.white.withValues(alpha: 0.45),
                   AppColors.white.withValues(alpha: 0),
                 ],
               ),

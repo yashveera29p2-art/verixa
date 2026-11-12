@@ -166,8 +166,9 @@ looks seamless.
 
 Tapping a category opens a list of companies in that category.
 
-**Company list:** name, logo placeholder (initials; no scraped logos), sector, one-line summary of
-what they look for.
+**Company list:** name, logo (loaded at runtime from the company's website icon via Google's favicon
+service, never bundled in the app; initials badge while loading/offline), sector, one-line summary
+of what they look for.
 
 **Company detail screen:**
 - What the company typically expects from candidates (skills, academics, experience, traits).

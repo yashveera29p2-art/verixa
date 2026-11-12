@@ -7,6 +7,7 @@ import '../../../app/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../application/company_providers.dart';
 import '../domain/company_category.dart';
+import '../../home/widgets/category_hero.dart';
 import 'widgets/company_tile.dart';
 
 /// List of companies in one category (MNC / SME / Startup).
@@ -20,20 +21,17 @@ class CategoryScreen extends ConsumerWidget {
     final companies = ref.watch(companiesByCategoryProvider(category));
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        appBar: AppBar(),
         body: CustomScrollView(
           slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.pageGutter,
-                AppSpacing.xs,
-                AppSpacing.pageGutter,
-                AppSpacing.lg,
+            SliverToBoxAdapter(
+              child: CategoryHeader(
+                category: category,
+                onBack: () => context.pop(),
               ),
-              sliver: SliverToBoxAdapter(child: _Header(category: category)),
             ),
+            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
             ...companies.when(
               loading: () => const [
                 SliverFillRemaining(
@@ -75,10 +73,17 @@ class CategoryScreen extends ConsumerWidget {
                           itemCount: list.length,
                           separatorBuilder: (_, _) =>
                               const SizedBox(height: AppSpacing.sm),
-                          itemBuilder: (context, i) => CompanyTile(
-                            company: list[i],
-                            onTap: () => context.push(
-                              AppRoutes.companyDetail(category.id, list[i].id),
+                          itemBuilder: (context, i) => StaggeredEntrance(
+                            index: i,
+                            initialDelay: const Duration(milliseconds: 320),
+                            child: CompanyTile(
+                              company: list[i],
+                              onTap: () => context.push(
+                                AppRoutes.companyDetail(
+                                  category.id,
+                                  list[i].id,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -88,29 +93,6 @@ class CategoryScreen extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header({required this.category});
-
-  final CompanyCategory category;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(category.icon, color: AppColors.botanicalGreen, size: 32),
-        const SizedBox(height: AppSpacing.md),
-        Text('${category.title} companies', style: AppTypography.headlineLarge),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          category.description,
-          style: AppTypography.bodyLarge.copyWith(color: AppColors.mutedText),
-        ),
-      ],
     );
   }
 }

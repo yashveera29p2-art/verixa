@@ -91,16 +91,22 @@ class MonogramPalette {
 ///
 /// [mirrored] draws the horizontal mirror image (the N).
 /// [spread] pushes the V left and the Λ right by that many pixels each.
+/// [showV] / [showLambda] draw only one half (used by the splash exit,
+/// where the two letters fly off separately).
 class VerixaMonogramPainter extends CustomPainter {
   const VerixaMonogramPainter({
     required this.palette,
     this.mirrored = false,
     this.spread = 0,
+    this.showV = true,
+    this.showLambda = true,
   });
 
   final MonogramPalette palette;
   final bool mirrored;
   final double spread;
+  final bool showV;
+  final bool showLambda;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -120,18 +126,24 @@ class VerixaMonogramPainter extends CustomPainter {
       ..scale(h);
 
     // Λ first, so the V's right arm overlaps it like the logo's ribbon fold.
-    canvas
-      ..save()
-      ..translate(unitSpread, 0);
-    _drawStroke(canvas, MonogramGeometry.lambdaLeft, _solid(palette.lambdaLeft));
-    _drawStroke(canvas, MonogramGeometry.lambdaRight, _solid(palette.lambdaBase));
-    canvas
-      ..save()
-      ..clipRect(const Rect.fromLTRB(-1, -1, 3, MonogramGeometry.apexSplit));
-    _drawStroke(canvas, MonogramGeometry.lambdaRight, _solid(palette.lambdaApex));
-    canvas
-      ..restore()
-      ..restore();
+    if (showLambda) {
+      canvas
+        ..save()
+        ..translate(unitSpread, 0);
+      _drawStroke(canvas, MonogramGeometry.lambdaLeft, _solid(palette.lambdaLeft));
+      _drawStroke(canvas, MonogramGeometry.lambdaRight, _solid(palette.lambdaBase));
+      canvas
+        ..save()
+        ..clipRect(const Rect.fromLTRB(-1, -1, 3, MonogramGeometry.apexSplit));
+      _drawStroke(canvas, MonogramGeometry.lambdaRight, _solid(palette.lambdaApex));
+      canvas
+        ..restore()
+        ..restore();
+    }
+    if (!showV) {
+      canvas.restore();
+      return;
+    }
 
     // V.
     canvas
@@ -168,7 +180,11 @@ class VerixaMonogramPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(VerixaMonogramPainter old) =>
-      old.palette != palette || old.mirrored != mirrored || old.spread != spread;
+      old.palette != palette ||
+      old.mirrored != mirrored ||
+      old.spread != spread ||
+      old.showV != showV ||
+      old.showLambda != showLambda;
 }
 
 /// The VΛ monogram as a widget, sized by [height].

@@ -171,3 +171,71 @@ class _FadeThroughStackState extends State<FadeThroughStack>
     );
   }
 }
+
+/// Fades and lifts its child into place when it first appears, starting
+/// [index] steps after the first one, so lists and page sections arrive
+/// one after another instead of all at once.
+class StaggeredEntrance extends StatefulWidget {
+  const StaggeredEntrance({
+    super.key,
+    required this.index,
+    required this.child,
+    this.initialDelay = Duration.zero,
+  });
+
+  final int index;
+  final Widget child;
+
+  /// Extra wait before the first item (e.g. to let a page transition land).
+  final Duration initialDelay;
+
+  static const step = Duration(milliseconds: 55);
+  static const maxSteps = 8;
+
+  @override
+  State<StaggeredEntrance> createState() => _StaggeredEntranceState();
+}
+
+class _StaggeredEntranceState extends State<StaggeredEntrance>
+    with SingleTickerProviderStateMixin {
+  late final _c = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 420));
+  late final _curve = CurvedAnimation(parent: _c, curve: AppMotion.enter);
+
+  @override
+  void initState() {
+    super.initState();
+    final steps = widget.index.clamp(0, StaggeredEntrance.maxSteps);
+    Future.delayed(widget.initialDelay + StaggeredEntrance.step * steps, () {
+      if (mounted) _c.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _curve,
+      builder: (context, child) => Opacity(
+        opacity: _curve.value,
+        child: Transform.translate(
+          offset: Offset(0, 18 * (1 - _curve.value)),
+          child: child,
+        ),
+      ),
+      child: widget.child,
+    );
+  }
+}
+
+/// Wraps each widget in a [StaggeredEntrance], in order — for a page's
+/// list of sections: `ListView(children: staggered([...]))`.
+List<Widget> staggered(List<Widget> children) => [
+      for (var i = 0; i < children.length; i++)
+        StaggeredEntrance(index: i, child: children[i]),
+    ];

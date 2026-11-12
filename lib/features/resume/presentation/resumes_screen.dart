@@ -33,7 +33,7 @@ class ResumesScreen extends ConsumerWidget {
                     AppSpacing.pageGutter,
                     AppSpacing.lg,
                   ),
-                  children: [
+                  children: staggered([
                     Text('My resumes', style: AppTypography.headlineLarge),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
@@ -72,7 +72,7 @@ class ResumesScreen extends ConsumerWidget {
                               ],
                             ],
                     ),
-                  ],
+                  ]),
                 ),
               ),
               Padding(

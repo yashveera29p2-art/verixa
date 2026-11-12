@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../core/widgets/glass_nav_bar.dart';
 import '../features/resume/presentation/resume_branch_menu.dart';
+import '../features/splash/splash_exit.dart';
 
 /// Wraps the main tabs (Home, Profile) with the floating glass pill.
 /// The tab pages scroll underneath the pill so the blur is visible.
@@ -18,6 +19,9 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   bool _menuOpen = false;
+
+  /// Pop the pill out of the centre button when we've just left the splash.
+  final bool _playIntro = SplashExit.takeNavIntro();
 
   void _onTabTap(int index) {
     widget.navigationShell.goBranch(
@@ -45,6 +49,8 @@ class _AppShellState extends State<AppShell> {
           onTap: _onTabTap,
           onCentreTap: _openMenu,
           centreOpen: _menuOpen,
+          playIntro: _playIntro,
+          introDelay: SplashExit.navIntroDelay,
           left: const GlassNavItem(
             label: 'Home',
             icon: Icons.home_outlined,

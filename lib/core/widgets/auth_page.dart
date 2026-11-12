@@ -58,15 +58,23 @@ class AuthPage extends StatelessWidget {
                         ),
                         const SizedBox(height: AppSpacing.xs),
                       ],
-                      Text(title, style: AppTypography.headlineLarge),
+                      // Each block arrives a moment after the previous one.
+                      StaggeredEntrance(
+                        index: 0,
+                        child: Text(title, style: AppTypography.headlineLarge),
+                      ),
                       const SizedBox(height: AppSpacing.xs),
-                      DefaultTextStyle.merge(
-                        style: AppTypography.bodyLarge
-                            .copyWith(color: AppColors.mutedText),
-                        child: subtitle,
+                      StaggeredEntrance(
+                        index: 1,
+                        child: DefaultTextStyle.merge(
+                          style: AppTypography.bodyLarge
+                              .copyWith(color: AppColors.mutedText),
+                          child: subtitle,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.xl),
-                      ...children,
+                      for (var i = 0; i < children.length; i++)
+                        StaggeredEntrance(index: i + 2, child: children[i]),
                     ],
                   ),
                 ),
@@ -78,7 +86,10 @@ class AuthPage extends StatelessWidget {
                   AppSpacing.pageGutter,
                   AppSpacing.md,
                 ),
-                child: bottom,
+                child: StaggeredEntrance(
+                  index: children.length + 2,
+                  child: bottom,
+                ),
               ),
             ],
           ),

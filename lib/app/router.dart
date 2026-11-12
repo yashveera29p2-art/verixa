@@ -28,7 +28,6 @@ import '../features/resume/presentation/scan_history_screen.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/splash/splash_timings.dart';
 import '../core/theme/theme.dart';
-import '../core/widgets/particle_dissolve.dart';
 import '../features/splash/splash_exit.dart';
 import 'app_shell.dart';
 import 'routes.dart';
@@ -80,7 +79,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       // navigation stack and scroll position.
       StatefulShellRoute(
         pageBuilder: (context, state, shell) =>
-            _fadePage(state, AppShell(navigationShell: shell)),
+            _fadePage(state, AppShell(navigationShell: shell), withNav: true),
         // Fade-through when switching between Home and Profile.
         navigatorContainerBuilder: (context, shell, children) =>
             FadeThroughStack(index: shell.currentIndex, children: children),
@@ -208,8 +207,18 @@ final routerProvider = Provider<GoRouter>((ref) {
             CompanyCategory.fromId(state.pathParameters['category']) == null
             ? AppRoutes.home
             : null,
-        builder: (context, state) => CategoryScreen(
-          category: CompanyCategory.fromId(state.pathParameters['category'])!,
+        pageBuilder: (context, state) => CustomTransitionPage<void>(
+          key: state.pageKey,
+          transitionDuration: const Duration(milliseconds: 520),
+          reverseTransitionDuration: const Duration(milliseconds: 420),
+          // Fade only: the category card's Hero does the visible motion.
+          transitionsBuilder: (context, animation, _, child) => FadeTransition(
+            opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+            child: child,
+          ),
+          child: CategoryScreen(
+            category: CompanyCategory.fromId(state.pathParameters['category'])!,
+          ),
         ),
         routes: [
           GoRoute(
@@ -226,14 +235,16 @@ final routerProvider = Provider<GoRouter>((ref) {
 });
 
 /// Transition for top-level areas: right after the splash, the splash's
-/// last frame dissolves into tiny dots over this page; otherwise a fade.
-CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child) {
-  final grid = SplashExit.claim(state.pageKey);
-  if (grid != null) {
+/// exit plays over this page ([withNav]: the V lands in the nav bar's
+/// centre button); otherwise a fade.
+CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child,
+    {bool withNav = false}) {
+  if (SplashExit.claim(state.pageKey)) {
+    if (withNav) SplashExit.navIntro = true;
     return CustomTransitionPage<void>(
       key: state.pageKey,
       child: child,
-      transitionDuration: const Duration(milliseconds: 950),
+      transitionDuration: SplashExit.duration,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         animation.addStatusListener((s) {
           if (s == AnimationStatus.completed) SplashExit.clear();
@@ -242,7 +253,7 @@ CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child) {
           fit: StackFit.expand,
           children: [
             child,
-            ParticleDissolve(grid: grid, progress: animation),
+            SplashExitOverlay(animation: animation, withNav: withNav),
           ],
         );
       },

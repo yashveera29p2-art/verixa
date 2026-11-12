@@ -77,6 +77,19 @@ class Company {
   final List<String> sources;
   final DateTime lastReviewed;
 
+  /// The website to load the company's logo from, from its careers page
+  /// URL: "www." hosts are kept as they are ("www.tcs.com" has an icon
+  /// where "tcs.com" doesn't); other subdomains are trimmed to the main
+  /// domain ("careers.wipro.com" → "wipro.com").
+  String? get logoDomain {
+    if (sources.isEmpty) return null;
+    final host = Uri.tryParse(sources.first)?.host ?? '';
+    if (host.startsWith('www.')) return host;
+    final labels = host.split('.').where((l) => l.isNotEmpty).toList();
+    if (labels.length < 2) return null;
+    return labels.sublist(labels.length - 2).join('.');
+  }
+
   /// Up to two initials for the logo placeholder ("Tata Consultancy
   /// Services" → "TC", "Infosys" → "IN", "IBM India" → "IB").
   String get initials {

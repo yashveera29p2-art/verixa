@@ -2,16 +2,16 @@ import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/theme.dart';
 import '../../core/widgets/verixa_monogram.dart';
-import '../../core/widgets/particle_dissolve.dart';
+import '../../core/utils/server_warmup.dart';
 import 'splash_exit.dart';
 import 'splash_timings.dart';
+import 'wordmark_layout.dart';
 import 'startup_provider.dart';
 
 /// Plays the N → VΛ → VERIXA animation, then moves to the next screen.
@@ -26,11 +26,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Future<String> _destination;
-  final _sceneKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
+    // Wake the backend now so OTP / scans are fast later.
+    warmUpServer();
     // Start the session check now so it runs while the animation plays.
     _destination = ref.read(startupDestinationProvider.future);
     _controller = AnimationController(
@@ -53,12 +54,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     if (status != AnimationStatus.completed) return;
     final route = await _destination;
     if (!mounted) return;
-    // Hand the final frame to the next screen, which dissolves it into dots.
-    final boundary =
-        _sceneKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-    final grid = boundary == null ? null : await ParticleGrid.capture(boundary);
-    if (grid != null) SplashExit.hold(grid);
-    if (mounted) context.go(route);
+    // The next screen plays the exit: letters fade, Λ flies up, V drops
+    // into the centre button.
+    SplashExit.hold();
+    context.go(route);
   }
 
   @override
@@ -72,9 +71,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        body: RepaintBoundary(
-          key: _sceneKey,
-          child: DecoratedBox(
+        body: DecoratedBox(
           decoration: const BoxDecoration(
             gradient: RadialGradient(
               center: Alignment(0, -0.2),
@@ -86,7 +83,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             animation: _controller,
             builder: (context, _) => _SplashScene(t: _controller.value),
           ),
-        ),
         ),
       ),
     );
@@ -108,7 +104,7 @@ class _SplashScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final layout = _WordmarkLayout(constraints.biggest);
+      final layout = WordmarkLayout(constraints.biggest);
       final slide = _slide.transform(t);
       final flipAngle = _flip.transform(t) * math.pi;
 
@@ -202,58 +198,5 @@ class _TypedLetters extends StatelessWidget {
       textScaler: TextScaler.noScaling,
       semanticsLabel: 'Verixa',
     );
-  }
-}
-
-/// Sizes and positions for the monogram and the final word "VERIXA".
-///
-/// Final word, left to right: [V][gap][E R I X][gap][Λ]. The typed letters
-/// are sized so their cap height equals the V/Λ height.
-class _WordmarkLayout {
-  _WordmarkLayout(Size screen) : center = screen.center(Offset.zero) {
-    startHeight = math.min(110, screen.width * 0.26);
-
-    // Measure "ERIX" at a reference size, then scale linearly.
-    const refHeight = 100.0;
-    final refStyle = _styleFor(refHeight);
-    final painter = TextPainter(
-      text: TextSpan(text: SplashTimings.typedLetters, style: refStyle),
-      textDirection: TextDirection.ltr,
-      textScaler: TextScaler.noScaling,
-    )..layout();
-    // Flutter adds letter spacing after the last letter too; ignore it.
-    final lettersPerUnit =
-        (painter.width - refStyle.letterSpacing!) / refHeight;
-    painter.dispose();
-
-    final wordUnits =
-        2 * MonogramGeometry.letterWidth + 2 * _gap + lettersPerUnit;
-    finalHeight = math.min(
-      _maxFinalHeight,
-      (screen.width - 2 * AppSpacing.xxl) / wordUnits,
-    );
-
-    final wordWidth = wordUnits * finalHeight;
-    finalSpread = wordWidth / 2 - MonogramGeometry.width / 2 * finalHeight;
-    lettersLeft = center.dx -
-        wordWidth / 2 +
-        (MonogramGeometry.letterWidth + _gap) * finalHeight;
-    letterStyle = _styleFor(finalHeight);
-  }
-
-  static const double _maxFinalHeight = 56;
-  static const double _gap = 0.2; // in glyph heights
-
-  final Offset center;
-  late final double startHeight;
-  late final double finalHeight;
-  late final double finalSpread;
-  late final double lettersLeft;
-  late final TextStyle letterStyle;
-
-  static TextStyle _styleFor(double capHeight) {
-    final fontSize = capHeight / AppTypography.dmSansCapHeight;
-    return AppTypography.splashWordmark(fontSize)
-        .copyWith(letterSpacing: fontSize * 0.14);
   }
 }

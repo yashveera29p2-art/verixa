@@ -127,7 +127,7 @@ class _Header extends StatelessWidget {
       children: [
         Row(
           children: [
-            CompanyAvatar(initials: company.initials, size: 60),
+            CompanyAvatar(initials: company.initials, domain: company.logoDomain, size: 60),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(

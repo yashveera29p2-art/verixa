@@ -175,7 +175,7 @@ class _EditorState extends ConsumerState<_Editor> {
                 AppSpacing.pageGutter,
                 AppSpacing.lg,
               ),
-              children: [
+              children: staggered([
                 Text('Edit resume', style: AppTypography.headlineLarge),
                 const SizedBox(height: AppSpacing.xs),
                 Row(
@@ -235,7 +235,7 @@ class _EditorState extends ConsumerState<_Editor> {
                   'section says, edit your Profile.',
                   style: AppTypography.bodySmall,
                 ),
-              ],
+              ]),
             ),
           ),
           Padding(

@@ -93,4 +93,14 @@ void main() {
       throwsFormatException,
     );
   });
+
+  test('logo domain comes from the careers URL', () {
+    final companies = CompanyRepository.parseCompanies(
+        File('assets/data/companies.json').readAsStringSync());
+    String? domainOf(String id) =>
+        companies.firstWhere((c) => c.id == id).logoDomain;
+    expect(domainOf('tcs'), 'www.tcs.com');
+    expect(domainOf('wipro'), 'wipro.com');
+    expect(domainOf('cred'), 'cred.club');
+  });
 }
