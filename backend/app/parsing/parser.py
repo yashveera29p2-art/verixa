@@ -8,7 +8,7 @@ from ..extraction import ExtractedDocument
 from ..models import CareerGoal, Extras, Meta, ParsedResume
 from .common import strip_bullet, tidy
 from .contact import parse_contact
-from .education import parse_education
+from .education import current_year, parse_education
 from .entries import parse_experience, parse_projects
 from .sections import split_sections
 from .skills import parse_skills
@@ -24,6 +24,30 @@ def _objective(lines: list[str]) -> str:
     cut = text[:OBJECTIVE_LIMIT]
     end = cut.rfind(". ")
     return cut[: end + 1] if end > 80 else cut.rstrip() + "…"
+
+
+_TARGET_ROLE = [
+    # "Target role: Software Developer" / "Desired position - Data Analyst"
+    re.compile(r"(?:target|desired|preferred)\s+(?:role|position|job)s?\s*[:\-–]\s*([^.;\n]{3,60})", re.I),
+    # "seeking a Software Developer role" / "looking for an SDE internship"
+    re.compile(r"(?:seeking|looking for|aspiring|aiming for)\s+(?:an?\s+)?([A-Z][\w+#/ .-]{2,50}?)\s+"
+               r"(?:role|position|internship|opportunit)", re.I),
+]
+
+
+def _target_role(lines: list[str]) -> str:
+    # "Target role: …" is a line of its own; "seeking a … role" may wrap.
+    for line in lines:
+        m = _TARGET_ROLE[0].search(strip_bullet(line))
+        if m:
+            return tidy(m.group(1)).rstrip(" ,")
+    m = _TARGET_ROLE[1].search(" ".join(strip_bullet(l) for l in lines))
+    return tidy(m.group(1)).rstrip(" ,") if m else ""
+
+
+def _strip_target_line(lines: list[str]) -> list[str]:
+    """The "Target role: …" line feeds targetRole, not the objective."""
+    return [l for l in lines if not _TARGET_ROLE[0].search(l)]
 
 
 def _items(lines: list[str]) -> list[str]:
@@ -51,7 +75,11 @@ def parse_resume(doc: ExtractedDocument) -> ParsedResume:
         warnings.append("Couldn't find your name — please add it.")
 
     if sections.has("summary"):
-        result.careerGoal = CareerGoal(objective=_objective(sections.get("summary")))
+        summary = sections.get("summary")
+        result.careerGoal = CareerGoal(
+            targetRole=_target_role(summary),
+            objective=_objective(_strip_target_line(summary)),
+        )
         conf["careerGoal"] = 0.8 if result.careerGoal.objective else 0.0
 
     if sections.has("education"):
@@ -59,6 +87,9 @@ def parse_resume(doc: ExtractedDocument) -> ParsedResume:
     else:
         warnings.append("No education section found.")
         conf["education"] = 0.0
+    # "3rd Year" is often in the headline under the name, not in Education.
+    if not result.education.degree.currentYear:
+        result.education.degree.currentYear = current_year(" ".join(sections.header))
 
     if sections.has("experience"):
         result.experience = parse_experience(sections.get("experience"))

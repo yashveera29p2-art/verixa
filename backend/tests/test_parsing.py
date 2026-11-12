@@ -187,3 +187,26 @@ def test_resume_without_headings_warns():
     result = parse_resume(extract(make_docx("Just a name\nSome text about Python and Docker")))
     assert any("section" in w.lower() for w in result.warnings)
     assert {"Python", "Docker"} <= set(result.skills.technical)
+
+
+def test_state_year_target_role_and_vidyapeetham():
+    from app.parsing.contact import find_state
+    from app.parsing.education import current_year, parse_education
+    from app.parsing.parser import _target_role
+    assert find_state(["Tirupati, Andhra Pradesh | 98765 43210"]) == "Andhra Pradesh"
+    assert current_year("B.Tech CSE Student (3rd Year, 5th Semester)") == "3rd year, 5th semester"
+    assert current_year("CGPA: 6.32 / 10 (up to Semester 4)") == ""
+    assert _target_role(["Target Role: Software Developer", "Third-year student"]) == "Software Developer"
+    assert _target_role(["Student seeking a Data Analyst role."]) == "Data Analyst"
+    edu, _ = parse_education([
+        "Bachelor of Technology (Computer Science & Engineering)",
+        "Amrita Vishwa Vidyapeetham",
+        "2024 - 2028 | CGPA: 6.32 / 10",
+        "Secondary School (Class X), CBSE",
+        "Edify School Tirupati",
+        "2021 - 2022 | Score: 81.8%",
+    ])
+    assert edu.degree.college == "Amrita Vishwa Vidyapeetham"
+    assert edu.degree.degree == "Bachelor of Technology"
+    assert edu.class10.school == "Edify School Tirupati"
+    assert edu.class10.board == "CBSE"

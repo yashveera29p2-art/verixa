@@ -12,6 +12,7 @@ class Contact(BaseModel):
     email: str = ""
     phone: str = ""
     city: str = ""
+    state: str = ""
     linkedin: str = ""
     github: str = ""
     portfolio: str = ""
@@ -30,6 +31,8 @@ class Degree(BaseModel):
     branch: str = ""
     cgpa: str = ""
     graduationYear: str = ""
+    # e.g. "3rd year, 5th semester" (students).
+    currentYear: str = ""
 
 
 class HigherQualification(BaseModel):
@@ -71,6 +74,7 @@ class Skills(BaseModel):
 
 
 class CareerGoal(BaseModel):
+    targetRole: str = ""
     objective: str = ""
 
 

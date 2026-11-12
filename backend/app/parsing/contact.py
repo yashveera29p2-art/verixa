@@ -66,6 +66,16 @@ def find_city(lines: list[str]) -> str:
     return ""
 
 
+def find_state(lines: list[str]) -> str:
+    """An Indian state or union territory named in the header, e.g. the
+    "Andhra Pradesh" in "Tirupati, Andhra Pradesh"."""
+    text = " ".join(lines)
+    for state in load_list("indian_states"):
+        if re.search(rf"\b{re.escape(state)}\b", text, re.IGNORECASE):
+            return state
+    return ""
+
+
 def parse_contact(header: list[str], all_lines: list[str]) -> tuple[Contact, float]:
     text = "\n".join(all_lines)
     top = header if header else all_lines[:8]
@@ -77,6 +87,7 @@ def parse_contact(header: list[str], all_lines: list[str]) -> tuple[Contact, flo
         email=email_match.group(0) if email_match else "",
         phone=find_phone(text),
         city=find_city(top[:10]),
+        state=find_state(top[:10]),
         linkedin=linkedin,
         github=github,
         portfolio=portfolio,

@@ -56,6 +56,7 @@ BRANCHES: list[tuple[re.Pattern, str]] = [
 
 INSTITUTION = re.compile(
     r"\b(college|university|institute|school|vidyalaya|vidyalayam|academy|"
+    r"vidyapeetham|vidyapeeth|vishwavidyalaya|vidyapith|"
     r"polytechnic|iit|nit|iiit|bits|jntu\w*|vit|srm|kendriya|campus)\b",
     re.IGNORECASE,
 )
@@ -85,6 +86,16 @@ class _Entry:
         return " | ".join(self.lines)
 
 
+_SMALL_WORDS = {"of", "in", "and", "for", "the", "with"}
+
+
+def _title_case(text: str) -> str:
+    """"BACHELOR OF TECHNOLOGY" → "Bachelor of Technology"."""
+    words = text.split()
+    return " ".join(w.lower() if i and w.lower() in _SMALL_WORDS else w.capitalize()
+                    for i, w in enumerate(words))
+
+
 def _classify(line: str) -> tuple[str, str, bool] | None:
     if CLASS12.search(line):
         return "class12", "", False
@@ -93,7 +104,7 @@ def _classify(line: str) -> tuple[str, str, bool] | None:
     for pattern, name, bachelor in DEGREES:
         m = pattern.search(line)
         if m:
-            return "degree", name or m.group(0).title(), bachelor
+            return "degree", name or _title_case(m.group(0)), bachelor
     return None
 
 
@@ -136,10 +147,20 @@ def _board(text: str) -> str:
     return board.upper() if len(board) <= 6 else board.title()
 
 
+# "Secondary School (Class X)" describes the level, it isn't the school's name.
+_LEVEL_DESCRIPTOR = re.compile(
+    r"\b(?:higher |senior )?secondary school\b|\bclass\s*(?:x|xii|10|12)\b|"
+    r"\bhigh school certificate\b", re.IGNORECASE)
+
+
 def _institution(entry: _Entry) -> str:
     """The part of the entry that names the school/college."""
-    parts = [p for line in entry.lines for p in re.split(r"\s*[|,–—]\s*|\s+-\s+", line)]
-    for part in parts:
+    parts = [p for line in entry.lines
+             for p in re.split(r"\s*[|,–—·]\s*|\s+-\s+", line)]
+    named = [p for p in parts if INSTITUTION.search(p)]
+    # Prefer a real name over a level descriptor when both are present.
+    named.sort(key=lambda p: bool(_LEVEL_DESCRIPTOR.search(p)))
+    for part in named:
         if INSTITUTION.search(part):
             cleaned = DATE_RANGE.sub("", part)
             cleaned = YEAR.sub("", cleaned)
@@ -153,6 +174,35 @@ def _branch(text: str) -> str:
         if pattern.search(text):
             return name
     return ""
+
+
+_ORDINAL = r"(\d{1,2})\s*(?:st|nd|rd|th)?"
+_YEAR_OF_STUDY = re.compile(rf"\b{_ORDINAL}\s+year\b|\byear\s*[:\-]?\s*(\d)\b", re.I)
+_SEMESTER = re.compile(
+    rf"\b{_ORDINAL}\s+(?:semester|sem)\b|\b(?:semester|sem)\s*[:\-]?\s*(\d{{1,2}})\b(?!\s*\))",
+    re.I)
+
+
+def _ordinal(n: int) -> str:
+    return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
+
+
+def current_year(text: str) -> str:
+    """'3rd Year' / 'Semester 5' / '5th sem' → "3rd year, 5th semester".
+    Ignores "(up to Semester 4)"-style notes about CGPA."""
+    text = re.sub(r"\(\s*up to [^)]*\)", " ", text, flags=re.I)
+    year = _YEAR_OF_STUDY.search(text)
+    sem = _SEMESTER.search(text)
+    parts = []
+    if year:
+        n = int(year.group(1) or year.group(2))
+        if 1 <= n <= 6:
+            parts.append(f"{_ordinal(n)} year")
+    if sem:
+        n = int(sem.group(1) or sem.group(2))
+        if 1 <= n <= 12:
+            parts.append(f"{_ordinal(n)} semester")
+    return ", ".join(parts)
 
 
 def parse_education(lines: list[str]) -> tuple[Education, float]:
@@ -177,6 +227,7 @@ def parse_education(lines: list[str]) -> tuple[Education, float]:
                 branch=_branch(entry.text),
                 cgpa=_score(entry.text).rstrip("%") if "%" not in _score(entry.text) else "",
                 graduationYear=_year(entry.text),
+                currentYear=current_year(entry.text),
             )
         elif entry.kind == "degree":
             edu.additional.append(HigherQualification(
