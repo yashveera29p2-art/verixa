@@ -46,6 +46,9 @@ class Session:
     phone: str
     expires: int
     sid: str
+    # Set when the SMS provider generated the code and checks it
+    # (e.g. Message Central VerifyNow); empty when we check it ourselves.
+    remote_id: str = ""
 
 
 def _b64(data: bytes) -> str:
@@ -68,11 +71,36 @@ def issue(secret: bytes, phone: str, code: str, now: float | None = None) -> str
     return _b64(json.dumps(body, separators=(",", ":")).encode())
 
 
+def issue_remote(secret: bytes, phone: str, remote_id: str, now: float | None = None) -> str:
+    """Session for a code the SMS provider generated: signs the provider's
+    verification id so the app can't swap in someone else's."""
+    expires = int((time.time() if now is None else now) + TTL_SECONDS)
+    sid = secrets.token_urlsafe(9)
+    mac = _mac(secret, phone, expires, sid, "remote:" + remote_id)
+    body = {"p": phone, "e": expires, "s": sid, "r": remote_id, "m": mac}
+    return _b64(json.dumps(body, separators=(",", ":")).encode())
+
+
+def check_remote(secret: bytes, token: str, now: float | None = None) -> Session:
+    """Validates a provider session's signature and expiry (not the code)."""
+    session, mac = read(token)
+    if not session.remote_id:
+        raise OtpError("This code has expired. Tap “Resend code” to get a new one.")
+    if (time.time() if now is None else now) > session.expires:
+        raise OtpError("This code has expired. Tap “Resend code” to get a new one.")
+    expected = _mac(secret, session.phone, session.expires, session.sid,
+                    "remote:" + session.remote_id)
+    if not hmac.compare_digest(expected, mac):
+        raise OtpError("This code has expired. Tap “Resend code” to get a new one.")
+    return session
+
+
 def read(token: str) -> tuple[Session, str]:
     """Parses a session token (without checking the code)."""
     try:
         body = json.loads(_unb64(token))
-        return Session(phone=body["p"], expires=int(body["e"]), sid=body["s"]), body["m"]
+        return Session(phone=body["p"], expires=int(body["e"]), sid=body["s"],
+                       remote_id=str(body.get("r", ""))), body["m"]
     except Exception as exc:  # malformed / tampered
         raise OtpError("This code has expired. Tap “Resend code” to get a new one.") from exc
 
@@ -80,6 +108,8 @@ def read(token: str) -> tuple[Session, str]:
 def check(secret: bytes, token: str, code: str, now: float | None = None) -> Session:
     """Returns the session if [code] is right and not expired; raises OtpError."""
     session, mac = read(token)
+    if session.remote_id:
+        raise OtpError("This code has expired. Tap “Resend code” to get a new one.")
     if (time.time() if now is None else now) > session.expires:
         raise OtpError("This code has expired. Tap “Resend code” to get a new one.")
     code = re.sub(r"\D", "", code or "")

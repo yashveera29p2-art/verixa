@@ -116,3 +116,52 @@ def test_rate_limit_returns_429():
     client.post("/v1/auth/otp/start", json={"phone": "9876500000"})
     r = client.post("/v1/auth/otp/start", json={"phone": "9876500000"})
     assert r.status_code == 429 and "Retry-After" in r.headers
+
+
+# ── Message Central VerifyNow (provider-generated codes) ───────────────────
+
+def test_verifynow_flow(monkeypatch, fresh_limits):
+    from app.config import settings
+    from app.otp import messagecentral
+    object.__setattr__(settings, "sms_provider", "messagecentral")
+    try:
+        sent, checked = [], []
+        monkeypatch.setattr(messagecentral, "send", lambda phone: sent.append(phone) or "4242")
+
+        def fake_validate(vid, code):
+            checked.append((vid, code))
+            if code != "112233":
+                raise codes.OtpError("That code is incorrect. Check and try again.")
+        monkeypatch.setattr(messagecentral, "validate", fake_validate)
+
+        phone, session = otp.start("9876543210", "1.1.1.1")
+        assert sent == ["+919876543210"] and fresh_limits == []  # no local SMS
+        with pytest.raises(codes.OtpError, match="incorrect"):
+            otp.finish(session, "000000")
+        assert otp.finish(session, "112 233")[1] == "token-for-+919876543210"
+        assert checked == [("4242", "000000"), ("4242", "112233")]
+    finally:
+        object.__setattr__(settings, "sms_provider", "console")
+
+
+def test_remote_session_cannot_be_forged():
+    token = codes.issue_remote(SECRET, "+919876543210", "4242")
+    assert codes.check_remote(SECRET, token).remote_id == "4242"
+    with pytest.raises(codes.OtpError):
+        codes.check_remote(b"other", token)
+    with pytest.raises(codes.OtpError):  # a remote session can't pass the local check
+        codes.check(SECRET, token, "123456")
+
+
+def test_verifynow_response_mapping(monkeypatch):
+    from app.otp import messagecentral as mc
+    monkeypatch.setattr(mc, "_call", lambda *a: (200, {"responseCode": 200, "data": {
+        "verificationId": 99}}))
+    assert mc.send("+919876543210") == "99"
+    for rc, msg in ((702, "incorrect"), (705, "expired")):
+        monkeypatch.setattr(mc, "_call", lambda *a, rc=rc: (200, {"responseCode": rc, "data": {}}))
+        with pytest.raises(codes.OtpError, match=msg):
+            mc.validate("99", "123456")
+    monkeypatch.setattr(mc, "_call", lambda *a: (200, {"responseCode": 200, "data": {
+        "verificationStatus": "VERIFICATION_COMPLETED"}}))
+    mc.validate("99", "123456")

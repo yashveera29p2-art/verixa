@@ -6,7 +6,7 @@ import logging
 import secrets
 
 from ..config import settings
-from . import codes
+from . import codes, messagecentral
 from .accounts import custom_token_for
 from .codes import OtpError
 from .limits import OtpLimits
@@ -49,6 +49,12 @@ def start(raw_phone: str, client: str) -> tuple[str, str]:
         log.error("daily SMS cap (%d) reached", settings.sms_daily_cap)
         raise RateLimited("We can’t send more codes today. Please try again tomorrow.", 3600)
 
+    if settings.sms_provider == "messagecentral":
+        # VerifyNow generates the code and checks it on their side.
+        vid = messagecentral.send(phone)
+        log.info("otp sent to %s****%s via VerifyNow", phone[:5], phone[-2:])
+        return phone, codes.issue_remote(_secret, phone, vid)
+
     code = codes.new_code()
     send_otp(phone, code)
     log.info("otp sent to %s****%s", phone[:5], phone[-2:])
@@ -60,6 +66,10 @@ def finish(token: str, code: str) -> tuple[str, str, bool]:
     session, _ = codes.read(token)
     if not limits.attempts.hit(session.sid) or not limits.failed_phone.hit(session.phone):
         raise RateLimited("Too many wrong codes. Request a new code in a few minutes.", 600)
-    session = codes.check(_secret, token, code)
+    if session.remote_id:
+        session = codes.check_remote(_secret, token)
+        messagecentral.validate(session.remote_id, "".join(c for c in code if c.isdigit()))
+    else:
+        session = codes.check(_secret, token, code)
     firebase_token, is_new = custom_token_for(session.phone)
     return session.phone, firebase_token, is_new

@@ -14,10 +14,15 @@ class Settings:
     auth_mode: str = os.getenv("VERIXA_AUTH_MODE", "firebase")
 
     # ── Phone OTP login (our own, not Firebase SMS) ─────────────────────
-    # "2factor" sends real SMS through 2Factor.in; "console" only logs the
-    # code (local development and tests).
+    # "messagecentral" sends SMS through Message Central VerifyNow (their
+    # DLT-approved template, no registration needed); "2factor" uses
+    # 2Factor.in (voice call unless you have your own DLT template);
+    # "console" only logs the code (local development and tests).
     sms_provider: str = os.getenv("VERIXA_SMS_PROVIDER", "console")
     twofactor_api_key: str = os.getenv("VERIXA_2FACTOR_API_KEY", "")
+    # Message Central: customer id and password/key from their console.
+    mc_customer_id: str = os.getenv("VERIXA_MC_CUSTOMER_ID", "")
+    mc_key: str = os.getenv("VERIXA_MC_KEY", "")
     # Optional 2Factor template name (their default OTP template is used if empty).
     twofactor_template: str = os.getenv("VERIXA_2FACTOR_TEMPLATE", "")
     # Secret used to sign OTP sessions. Set it in production so codes stay
