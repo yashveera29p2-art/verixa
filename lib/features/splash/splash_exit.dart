@@ -47,7 +47,8 @@ abstract final class SplashExit {
 
 /// The splash's last frame coming apart over the next screen:
 /// 1. the green background and E R I X fade away, revealing the page;
-/// 2. Λ flies up off the screen;
+/// 2. Λ flies up and grows, and its inside becomes a window onto the page:
+///    the opening spreads until the whole page is revealed from above;
 /// 3. V drops to the bottom and morphs into the green centre button of the
 ///    nav bar ([withNav]); with no nav bar it just drops and fades.
 class SplashExitOverlay extends StatelessWidget {
@@ -71,9 +72,9 @@ class SplashExitOverlay extends StatelessWidget {
     final layout = WordmarkLayout(size);
     final h = layout.finalHeight;
 
-    final background = _part(animation, 0.0, 0.42, Curves.easeInOut);
     final letters = _part(animation, 0.0, 0.26, Curves.easeOut);
-    final lambda = _part(animation, 0.04, 0.50, Curves.easeInCubic);
+    // Λ: lifts off, then accelerates upward as it spreads over the page.
+    final lambda = _part(animation, 0.02, 0.66, Curves.easeInCubic);
     final drop = _part(animation, 0.10, 0.74, Curves.easeInOutCubic);
     final morph = _part(animation, 0.62, 0.92, Curves.easeOutCubic);
     final settle = _part(animation, 0.90, 1.0);
@@ -104,16 +105,12 @@ class SplashExitOverlay extends StatelessWidget {
           return Stack(
             fit: StackFit.expand,
             children: [
-              Opacity(
-                opacity: 1 - background.value,
-                child: const DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: RadialGradient(
-                      center: Alignment(0, -0.2),
-                      radius: 1.1,
-                      colors: [AppColors.splashBgTop, AppColors.splashBgBottom],
-                    ),
-                  ),
+              // Green splash with a Λ-shaped window onto the page.
+              CustomPaint(
+                painter: _LambdaRevealPainter(
+                  progress: lambda.value,
+                  layout: layout,
+                  screen: size,
                 ),
               ),
               // E R I X
@@ -129,26 +126,6 @@ class SplashExitOverlay extends StatelessWidget {
                       SplashTimings.typedLetters,
                       style: layout.letterStyle,
                       textScaler: TextScaler.noScaling,
-                    ),
-                  ),
-                ),
-              ),
-              // Λ flies up.
-              Positioned(
-                left: 0,
-                right: 0,
-                top: monogramTop,
-                height: h,
-                child: Transform.translate(
-                  offset: Offset(0, -(layout.center.dy + h) * lambda.value),
-                  child: Opacity(
-                    opacity: (1 - lambda.value * 0.6).clamp(0.0, 1.0),
-                    child: CustomPaint(
-                      painter: VerixaMonogramPainter(
-                        palette: MonogramPalette.splash,
-                        spread: layout.finalSpread,
-                        showV: false,
-                      ),
                     ),
                   ),
                 ),
@@ -200,4 +177,89 @@ class SplashExitOverlay extends StatelessWidget {
       ),
     );
   }
+}
+
+
+/// Paints the splash background with a growing Λ-shaped hole, plus the Λ
+/// letter itself riding the edge of the hole until it fades.
+///
+/// The Λ's apex flies from its spot in the word to well above the screen
+/// while the Λ grows; its outline (a triangle: apex at the top, legs
+/// spreading down) ends up wider than the screen and taller than it, so
+/// the hole covers everything and the page is fully revealed.
+class _LambdaRevealPainter extends CustomPainter {
+  _LambdaRevealPainter({
+    required this.progress,
+    required this.layout,
+    required this.screen,
+  });
+
+  final double progress;
+  final WordmarkLayout layout;
+  final Size screen;
+
+  /// Half the Λ's base width per unit of its height (its legs spread to
+  /// 0.65 h either side of the apex).
+  static const _spread = 0.65;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final h = layout.finalHeight;
+    final top = layout.center.dy - h / 2;
+    final left = (screen.width - MonogramGeometry.width * h) / 2;
+    // Apex of the Λ at the end of the splash.
+    final apex0 = Offset(left + 1.30 * h + layout.finalSpread, top);
+    // Where it ends: centred, far enough above the screen that the legs
+    // clear the top corners, and big enough to cover the bottom.
+    final apex1 = Offset(screen.width / 2, -screen.width / (2 * _spread) - 48);
+    final size1 = screen.height - apex1.dy + 96;
+
+    final t = progress;
+    final apex = Offset.lerp(apex0, apex1, t)!;
+    final scale = lerpDouble(1, size1 / h, t)!; // letter size multiplier
+    final letterHeight = h * scale;
+
+    // The window starts as nothing and catches up with the letter's size.
+    final windowShare = Curves.easeOutCubic.transform(((t - 0.06) / 0.30).clamp(0.0, 1.0));
+    final windowHeight = letterHeight * windowShare;
+    final window = Path()
+      ..moveTo(apex.dx, apex.dy)
+      ..lineTo(apex.dx + _spread * windowHeight, apex.dy + windowHeight)
+      ..lineTo(apex.dx - _spread * windowHeight, apex.dy + windowHeight)
+      ..close();
+
+    final rect = Offset.zero & size;
+    final background = Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(rect)
+      ..addPath(window, Offset.zero);
+    canvas.drawPath(
+      background,
+      Paint()
+        ..shader = const RadialGradient(
+          center: Alignment(0, -0.2),
+          radius: 1.1,
+          colors: [AppColors.splashBgTop, AppColors.splashBgBottom],
+        ).createShader(rect),
+    );
+
+    // The Λ letter, flying and growing with the window, fading as it goes.
+    final letterOpacity = (1 - ((t - 0.18) / 0.32)).clamp(0.0, 1.0);
+    if (letterOpacity <= 0) return;
+    canvas.saveLayer(rect, Paint()..color = Color.fromRGBO(0, 0, 0, letterOpacity));
+    canvas
+      ..translate(apex.dx, apex.dy)
+      ..scale(scale)
+      ..translate(-apex0.dx, -apex0.dy)
+      ..translate(0, top);
+    VerixaMonogramPainter(
+      palette: MonogramPalette.splash,
+      spread: layout.finalSpread,
+      showV: false,
+    ).paint(canvas, Size(screen.width, h));
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_LambdaRevealPainter old) => old.progress != progress;
 }

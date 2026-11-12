@@ -22,7 +22,7 @@ abstract final class ProfileImport {
   static ContactInfo contact(ContactInfo cur, ContactInfo inc) => ContactInfo(
     fullName: _fill(cur.fullName, inc.fullName),
     city: _fill(cur.city, inc.city),
-    state: cur.state,
+    state: _fill(cur.state, inc.state),
     linkedin: _fill(cur.linkedin, inc.linkedin),
     github: _fill(cur.github, inc.github),
     portfolio: _fill(cur.portfolio, inc.portfolio),
@@ -37,7 +37,7 @@ abstract final class ProfileImport {
       college: _fill(cur.college, deg.college),
       degree: _fill(cur.degree, deg.degree),
       branch: _fill(cur.branch, deg.branch),
-      currentYear: cur.currentYear,
+      currentYear: _fill(cur.currentYear, deg.currentYear),
       graduationYear: _fill(cur.graduationYear, deg.graduationYear),
       cgpa: _fill(cur.cgpa, deg.cgpa),
       targetRole: cur.targetRole,
@@ -75,7 +75,7 @@ abstract final class ProfileImport {
   }
 
   static CareerGoal careerGoal(CareerGoal cur, CareerGoal inc) => CareerGoal(
-    targetRole: cur.targetRole,
+    targetRole: _fill(cur.targetRole, inc.targetRole),
     domain: cur.domain,
     objective: _fill(cur.objective, inc.objective),
   );

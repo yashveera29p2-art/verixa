@@ -16,6 +16,7 @@ class ParsedDegree {
     this.branch = '',
     this.cgpa = '',
     this.graduationYear = '',
+    this.currentYear = '',
   });
 
   final String college;
@@ -24,8 +25,11 @@ class ParsedDegree {
   final String cgpa;
   final String graduationYear;
 
-  bool get isEmpty =>
-      [college, degree, branch, cgpa, graduationYear].every((v) => v.isEmpty);
+  /// e.g. "3rd year, 5th semester".
+  final String currentYear;
+
+  bool get isEmpty => [college, degree, branch, cgpa, graduationYear, currentYear]
+      .every((v) => v.isEmpty);
 }
 
 /// The backend's parse result (POST /v1/resumes/parse), already mapped onto
@@ -71,6 +75,7 @@ class ParsedResume {
       contact: ContactInfo(
         fullName: _s(c, 'fullName'),
         city: _s(c, 'city'),
+        state: _s(c, 'state'),
         linkedin: _s(c, 'linkedin'),
         github: _s(c, 'github'),
         portfolio: _s(c, 'portfolio'),
@@ -83,9 +88,11 @@ class ParsedResume {
         branch: _s(deg, 'branch'),
         cgpa: _s(deg, 'cgpa'),
         graduationYear: _s(deg, 'graduationYear'),
+        currentYear: _s(deg, 'currentYear'),
       ),
       education: EducationHistory.fromMap(edu),
       careerGoal: CareerGoal(
+        targetRole: _s(_m(json['careerGoal']), 'targetRole'),
         objective: _s(_m(json['careerGoal']), 'objective'),
       ),
       experience: _l(json['experience'])
@@ -109,6 +116,7 @@ class ParsedResume {
   List<ProfileSection> get availableSections => [
     if (contact.fullName.isNotEmpty ||
         contact.city.isNotEmpty ||
+        contact.state.isNotEmpty ||
         contact.linkedin.isNotEmpty ||
         contact.github.isNotEmpty)
       ProfileSection.contact,
@@ -119,7 +127,8 @@ class ParsedResume {
         education.class12.score.isNotEmpty ||
         education.additional.isNotEmpty)
       ProfileSection.education,
-    if (careerGoal.objective.isNotEmpty) ProfileSection.careerGoal,
+    if (careerGoal.objective.isNotEmpty || careerGoal.targetRole.isNotEmpty)
+      ProfileSection.careerGoal,
     if (experience.isNotEmpty) ProfileSection.experience,
     if (projects.isNotEmpty) ProfileSection.projects,
     if (skills.technical.isNotEmpty ||
