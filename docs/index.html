@@ -6,7 +6,7 @@
 <title>Download Verixa</title>
 <meta name="description" content="Verixa: build genuine, ATS-friendly resumes and check resumes for manipulation. Download the Android app.">
 <meta property="og:title" content="Download Verixa">
-<meta property="og:description" content="Genuine, ATS-friendly resumes. Android app, free.">
+<meta property="og:description" content="Genuine, ATS-friendly resumes. Free Android app.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -23,30 +23,33 @@
   main { max-width: 520px; margin: 0 auto; padding: 32px 16px 48px; }
   .brand { font-family: 'DM Serif Display', Lora, serif; font-size: 44px; margin: 0; letter-spacing: .5px; }
   .tag { color: var(--muted); margin: 4px 0 28px; }
-  .card {
-    background: var(--green); color: var(--ivory); border-radius: 14px;
-    padding: 24px 20px; margin-bottom: 28px;
-  }
+  .card { background: var(--green); color: var(--ivory); border-radius: 14px; padding: 24px 20px; margin-bottom: 24px; }
   .card h2 { font-family: 'DM Serif Display', serif; font-weight: 400; margin: 0 0 6px; font-size: 26px; }
   .card p { margin: 0 0 18px; color: #E6E2D7; }
   .btn {
-    display: block; text-align: center; text-decoration: none;
-    background: var(--ivory); color: var(--green); font-weight: 700; font-size: 18px;
+    display: block; width: 100%; text-align: center; text-decoration: none; border: 0; cursor: pointer;
+    background: var(--ivory); color: var(--green); font: 700 18px 'DM Sans', sans-serif;
     padding: 16px; border-radius: 12px; transition: transform .14s ease-out;
   }
   .btn:active { transform: scale(.97); }
   .meta { font-size: 13px; color: #D6DDD7; margin-top: 10px; text-align: center; }
+  .status { display: none; margin-top: 14px; background: rgba(245,241,232,.14); border-radius: 10px; padding: 12px 14px; font-size: 15px; }
+  .status.show { display: block; }
+  .alert { display: none; background: var(--white); border: 1px solid var(--stone); border-left: 4px solid var(--green);
+           border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+  .alert.show { display: block; }
+  .alert b { color: var(--green); }
+  .alert .btn { background: var(--green); color: var(--ivory); margin-top: 12px; }
   h3 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 22px; margin: 0 0 12px; }
-  ol { list-style: none; padding: 0; margin: 0 0 28px; counter-reset: s; }
+  ol { list-style: none; padding: 0; margin: 0 0 24px; counter-reset: s; }
   ol li {
     counter-increment: s; position: relative; background: var(--white);
-    border: 1px solid var(--stone); border-radius: 12px;
-    padding: 14px 14px 14px 56px; margin-bottom: 10px;
+    border: 1px solid var(--stone); border-radius: 12px; padding: 14px 14px 14px 56px; margin-bottom: 10px;
   }
   ol li::before {
-    content: counter(s); position: absolute; left: 14px; top: 13px;
-    width: 28px; height: 28px; border-radius: 50%; background: var(--green);
-    color: var(--ivory); font-weight: 700; display: grid; place-items: center; font-size: 14px;
+    content: counter(s); position: absolute; left: 14px; top: 13px; width: 28px; height: 28px;
+    border-radius: 50%; background: var(--green); color: var(--ivory); font-weight: 700;
+    display: grid; place-items: center; font-size: 14px;
   }
   ol li b { color: var(--green); }
   .note { border-left: 3px solid var(--sage); padding: 4px 0 4px 12px; color: var(--muted); font-size: 14px; margin: 0 0 14px; }
@@ -59,29 +62,78 @@
   <h1 class="brand">VERIXA</h1>
   <p class="tag">Genuine, ATS-friendly resumes, and a scanner that catches manipulated ones.</p>
 
-  <section class="card">
-    <h2>Get the Android app</h2>
-    <p>Free. Works on any Android phone (Android 7 or newer).</p>
-    <a class="btn" href="https://github.com/yashveera29p2-art/verixa/releases/latest/download/Verixa.apk">Download Verixa</a>
-    <div class="meta" id="meta">About 42 MB · Android only</div>
+  <!-- Shown inside WhatsApp / Instagram / Facebook etc., which often block downloads. -->
+  <section class="alert" id="inapp">
+    <b>Open this page in your browser to download.</b><br>
+    Apps like WhatsApp and Instagram can’t download files themselves.
+    <a class="btn" id="openBrowser" href="#">Open in browser</a>
+    <div style="font-size:13px;color:var(--muted);margin-top:8px">If nothing happens: tap <b>⋮</b> (top right) → <b>Open in browser</b>.</div>
   </section>
 
-  <h3>Install in 4 taps</h3>
+  <section class="alert" id="ios">
+    <b>Verixa is Android-only for now.</b><br>
+    iPhones can’t install apps from a link. Open this page on an Android phone.
+  </section>
+
+  <section class="card" id="get">
+    <h2>Get the Android app</h2>
+    <p>Free. Works on any Android phone (Android 7 or newer).</p>
+    <a class="btn" id="download" href="Verixa.apk" download="Verixa.apk" type="application/vnd.android.package-archive">Download Verixa</a>
+    <div class="meta">About 42 MB · Android only</div>
+    <div class="status" id="status">⬇️ Downloading Verixa.apk… When it finishes, <span id="openHint">tap <b>Open</b></span>.</div>
+  </section>
+
+  <h3>Install in 3 taps</h3>
   <ol>
-    <li>Tap <b>Download Verixa</b> above. If Chrome asks, tap <b>Download anyway</b>.</li>
-    <li>When it reaches 100%, tap <b>Open</b> in the bar at the bottom of Chrome, or tap the <b>download notification</b>. (You can also find <b>Verixa.apk</b> in <b>Files → Downloads</b>.)</li>
-    <li>If Android says installs from this source aren’t allowed, tap <b>Settings</b>, turn on <b>Allow from this source</b>, and go back. Then tap <b>Install</b>.</li>
-    <li>Tap <b>Open</b>. Verixa is now on your home screen and in your app list.</li>
+    <li>Tap <b>Download Verixa</b>. If your browser asks, tap <b>Download</b> (or <b>Download anyway</b>).</li>
+    <li id="step2">When it finishes, tap <b>Open</b> in the download message, or tap the <b>download notification</b>.</li>
+    <li>Tap <b>Install</b> (or <b>Update</b>), then <b>Open</b>. Verixa is now on your home screen.</li>
   </ol>
 
-  <p class="note">If Play Protect says the app is unknown, tap <b>More details → Install anyway</b>. Verixa isn’t on the Play Store yet, so Android shows this for any app installed from a link.</p>
-  <p class="note">Already have Verixa? Download again and tap <b>Update</b>. Your account and resumes stay.</p>
-  <p class="note">iPhone isn’t supported. Apple doesn’t allow installing apps from a link.</p>
+  <p class="note">First time? If Android says installs from this source aren’t allowed, tap <b>Settings</b>, turn on <b>Allow from this source</b>, go back and tap <b>Install</b>.</p>
+  <p class="note">If Play Protect says the app is unknown, tap <b>More details → Install anyway</b>. Android shows this for every app that isn’t from the Play Store.</p>
+  <p class="note">Can’t find the file? Open your <b>Files</b> (or <b>My Files</b>) app → <b>Downloads</b> → <b>Verixa.apk</b>.</p>
 
   <footer>
     Verixa is an academic NLP project. Resume files are processed in memory and never stored.
     · <a href="https://github.com/yashveera29p2-art/verixa/releases/latest">All versions</a>
   </footer>
 </main>
+<script>
+  (function () {
+    var ua = navigator.userAgent || '';
+    var isAndroid = /Android/i.test(ua);
+    var isIOS = /iPhone|iPad|iPod/i.test(ua);
+    var inApp = /WhatsApp|Instagram|FBAN|FBAV|FB_IAB|Line\/|LinkedInApp|Snapchat|Twitter|; wv\)|Telegram/i.test(ua);
+
+    if (isIOS) document.getElementById('ios').classList.add('show');
+
+    if (isAndroid && inApp) {
+      document.getElementById('inapp').classList.add('show');
+      // Android intent: opens this same page in the phone's default browser.
+      var here = location.href.replace(/^https?:\/\//, '');
+      document.getElementById('openBrowser').href =
+        'intent://' + here + '#Intent;scheme=https;action=android.intent.action.VIEW;end';
+    } else {
+      document.getElementById('inapp').remove();
+    }
+
+    // Where each browser shows the finished download.
+    var where =
+      /EdgA/i.test(ua) ? 'tap <b>Open</b> at the bottom of Edge, or the download notification' :
+      /SamsungBrowser/i.test(ua) ? 'tap the <b>download notification</b> (or Menu ☰ → <b>Downloads</b> → Verixa.apk)' :
+      /Firefox/i.test(ua) ? 'tap <b>Open</b> in Firefox’s download message, or the notification' :
+      /OPR|Opera/i.test(ua) ? 'tap <b>Open</b> in Opera’s download message, or the notification' :
+      /MiuiBrowser|XiaoMi/i.test(ua) ? 'tap the <b>download notification</b> (or Files → Downloads)' :
+      navigator.brave ? 'tap <b>Open</b> at the bottom of Brave, or the download notification' :
+      'tap <b>Open</b> at the bottom of the screen, or the download notification';
+    document.getElementById('openHint').innerHTML = where;
+    document.getElementById('step2').innerHTML = 'When it finishes, ' + where + '.';
+
+    document.getElementById('download').addEventListener('click', function () {
+      document.getElementById('status').classList.add('show');
+    });
+  })();
+</script>
 </body>
 </html>

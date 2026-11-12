@@ -28,6 +28,8 @@ import '../features/resume/presentation/scan_history_screen.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/splash/splash_timings.dart';
 import '../core/theme/theme.dart';
+import '../core/widgets/particle_dissolve.dart';
+import '../features/splash/splash_exit.dart';
 import 'app_shell.dart';
 import 'routes.dart';
 
@@ -223,8 +225,29 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
-/// Fade transition used when leaving the splash and between top-level areas.
+/// Transition for top-level areas: right after the splash, the splash's
+/// last frame dissolves into tiny dots over this page; otherwise a fade.
 CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child) {
+  final grid = SplashExit.claim(state.pageKey);
+  if (grid != null) {
+    return CustomTransitionPage<void>(
+      key: state.pageKey,
+      child: child,
+      transitionDuration: const Duration(milliseconds: 950),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        animation.addStatusListener((s) {
+          if (s == AnimationStatus.completed) SplashExit.clear();
+        });
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            child,
+            ParticleDissolve(grid: grid, progress: animation),
+          ],
+        );
+      },
+    );
+  }
   return CustomTransitionPage<void>(
     key: state.pageKey,
     child: child,

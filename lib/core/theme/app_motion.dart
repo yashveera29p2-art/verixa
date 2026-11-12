@@ -113,8 +113,9 @@ class _PressScaleState extends State<PressScale> {
   }
 }
 
-/// Fade-through between tab pages: the new tab fades in while scaling up
-/// from 98%. Keeps every tab alive (like IndexedStack).
+/// Switch between tab pages: the new tab fades in while sliding a little
+/// from the side you moved towards (Home → Profile comes from the right)
+/// and settling from 98% scale. Keeps every tab alive (like IndexedStack).
 class FadeThroughStack extends StatefulWidget {
   const FadeThroughStack({
     super.key,
@@ -131,20 +132,19 @@ class FadeThroughStack extends StatefulWidget {
 
 class _FadeThroughStackState extends State<FadeThroughStack>
     with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(
-    vsync: this,
-    duration: AppMotion.medium,
-    value: 1,
-  );
-  late final _curve = CurvedAnimation(
-    parent: _controller,
-    curve: AppMotion.enter,
-  );
+  late final _controller =
+      AnimationController(vsync: this, duration: AppMotion.page, value: 1);
+  late final _curve =
+      CurvedAnimation(parent: _controller, curve: AppMotion.enter);
+  double _direction = 1;
 
   @override
   void didUpdateWidget(FadeThroughStack old) {
     super.didUpdateWidget(old);
-    if (old.index != widget.index) _controller.forward(from: 0);
+    if (old.index != widget.index) {
+      _direction = widget.index > old.index ? 1 : -1;
+      _controller.forward(from: 0);
+    }
   }
 
   @override
@@ -155,12 +155,19 @@ class _FadeThroughStackState extends State<FadeThroughStack>
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _curve,
-      child: ScaleTransition(
-        scale: Tween(begin: 0.98, end: 1.0).animate(_curve),
-        child: IndexedStack(index: widget.index, children: widget.children),
-      ),
+    return AnimatedBuilder(
+      animation: _curve,
+      builder: (context, child) {
+        final t = _curve.value;
+        return Opacity(
+          opacity: t,
+          child: Transform.translate(
+            offset: Offset(28 * _direction * (1 - t), 0),
+            child: Transform.scale(scale: 0.98 + 0.02 * t, child: child),
+          ),
+        );
+      },
+      child: IndexedStack(index: widget.index, children: widget.children),
     );
   }
 }

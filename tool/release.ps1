@@ -6,8 +6,8 @@
 #
 # Produces ONE file, Verixa.apk (~42 MB), for every real Android phone
 # (32- and 64-bit ARM; emulator-only x86 code is left out to keep it small).
-# The asset is always named Verixa.apk, so the download page and this link
-# never change between versions:
+# The download page (https://yashveera29p2-art.github.io/verixa) serves its
+# own copy at docs/Verixa.apk; the release asset is also named Verixa.apk:
 #   https://github.com/yashveera29p2-art/verixa/releases/latest/download/Verixa.apk
 
 param(
@@ -27,6 +27,12 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 Copy-Item build\app\outputs\flutter-apk\app-release.apk "$out\Verixa.apk"
 New-Item -ItemType Directory release -Force | Out-Null
 Copy-Item "$out\Verixa.apk" "release\Verixa-$Version.apk"
+# The download page serves the APK from its own site (docs/Verixa.apk), so
+# every browser downloads it directly instead of bouncing through GitHub.
+Copy-Item "$out\Verixa.apk" "docs\Verixa.apk" -Force
+git add docs/Verixa.apk
+git commit -m "Download page: Verixa $Version APK"
+git push
 
 $notes = @"
 Verixa $Version - one APK for every Android phone.

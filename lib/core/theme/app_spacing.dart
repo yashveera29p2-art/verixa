@@ -25,16 +25,25 @@ abstract final class AppSizes {
   static const double buttonHeight = 52;
   static const double borderWidth = 1;
 
-  // ── Glass bottom navigation bar ──────────────────────────────────────────
-  static const double navBarHeight = 68;
+  // ── Floating glass navigation pill ───────────────────────────────────────
+  /// Height of the pill itself.
+  static const double navPillHeight = 66;
 
-  /// The centre document button is slightly larger than the bar items.
-  static const double navCentreButton = 58;
+  /// Gap between the pill and the screen's bottom edge / sides.
+  static const double navPillGap = 12;
+  static const double navPillSide = 20;
+
+  /// Space pages must leave at the bottom so content clears the pill
+  /// (add the system bottom inset on top of this).
+  static const double navBarHeight = navPillHeight + navPillGap + 8;
+
+  /// The centre scan button inside the pill.
+  static const double navCentreButton = 52;
   static const double navIcon = 24;
 
-  /// Background blur strength behind the frosted bar.
-  static const double glassBlur = 18;
+  /// Background blur strength behind the glass.
+  static const double glassBlur = 26;
 
   /// Translucency of the ivory glass (0 = clear, 1 = solid).
-  static const double glassOpacity = 0.78;
+  static const double glassOpacity = 0.58;
 }

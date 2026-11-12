@@ -2,12 +2,15 @@ import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/theme.dart';
 import '../../core/widgets/verixa_monogram.dart';
+import '../../core/widgets/particle_dissolve.dart';
+import 'splash_exit.dart';
 import 'splash_timings.dart';
 import 'startup_provider.dart';
 
@@ -23,6 +26,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Future<String> _destination;
+  final _sceneKey = GlobalKey();
 
   @override
   void initState() {
@@ -48,6 +52,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _onStatus(AnimationStatus status) async {
     if (status != AnimationStatus.completed) return;
     final route = await _destination;
+    if (!mounted) return;
+    // Hand the final frame to the next screen, which dissolves it into dots.
+    final boundary =
+        _sceneKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+    final grid = boundary == null ? null : await ParticleGrid.capture(boundary);
+    if (grid != null) SplashExit.hold(grid);
     if (mounted) context.go(route);
   }
 
@@ -62,7 +72,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        body: DecoratedBox(
+        body: RepaintBoundary(
+          key: _sceneKey,
+          child: DecoratedBox(
           decoration: const BoxDecoration(
             gradient: RadialGradient(
               center: Alignment(0, -0.2),
@@ -74,6 +86,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             animation: _controller,
             builder: (context, _) => _SplashScene(t: _controller.value),
           ),
+        ),
         ),
       ),
     );
