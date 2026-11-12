@@ -77,7 +77,7 @@ class _GlassNavBarState extends State<GlassNavBar>
     with SingleTickerProviderStateMixin {
   late final _intro = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 900),
+    duration: const Duration(milliseconds: 1400),
     value: widget.playIntro ? 0 : 1,
   );
   bool _waiting = false;
@@ -117,28 +117,49 @@ class _GlassNavBarState extends State<GlassNavBar>
             builder: (context, _) {
               if (_waiting) return const SizedBox.shrink();
               final t = _intro.value;
-              final spring = const _SpringCurve().transform(t);
+              // 1. a green glass bubble appears and settles into the button;
+              final bubble = (t / 0.34).clamp(0.0, 1.0);
+              // 2. the glass pill springs out sideways from it;
+              final grow = ((t - 0.30) / 0.70).clamp(0.0, 1.0);
+              final spring = const _SpringCurve().transform(grow);
               const start = AppSizes.navCentreButton + 14;
               final width = start + (full - start) * spring;
               // Squash-and-stretch: a little flat as it stretches out,
               // a little tall as it snaps back.
-              final scaleY = 1 + 0.07 * math.sin(math.pi * t * 2) * (1 - t);
+              final scaleY = 1 + 0.07 * math.sin(math.pi * grow * 2) * (1 - grow);
+              // 3. then Home and Profile rise in.
               final items = const Interval(0.38, 0.85, curve: Curves.easeOutCubic)
-                  .transform(t);
+                  .transform(grow);
+              final pillWidth = width.clamp(start, full * 1.06);
               return Align(
                 alignment: Alignment.bottomCenter,
                 child: Transform.scale(
                   scaleY: scaleY,
                   alignment: Alignment.bottomCenter,
                   child: SizedBox(
-                    width: width.clamp(start, full * 1.06),
+                    width: pillWidth,
                     height: AppSizes.navPillHeight,
-                    child: GlassPill(
-                      child: OverflowBox(
-                        minWidth: full,
-                        maxWidth: full,
-                        child: _IntroItems(progress: items, child: content),
-                      ),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        if (grow > 0)
+                          Opacity(
+                            opacity: (grow * 5).clamp(0.0, 1.0),
+                            child: const GlassPill(child: SizedBox.expand()),
+                          ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(AppSizes.navPillHeight),
+                          child: OverflowBox(
+                            minWidth: full,
+                            maxWidth: full,
+                            child: _IntroItems(
+                              progress: items,
+                              bubble: bubble,
+                              child: content,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -212,15 +233,22 @@ class _GlassNavBarState extends State<GlassNavBar>
 
 /// Passes the intro's "items" progress down to the side items.
 class _IntroItems extends InheritedWidget {
-  const _IntroItems({required this.progress, required super.child});
+  const _IntroItems({required this.progress, this.bubble = 1, required super.child});
 
   final double progress;
+
+  /// Centre button: 0 = not there yet, 1 = solid button.
+  final double bubble;
 
   static double of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<_IntroItems>()?.progress ?? 1;
 
+  static double bubbleOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_IntroItems>()?.bubble ?? 1;
+
   @override
-  bool updateShouldNotify(_IntroItems old) => old.progress != progress;
+  bool updateShouldNotify(_IntroItems old) =>
+      old.progress != progress || old.bubble != bubble;
 }
 
 /// Side items and the bubble fade and rise in during the intro.
@@ -443,7 +471,9 @@ class _CentreButtonState extends State<_CentreButton> {
         },
         child: _Bounce(
           trigger: _taps,
-          child: CentreScanButton(icon: widget.icon, open: widget.open),
+          child: _BubbleIn(
+            child: CentreScanButton(icon: widget.icon, open: widget.open),
+          ),
         ),
       ),
     );
@@ -479,6 +509,55 @@ class CentreScanButton extends StatelessWidget {
             color: AppColors.ivory,
             size: open ? 30 : 26,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+
+/// The centre button's entrance: a translucent green glass bubble pops in
+/// (with a small overshoot), then turns solid as the icon appears.
+class _BubbleIn extends StatelessWidget {
+  const _BubbleIn({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final b = _IntroItems.bubbleOf(context);
+    if (b >= 1) return child;
+    final pop = const _SpringCurve().transform((b / 0.7).clamp(0.0, 1.0));
+    final solid = Curves.easeOutCubic.transform(((b - 0.55) / 0.45).clamp(0.0, 1.0));
+    const size = AppSizes.navCentreButton;
+    return SizedBox.square(
+      dimension: size,
+      child: Transform.scale(
+        scale: pop,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Green glass.
+            ClipOval(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.botanicalGreen.withValues(alpha: 0.30),
+                    border: Border.all(color: AppColors.white.withValues(alpha: 0.7)),
+                  ),
+                ),
+              ),
+            ),
+            // …turning into the solid button.
+            Opacity(
+              opacity: solid,
+              child: Transform.scale(scale: 0.85 + 0.15 * solid, child: child),
+            ),
+          ],
         ),
       ),
     );

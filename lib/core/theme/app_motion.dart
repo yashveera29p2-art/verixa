@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../widgets/aurora_background.dart';
 
 /// Motion tokens: one timing and easing language for the whole app.
 ///
@@ -20,7 +23,7 @@ abstract final class AppMotion {
   static const exit = Curves.easeInCubic;
 
   /// How far a pressed card or button shrinks.
-  static const pressScale = 0.97;
+  static const pressScale = 0.96;
 
   static const sheet = AnimationStyle(
     duration: page,
@@ -59,6 +62,10 @@ class VerixaPageTransitionsBuilder extends PageTransitionsBuilder {
       curve: AppMotion.enter,
       reverseCurve: AppMotion.exit,
     );
+    // Each page carries its own ivory + aurora background, so pages stay
+    // opaque during transitions (the aurora shares one clock, so it looks
+    // continuous from page to page).
+    child = AuroraBackground(child: child);
     return FadeTransition(
       opacity: Tween(begin: 1.0, end: 0.85).animate(outgoing),
       child: ScaleTransition(
@@ -78,8 +85,11 @@ class VerixaPageTransitionsBuilder extends PageTransitionsBuilder {
   }
 }
 
-/// Shrinks its child slightly while pressed, for tactile buttons and cards.
-/// Doesn't consume the tap: the child's own InkWell / button still fires.
+/// Tactile press for cards, rows and buttons: the child dips to 96% with
+/// a light haptic tick when touched, and springs back when released. A
+/// quick tap still shows the full dip before springing back. Doesn't
+/// consume the tap: the child's own InkWell / button still fires (and
+/// draws the green ripple).
 class PressScale extends StatefulWidget {
   const PressScale({super.key, required this.child, this.enabled = true});
 
@@ -90,25 +100,46 @@ class PressScale extends StatefulWidget {
   State<PressScale> createState() => _PressScaleState();
 }
 
-class _PressScaleState extends State<PressScale> {
+class _PressScaleState extends State<PressScale>
+    with SingleTickerProviderStateMixin {
+  late final _c = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 110),
+    reverseDuration: const Duration(milliseconds: 380),
+  );
+  late final _scale = Tween<double>(begin: 1, end: AppMotion.pressScale).animate(
+    CurvedAnimation(parent: _c, curve: Curves.easeOut, reverseCurve: Curves.elasticOut),
+  );
   bool _down = false;
 
-  void _set(bool down) {
-    if (widget.enabled && _down != down) setState(() => _down = down);
+  void _press() {
+    if (!widget.enabled) return;
+    _down = true;
+    HapticFeedback.lightImpact();
+    _c.forward();
+  }
+
+  Future<void> _release() async {
+    if (!_down) return;
+    _down = false;
+    // Let a quick tap finish its dip so it's visible, then spring back.
+    if (_c.status == AnimationStatus.forward) await _c.forward();
+    if (mounted && !_down) _c.reverse();
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Listener(
-      onPointerDown: (_) => _set(true),
-      onPointerUp: (_) => _set(false),
-      onPointerCancel: (_) => _set(false),
-      child: AnimatedScale(
-        scale: _down ? AppMotion.pressScale : 1,
-        duration: AppMotion.short,
-        curve: _down ? AppMotion.enter : Curves.easeOutBack,
-        child: widget.child,
-      ),
+      onPointerDown: (_) => _press(),
+      onPointerUp: (_) => _release(),
+      onPointerCancel: (_) => _release(),
+      child: ScaleTransition(scale: _scale, child: widget.child),
     );
   }
 }

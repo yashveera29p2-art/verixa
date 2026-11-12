@@ -26,7 +26,9 @@ abstract final class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      scaffoldBackgroundColor: AppColors.ivory,
+      // Pages are transparent: each route paints the ivory + green aurora
+      // behind itself (see AuroraBackground).
+      scaffoldBackgroundColor: const Color(0x00000000),
       textTheme: AppTypography.textTheme,
       // One calm page transition on every platform (see app_motion.dart).
       pageTransitionsTheme: const PageTransitionsTheme(
@@ -37,8 +39,8 @@ abstract final class AppTheme {
       ),
       // Soft, brand-tinted tap feedback instead of the default grey splash.
       splashFactory: InkRipple.splashFactory,
-      splashColor: AppColors.botanicalGreen.withValues(alpha: 0.10),
-      highlightColor: AppColors.botanicalGreen.withValues(alpha: 0.04),
+      splashColor: AppColors.botanicalGreen.withValues(alpha: 0.16),
+      highlightColor: AppColors.botanicalGreen.withValues(alpha: 0.05),
       dividerTheme: const DividerThemeData(
         color: AppColors.stone,
         thickness: AppSizes.borderWidth,
@@ -50,11 +52,11 @@ abstract final class AppTheme {
         selectionHandleColor: AppColors.botanicalGreen,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.ivory,
+        backgroundColor: Color(0x00000000),
         foregroundColor: AppColors.charcoal,
         elevation: 0,
         scrolledUnderElevation: 0,
-        surfaceTintColor: AppColors.ivory,
+        surfaceTintColor: Color(0x00000000),
       ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.charcoal,
