@@ -25,7 +25,7 @@ Set-Location (Join-Path $PSScriptRoot '..')
 $out = 'build\release-apks'
 if (Test-Path $out) { Remove-Item -Recurse -Force $out }
 New-Item -ItemType Directory $out | Out-Null
-$common = @('--release', "--dart-define=VERIXA_API_URL=$ApiUrl", '--obfuscate', '--split-debug-info=build\debug-info')
+$common = @('--release', "--dart-define=VERIXA_API_URL=$ApiUrl", "--dart-define=VERIXA_VERSION=$Version", '--obfuscate', '--split-debug-info=build\debug-info')
 
 flutter build apk @common --target-platform android-arm64
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

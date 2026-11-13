@@ -1,14 +1,18 @@
 import 'dart:math' as math;
 
+import 'dart:async';
+
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 import '../theme/theme.dart';
 
 /// The living background behind every screen: soft, slightly blurred green
 /// leaves drifting down across the ivory in a light breeze, swaying and
 /// slowly turning; as one leaves the screen another enters from the top.
-/// Purely ambient (it doesn't react to touch).
+/// Tilting the phone shifts the leaves the other way (bigger, nearer leaves
+/// more), giving a 3D "looking through a window" depth. No touch reaction.
 ///
 /// [AuroraScope] at the top of the app owns the clock; [AuroraBackground]
 /// paints it once, behind the whole app, so it never restarts or jumps
@@ -51,15 +55,48 @@ class _AuroraInherited extends InheritedNotifier<AuroraState> {
   const _AuroraInherited({required super.notifier, required super.child});
 }
 
-/// The clock that drives the ribbons (seconds since the app opened).
+/// The clock that drives the leaves (seconds since the app opened), plus
+/// the phone's smoothed tilt for the parallax.
 class AuroraState extends ChangeNotifier {
+  AuroraState() {
+    try {
+      _sensor = accelerometerEventStream(
+        samplingPeriod: const Duration(milliseconds: 33),
+      ).listen(
+        (e) {
+          // Gravity along the screen's x/y axes, as a share of g (−1…1).
+          _targetTilt = Offset(
+            (e.x / 9.81).clamp(-1.0, 1.0),
+            ((e.y - 6.5) / 9.81).clamp(-1.0, 1.0), // relative to holding it upright-ish
+          );
+        },
+        onError: (_) {}, // no sensor: leaves just don't tilt
+        cancelOnError: true,
+      );
+    } catch (_) {}
+  }
+
   double time = 0;
   Duration _last = Duration.zero;
+  StreamSubscription<AccelerometerEvent>? _sensor;
+  Offset _targetTilt = Offset.zero;
+
+  /// Smoothed tilt (−1…1 on each axis).
+  Offset tilt = Offset.zero;
 
   void _tick(Duration elapsed) {
-    time += ((elapsed - _last).inMicroseconds / 1e6).clamp(0.0, 0.05);
+    final dt = ((elapsed - _last).inMicroseconds / 1e6).clamp(0.0, 0.05);
     _last = elapsed;
+    time += dt;
+    // Ease towards the latest reading so the motion is fluid, not jittery.
+    tilt = Offset.lerp(tilt, _targetTilt, (dt * 5).clamp(0.0, 1.0))!;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _sensor?.cancel();
+    super.dispose();
   }
 }
 
@@ -162,6 +199,7 @@ class _LeafPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawRect(Offset.zero & size, Paint()..color = AppColors.ivory);
     final t = state?.time ?? 0;
+    final tilt = state?.tilt ?? Offset.zero;
     final w = size.width, h = size.height;
     for (final leaf in _leaves) {
       // Fall and drift, wrapping around so leaves keep coming from the top.
@@ -176,8 +214,12 @@ class _LeafPainter extends CustomPainter {
           0.5 * math.cos(2 * math.pi * t / leaf.swayPeriod + leaf.phase) +
           leaf.phase;
 
+      // Parallax: nearer (bigger) leaves shift more against the tilt.
+      final depth = ((leaf.size - 26) / 38).clamp(0.0, 1.0) * 0.7 + 0.3;
+      final shift = Offset(-tilt.dx * 40 * depth, tilt.dy * 40 * depth);
+
       canvas.save();
-      canvas.translate(x, y);
+      canvas.translate(x + shift.dx, y + shift.dy);
       canvas.rotate(angle);
       canvas.scale(leaf.size);
       final paint = Paint()

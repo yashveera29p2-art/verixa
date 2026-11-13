@@ -44,6 +44,31 @@ class _OtpInputState extends State<OtpInput> {
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(OtpInput old) {
+    super.didUpdateWidget(old);
+    // While a code is checked the field is disabled and loses focus; give
+    // it back (and the keyboard) when it's enabled again, e.g. after a
+    // wrong code, so the user can type straight away.
+    if (!old.enabled && widget.enabled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _focus();
+      });
+    }
+  }
+
+  /// Focuses the hidden field with the caret at the end, and makes sure
+  /// the keyboard is showing even if the field already had focus.
+  void _focus() {
+    final c = widget.controller;
+    c.selection = TextSelection.collapsed(offset: c.text.length);
+    if (_focusNode.hasFocus) {
+      SystemChannels.textInput.invokeMethod<void>('TextInput.show');
+    } else {
+      _focusNode.requestFocus();
+    }
+  }
+
   void _onChanged(String value) {
     setState(() {});
     widget.onChanged?.call(value);
@@ -54,7 +79,8 @@ class _OtpInputState extends State<OtpInput> {
   Widget build(BuildContext context) {
     final text = widget.controller.text;
     return GestureDetector(
-      onTap: () => _focusNode.requestFocus(),
+      behavior: HitTestBehavior.opaque,
+      onTap: widget.enabled ? _focus : null,
       child: Stack(
         children: [
           // The real input, kept transparent behind the boxes.

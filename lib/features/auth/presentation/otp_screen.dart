@@ -91,13 +91,14 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
           },
           onCompleted: (_) => _verify(),
         ),
-        InlineError(state.error),
-        const SizedBox(height: AppSpacing.lg),
+        // Right under the boxes, so the keyboard never hides it.
+        const SizedBox(height: AppSpacing.sm),
         _ResendRow(
           secondsLeft: state.resendSecondsLeft,
           enabled: state.canResend,
           onResend: _resend,
         ),
+        InlineError(state.error),
         const SizedBox(height: AppSpacing.xs),
         Align(
           alignment: Alignment.centerLeft,
@@ -131,8 +132,32 @@ class _ResendRow extends StatelessWidget {
   Widget build(BuildContext context) {
     if (secondsLeft > 0) {
       final time = '0:${secondsLeft.toString().padLeft(2, '0')}';
-      return Text('Resend code in $time',
-          style: AppTypography.bodyMedium.copyWith(color: AppColors.mutedText));
+      return Row(
+        children: [
+          // A small ring that empties as the wait runs out.
+          SizedBox.square(
+            dimension: 18,
+            child: CircularProgressIndicator(
+              value: secondsLeft / PhoneAuthController.resendCooldownSeconds,
+              strokeWidth: 2.2,
+              color: AppColors.botanicalGreen,
+              backgroundColor: AppColors.stone,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          Text.rich(TextSpan(children: [
+            TextSpan(
+              text: 'Resend code in ',
+              style: AppTypography.bodyMedium.copyWith(color: AppColors.mutedText),
+            ),
+            TextSpan(
+              text: time,
+              style: AppTypography.labelLarge
+                  .copyWith(color: AppColors.botanicalGreen, fontSize: 15),
+            ),
+          ])),
+        ],
+      );
     }
     return Row(
       children: [

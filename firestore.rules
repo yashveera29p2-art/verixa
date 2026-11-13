@@ -6,6 +6,27 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Anonymous install counter (one document per phone, written by the
+    // app before login). Nobody can read it from the app; view it in the
+    // Firebase console. Only these fields, with short values.
+    match /installs/{deviceId} {
+      allow read, delete: if false;
+      allow create: if deviceId.size() <= 64 && validInstall(request.resource.data)
+        && request.resource.data.firstOpened == request.time;
+      allow update: if validInstall(request.resource.data)
+        && request.resource.data.firstOpened == resource.data.firstOpened;
+    }
+
+    function validInstall(d) {
+      return d.keys().hasOnly(['manufacturer', 'model', 'android', 'appVersion',
+                               'firstOpened', 'lastOpened'])
+        && d.manufacturer is string && d.manufacturer.size() <= 40
+        && d.model is string && d.model.size() <= 60
+        && d.android is string && d.android.size() <= 12
+        && d.appVersion is string && d.appVersion.size() <= 20
+        && d.lastOpened == request.time;
+    }
+
     function signedIn() {
       return request.auth != null;
     }

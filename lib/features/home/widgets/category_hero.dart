@@ -48,8 +48,13 @@ class CategoryHero extends StatelessWidget {
                     ? to
                     : from;
                 final r = BorderRadius.lerp(card.radius, header.radius, t)!;
+                // From the frosted-glass card to the solid green header.
                 return Material(
-                  color: AppColors.botanicalGreen,
+                  color: Color.lerp(
+                    AppColors.white.withValues(alpha: 0.55),
+                    AppColors.botanicalGreen,
+                    Curves.easeIn.transform(t),
+                  ),
                   borderRadius: r,
                   clipBehavior: Clip.antiAlias,
                   child: Opacity(

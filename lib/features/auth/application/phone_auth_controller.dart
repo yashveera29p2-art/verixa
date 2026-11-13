@@ -116,7 +116,11 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
           return SignedIn(route);
       }
     } catch (e) {
-      state = state.copyWith(isBusy: false, error: friendlyAuthError(e));
+      final message = friendlyAuthError(e);
+      state = state.copyWith(isBusy: false, error: message);
+      // "Please wait 18 seconds…" from the server: show that countdown.
+      final wait = RegExp(r'wait (\d+) seconds').firstMatch(message);
+      if (wait != null) _startCooldown(int.parse(wait.group(1)!));
       return const SendFailed();
     }
   }
@@ -143,9 +147,9 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
     if (state.error != null) state = state.copyWith(clearError: true);
   }
 
-  void _startCooldown() {
+  void _startCooldown([int seconds = resendCooldownSeconds]) {
     _timer?.cancel();
-    state = state.copyWith(resendSecondsLeft: resendCooldownSeconds);
+    state = state.copyWith(resendSecondsLeft: seconds);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final left = state.resendSecondsLeft - 1;
       state = state.copyWith(resendSecondsLeft: left < 0 ? 0 : left);
