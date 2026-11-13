@@ -29,6 +29,7 @@ import '../features/splash/splash_screen.dart';
 import '../features/splash/splash_timings.dart';
 import '../core/theme/theme.dart';
 import '../features/splash/splash_exit.dart';
+import '../core/widgets/aurora_background.dart';
 import 'app_shell.dart';
 import 'routes.dart';
 
@@ -253,7 +254,9 @@ CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child,
         return Stack(
           fit: StackFit.expand,
           children: [
-            _coverFade(secondaryAnimation, child),
+            // Its own light background during the exit, so the green splash
+            // page underneath can't tint the screen while it fades away.
+            AuroraBackground(child: _coverFade(secondaryAnimation, child)),
             SplashExitOverlay(animation: animation, withNav: withNav),
           ],
         );
