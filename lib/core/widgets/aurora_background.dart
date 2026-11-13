@@ -1,13 +1,15 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import '../theme/theme.dart';
 
-/// The living background behind every screen: ivory with three very large,
-/// very soft green glows drifting slowly and endlessly, like light through
-/// leaves. Purely ambient (it doesn't react to touch).
+/// The living background behind every screen: soft, faded ribbons of brand
+/// green drifting across the ivory, each one slowly stretching and
+/// shrinking in length and swelling and thinning in width, like an aurora.
+/// Purely ambient (it doesn't react to touch).
 ///
 /// [AuroraScope] at the top of the app owns the clock; [AuroraBackground]
 /// paints it once, behind the whole app, so it never restarts or jumps
@@ -50,63 +52,53 @@ class _AuroraInherited extends InheritedNotifier<AuroraState> {
   const _AuroraInherited({required super.notifier, required super.child});
 }
 
-/// One glow. It wanders on two layered slow waves with unrelated periods
-/// (so the path never visibly repeats) and gently breathes in size.
-class _Glow {
-  const _Glow({
-    required this.cx,
-    required this.cy,
-    required this.ax,
-    required this.ay,
-    required this.px,
-    required this.py,
-    required this.phase,
-    required this.radius,
-  });
-
-  final double cx, cy; // resting point (0–1 of the screen)
-  final double ax, ay; // how far it wanders (0–1 of the screen)
-  final double px, py; // main wave periods, seconds
-  final double phase;
-  final double radius; // share of the screen's long side
-
-  Offset position(double t, Size s) {
-    double wave(double period, double p) =>
-        math.sin(2 * math.pi * t / period + p) +
-        0.45 * math.sin(2 * math.pi * t / (period * 0.37) + p * 2.3);
-    return Offset(
-      s.width * (cx + ax * wave(px, phase) / 1.45),
-      s.height * (cy + ay * wave(py, phase + 1.7) / 1.45),
-    );
-  }
-
-  double size(double t, Size s) =>
-      math.max(s.width, s.height) * radius * (1 + 0.10 * math.sin(t / 7.3 + phase));
-}
-
+/// The clock that drives the ribbons (seconds since the app opened).
 class AuroraState extends ChangeNotifier {
-  static const _glows = [
-    _Glow(cx: 0.22, cy: 0.20, ax: 0.20, ay: 0.12, px: 23, py: 29, phase: 0.0, radius: 0.62),
-    _Glow(cx: 0.80, cy: 0.50, ax: 0.16, ay: 0.18, px: 31, py: 19, phase: 2.1, radius: 0.55),
-    _Glow(cx: 0.35, cy: 0.85, ax: 0.22, ay: 0.10, px: 27, py: 37, phase: 4.2, radius: 0.60),
-  ];
-
-  double _time = 0;
+  double time = 0;
   Duration _last = Duration.zero;
 
   void _tick(Duration elapsed) {
-    _time += ((elapsed - _last).inMicroseconds / 1e6).clamp(0.0, 0.05);
+    time += ((elapsed - _last).inMicroseconds / 1e6).clamp(0.0, 0.05);
     _last = elapsed;
     notifyListeners();
   }
-
-  /// Where each glow is right now, and how big.
-  List<(Offset, double)> glowsFor(Size size) => [
-        for (final g in _glows) (g.position(_time, size), g.size(_time, size)),
-      ];
 }
 
-/// Ivory with the drifting green glows behind [child].
+/// One ribbon: where it lies, how it waves, and how its length and width
+/// breathe over time. Distances are shares of the screen.
+class _Ribbon {
+  const _Ribbon({
+    required this.y,
+    required this.tilt,
+    required this.thickness,
+    required this.color,
+    required this.alpha,
+    required this.phase,
+    required this.speed,
+  });
+
+  final double y; // resting height of the centre line (0 top – 1 bottom)
+  final double tilt; // how much it slopes across the screen
+  final double thickness; // average width (share of screen height)
+  final Color color;
+  final double alpha; // strength at its brightest (0–1)
+  final double phase;
+  final double speed; // 1 = base pace; slow and calm overall
+}
+
+const _ribbons = [
+  _Ribbon(y: 0.16, tilt: 0.10, thickness: 0.22, color: AppColors.botanicalGreen,
+      alpha: 0.58, phase: 0.0, speed: 1.00),
+  _Ribbon(y: 0.46, tilt: -0.14, thickness: 0.26, color: AppColors.softSage,
+      alpha: 0.62, phase: 2.2, speed: 0.80),
+  _Ribbon(y: 0.78, tilt: 0.12, thickness: 0.22, color: AppColors.botanicalGreen,
+      alpha: 0.50, phase: 4.1, speed: 0.90),
+  // A thin, faint deep-green ribbon for depth.
+  _Ribbon(y: 0.62, tilt: 0.06, thickness: 0.09, color: AppColors.splashBgTop,
+      alpha: 0.22, phase: 1.1, speed: 1.15),
+];
+
+/// Ivory with the drifting ribbons behind [child].
 class AuroraBackground extends StatelessWidget {
   const AuroraBackground({super.key, required this.child});
 
@@ -120,7 +112,7 @@ class AuroraBackground extends StatelessWidget {
       children: [
         Positioned.fill(
           child: RepaintBoundary(
-            child: CustomPaint(painter: _AuroraPainter(state)),
+            child: CustomPaint(painter: _RibbonPainter(state)),
           ),
         ),
         child,
@@ -129,36 +121,76 @@ class AuroraBackground extends StatelessWidget {
   }
 }
 
-class _AuroraPainter extends CustomPainter {
-  _AuroraPainter(this.state) : super(repaint: state);
+class _RibbonPainter extends CustomPainter {
+  _RibbonPainter(this.state) : super(repaint: state);
 
   final AuroraState? state;
 
-  /// Peak strength of a glow's centre ("very subtle").
-  static const _alpha = 0.08;
+  static const _samples = 36;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = Offset.zero & size;
-    canvas.drawRect(rect, Paint()..color = AppColors.ivory);
-    final s = state;
-    if (s == null) return;
-    for (final (centre, radius) in s.glowsFor(size)) {
-      canvas.drawRect(
-        rect,
-        Paint()
-          ..shader = RadialGradient(
-            colors: [
-              AppColors.botanicalGreen.withValues(alpha: _alpha),
-              AppColors.botanicalGreen.withValues(alpha: _alpha * 0.45),
-              AppColors.botanicalGreen.withValues(alpha: 0),
-            ],
-            stops: const [0, 0.45, 1],
-          ).createShader(Rect.fromCircle(center: centre, radius: radius)),
-      );
+    canvas.drawRect(Offset.zero & size, Paint()..color = AppColors.ivory);
+    final t = state?.time ?? 0;
+    for (final r in _ribbons) {
+      _paintRibbon(canvas, size, r, t * r.speed);
     }
   }
 
+  void _paintRibbon(Canvas canvas, Size size, _Ribbon r, double t) {
+    final w = size.width, h = size.height;
+    final p = r.phase;
+
+    // Length: the ribbon spans 90–150% of the width (so it reads as one
+    // long band that runs off the edges) and its middle drifts left and
+    // right, so it visibly stretches and shrinks.
+    final span = w * (1.2 + 0.3 * math.sin(t / 17 + p));
+    final mid = w * (0.5 + 0.22 * math.sin(t / 23 + p * 1.7));
+    final x0 = mid - span / 2, x1 = mid + span / 2;
+
+    // Width: swells and thins over time, and varies along the ribbon.
+    final baseThickness = h * r.thickness * (0.65 + 0.35 * math.sin(t / 13 + p * 2.3));
+
+    final top = <Offset>[], bottom = <Offset>[];
+    for (var i = 0; i <= _samples; i++) {
+      final u = i / _samples; // 0 → 1 along the ribbon
+      final x = x0 + span * u;
+      final nx = x / w;
+      // Centre line: a slow wave plus a slower counter-wave, sloped.
+      final y = h *
+          (r.y +
+              r.tilt * (nx - 0.5) +
+              0.045 * math.sin(2 * math.pi * nx * 1.1 + t / 9 + p) +
+              0.025 * math.sin(2 * math.pi * nx * 2.3 - t / 14 + p * 0.7));
+      // Thicker in the middle, tapering to points at the ends, with a
+      // gentle ripple along its length.
+      final taper = math.pow(math.sin(math.pi * u), 0.45).toDouble();
+      final ripple = 0.75 + 0.25 * math.sin(2 * math.pi * u * 1.6 + t / 7 + p);
+      final half = baseThickness * taper * ripple / 2;
+      top.add(Offset(x, y - half));
+      bottom.add(Offset(x, y + half));
+    }
+    final path = Path()..addPolygon([...top, ...bottom.reversed], true);
+
+    final paint = Paint()
+      // Fade along its length: clear at both ends.
+      ..shader = ui.Gradient.linear(
+        Offset(x0, 0),
+        Offset(x1, 0),
+        [
+          r.color.withValues(alpha: 0),
+          r.color.withValues(alpha: r.alpha),
+          r.color.withValues(alpha: r.alpha),
+          r.color.withValues(alpha: 0),
+        ],
+        const [0, 0.18, 0.82, 1],
+      )
+      // Fade across its width: very soft edges.
+      ..maskFilter = MaskFilter.blur(
+          BlurStyle.normal, (baseThickness * 0.28).clamp(10.0, 52.0));
+    canvas.drawPath(path, paint);
+  }
+
   @override
-  bool shouldRepaint(_AuroraPainter old) => old.state != state;
+  bool shouldRepaint(_RibbonPainter old) => old.state != state;
 }

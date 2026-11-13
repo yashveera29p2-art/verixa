@@ -65,36 +65,45 @@ class SplashExitOverlay extends StatelessWidget {
     final size = MediaQuery.sizeOf(context);
     final layout = WordmarkLayout(size);
     final reveal = CurvedAnimation(
-        parent: animation, curve: const Interval(0.0, 1.0, curve: Curves.easeInOutCubic));
+      parent: animation,
+      curve: const Interval(0.0, 1.0, curve: Curves.easeInOutCubic),
+    );
     final word = CurvedAnimation(
-        parent: animation, curve: const Interval(0.0, 0.45, curve: Curves.easeOut));
+      parent: animation,
+      curve: const Interval(0.0, 0.45, curve: Curves.easeOut),
+    );
 
+    // Material gives the word a proper text style; without it Flutter
+    // draws its yellow "missing text style" underline under the letters.
     return IgnorePointer(
-      child: AnimatedBuilder(
-        animation: animation,
-        builder: (context, _) {
-          final w = word.value;
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              CustomPaint(
-                painter: _CircleRevealPainter(
-                  progress: reveal.value,
-                  centre: layout.center,
+      child: Material(
+        type: MaterialType.transparency,
+        child: AnimatedBuilder(
+          animation: animation,
+          builder: (context, _) {
+            final w = word.value;
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                CustomPaint(
+                  painter: _CircleRevealPainter(
+                    progress: reveal.value,
+                    centre: layout.center,
+                  ),
                 ),
-              ),
-              // The whole word, fading and easing back into the opening.
-              Opacity(
-                opacity: (1 - w).clamp(0.0, 1.0),
-                child: Transform.scale(
-                  scale: 1 - 0.12 * w,
-                  origin: layout.center - size.center(Offset.zero),
-                  child: _Word(layout: layout),
+                // The whole word, fading and easing back into the opening.
+                Opacity(
+                  opacity: (1 - w).clamp(0.0, 1.0),
+                  child: Transform.scale(
+                    scale: 1 - 0.12 * w,
+                    origin: layout.center - size.center(Offset.zero),
+                    child: _Word(layout: layout),
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -158,36 +167,43 @@ class _CircleRevealPainter extends CustomPainter {
     final rect = Offset.zero & size;
     // Far enough to clear the furthest corner, edge included.
     final far = [
-      rect.topLeft, rect.topRight, rect.bottomLeft, rect.bottomRight,
+      rect.topLeft,
+      rect.topRight,
+      rect.bottomLeft,
+      rect.bottomRight,
     ].map((c) => (c - centre).distance).reduce(math.max);
     final radius = (far + _feather) * progress;
+    final background = Paint()
+      ..shader = const RadialGradient(
+        center: Alignment(0, -0.2),
+        radius: 1.1,
+        colors: [AppColors.splashBgTop, AppColors.splashBgBottom],
+      ).createShader(rect);
 
-    canvas.saveLayer(rect, Paint());
-    canvas.drawRect(
-      rect,
+    // Drawn with plain shapes (no layer blending, which some phones'
+    // graphics engines don't support): solid green outside the circle…
+    final outside = Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(rect)
+      ..addOval(Rect.fromCircle(center: centre, radius: radius));
+    canvas.drawPath(outside, background);
+
+    // …and a soft edge just inside it, fading from green to clear.
+    if (radius <= 0) return;
+    final inner = math.max(0.0, radius - _feather);
+    canvas.drawCircle(
+      centre,
+      radius,
       Paint()
-        ..shader = const RadialGradient(
-          center: Alignment(0, -0.2),
-          radius: 1.1,
-          colors: [AppColors.splashBgTop, AppColors.splashBgBottom],
-        ).createShader(rect),
+        ..shader = RadialGradient(
+          colors: [
+            AppColors.splashBgBottom.withValues(alpha: 0),
+            AppColors.splashBgBottom.withValues(alpha: 0),
+            AppColors.splashBgBottom,
+          ],
+          stops: [0, inner / radius, 1],
+        ).createShader(Rect.fromCircle(center: centre, radius: radius)),
     );
-    if (radius > 0) {
-      // Cut the opening: fully clear inside, fading out across the edge.
-      final outer = radius;
-      final inner = math.max(0.0, outer - _feather);
-      canvas.drawCircle(
-        centre,
-        outer,
-        Paint()
-          ..blendMode = BlendMode.dstOut
-          ..shader = RadialGradient(
-            colors: const [Color(0xFF000000), Color(0xFF000000), Color(0x00000000)],
-            stops: [0, inner / outer, 1],
-          ).createShader(Rect.fromCircle(center: centre, radius: outer)),
-      );
-    }
-    canvas.restore();
   }
 
   @override

@@ -13,14 +13,15 @@ import '../../../core/widgets/glass_nav_bar.dart';
 /// tip of each one. Tap outside (or the ×) and it folds back down.
 Future<void> showResumeBranchMenu(BuildContext context) async {
   final router = GoRouter.of(context);
-  final route = await Navigator.of(context, rootNavigator: true).push<String>(
-    PageRouteBuilder<String>(
-      opaque: false,
-      barrierDismissible: false,
-      transitionDuration: const Duration(milliseconds: 680),
-      reverseTransitionDuration: const Duration(milliseconds: 380),
-      pageBuilder: (context, animation, _) => _BranchMenu(animation: animation),
-    ),
+  // Opened as an overlay (not a page) so the screen underneath stays
+  // visible behind the translucent backdrop instead of fading out.
+  final route = await showGeneralDialog<String>(
+    context: context,
+    useRootNavigator: true,
+    barrierDismissible: false,
+    barrierColor: const Color(0x00000000),
+    transitionDuration: const Duration(milliseconds: 680),
+    pageBuilder: (context, animation, _) => _BranchMenu(animation: animation),
   );
   if (route != null) router.push(route);
 }
@@ -113,11 +114,12 @@ class _BranchMenu extends StatelessWidget {
               onTap: close,
               child: AnimatedBuilder(
                 animation: backdrop,
+                // Translucent: the page stays visible behind, just softened.
                 builder: (context, _) => BackdropFilter(
                   filter: ImageFilter.blur(
-                      sigmaX: 7 * backdrop.value, sigmaY: 7 * backdrop.value),
+                      sigmaX: 2.5 * backdrop.value, sigmaY: 2.5 * backdrop.value),
                   child: ColoredBox(
-                    color: AppColors.ivory.withValues(alpha: 0.55 * backdrop.value),
+                    color: AppColors.ivory.withValues(alpha: 0.22 * backdrop.value),
                   ),
                 ),
               ),
