@@ -15,8 +15,11 @@ class VerixaApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       routerConfig: ref.watch(routerProvider),
-      // Owns the background aurora's clock and reacts to every touch.
-      builder: (context, child) => AuroraScope(child: child!),
+      // One ivory + drifting-green background behind every screen; pages
+      // are transparent and sit on top of it.
+      builder: (context, child) => AuroraScope(
+        child: AuroraBackground(child: child!),
+      ),
     );
   }
 }

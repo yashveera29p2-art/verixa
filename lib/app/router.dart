@@ -29,7 +29,6 @@ import '../features/splash/splash_screen.dart';
 import '../features/splash/splash_timings.dart';
 import '../core/theme/theme.dart';
 import '../features/splash/splash_exit.dart';
-import '../core/widgets/aurora_background.dart';
 import 'app_shell.dart';
 import 'routes.dart';
 
@@ -213,14 +212,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           transitionDuration: const Duration(milliseconds: 520),
           reverseTransitionDuration: const Duration(milliseconds: 420),
           // Fade only: the category card's Hero does the visible motion.
-          transitionsBuilder: (context, animation, _, child) => FadeTransition(
-            opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-            child: child,
-          ),
-          child: AuroraBackground(
-            child: CategoryScreen(
-              category: CompanyCategory.fromId(state.pathParameters['category'])!,
-            ),
+          transitionsBuilder: (context, animation, secondary, child) =>
+              _coverFade(secondary, FadeTransition(
+                opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                child: child,
+              )),
+          child: CategoryScreen(
+            category: CompanyCategory.fromId(state.pathParameters['category'])!,
           ),
         ),
         routes: [
@@ -240,9 +238,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 /// Transition for top-level areas: right after the splash, the splash's
 /// exit plays over this page ([withNav]: the V lands in the nav bar's
 /// centre button); otherwise a fade.
-CustomTransitionPage<void> _fadePage(GoRouterState state, Widget page,
+CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child,
     {bool withNav = false}) {
-  final child = AuroraBackground(child: page);
   if (SplashExit.claim(state.pageKey)) {
     if (withNav) SplashExit.navIntro = true;
     return CustomTransitionPage<void>(
@@ -256,7 +253,7 @@ CustomTransitionPage<void> _fadePage(GoRouterState state, Widget page,
         return Stack(
           fit: StackFit.expand,
           children: [
-            child,
+            _coverFade(secondaryAnimation, child),
             SplashExitOverlay(animation: animation, withNav: withNav),
           ],
         );
@@ -268,9 +265,24 @@ CustomTransitionPage<void> _fadePage(GoRouterState state, Widget page,
     child: child,
     transitionDuration: SplashTimings.fadeOut,
     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        FadeTransition(
-          opacity: CurvedAnimation(parent: animation, curve: AppMotion.enter),
-          child: child,
+        _coverFade(
+          secondaryAnimation,
+          FadeTransition(
+            opacity: CurvedAnimation(parent: animation, curve: AppMotion.enter),
+            child: child,
+          ),
         ),
   );
 }
+
+/// Fades a page out while another page opens over it (and back in when
+/// that page closes). Pages are transparent over the shared background, so
+/// without this the covered page would show through the new one.
+Widget _coverFade(Animation<double> secondary, Widget child) => FadeTransition(
+      opacity: Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(
+        parent: secondary,
+        curve: const Interval(0, 0.6, curve: Curves.easeOut),
+        reverseCurve: const Interval(0.4, 1, curve: Curves.easeIn),
+      )),
+      child: child,
+    );

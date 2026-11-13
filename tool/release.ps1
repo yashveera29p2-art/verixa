@@ -1,14 +1,18 @@
-# Builds the shareable APK and publishes it as a GitHub Release.
+# Builds the shareable APKs and publishes them.
 #
-#   .\tool\release.ps1 -ApiUrl https://verixa-api.onrender.com -Version 1.2.0
+#   .\tool\release.ps1 -ApiUrl https://verixa-api.onrender.com -Version 1.6.0
 #
 # Bump `version:` in pubspec.yaml first so phones accept the update.
 #
-# Produces ONE file, Verixa.apk (~42 MB), for every real Android phone
-# (32- and 64-bit ARM; emulator-only x86 code is left out to keep it small).
-# The download page (https://yashveera29p2-art.github.io/verixa) serves its
-# own copy at docs/Verixa.apk; the release asset is also named Verixa.apk:
-#   https://github.com/yashveera29p2-art/verixa/releases/latest/download/Verixa.apk
+# Produces:
+#   Verixa.apk        (~21 MB) 64-bit phones: practically every phone from
+#                     the last 6-7 years. This is what the one link downloads.
+#   Verixa-32bit.apk  (~19 MB) for very old 32-bit-only phones.
+# Both are built with obfuscation and stripped debug info to keep them small.
+#
+# The download page https://yashveera29p2-art.github.io/verixa serves
+# docs/Verixa.apk (and docs/Verixa-32bit.apk) from its own site, so the
+# link never changes and always gives the newest version.
 
 param(
   [Parameter(Mandatory = $true)][string]$ApiUrl,
@@ -21,32 +25,36 @@ Set-Location (Join-Path $PSScriptRoot '..')
 $out = 'build\release-apks'
 if (Test-Path $out) { Remove-Item -Recurse -Force $out }
 New-Item -ItemType Directory $out | Out-Null
+$common = @('--release', "--dart-define=VERIXA_API_URL=$ApiUrl", '--obfuscate', '--split-debug-info=build\debug-info')
 
-flutter build apk --release "--dart-define=VERIXA_API_URL=$ApiUrl" --target-platform android-arm,android-arm64
+flutter build apk @common --target-platform android-arm64
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 Copy-Item build\app\outputs\flutter-apk\app-release.apk "$out\Verixa.apk"
+
+flutter build apk @common --target-platform android-arm
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+Copy-Item build\app\outputs\flutter-apk\app-release.apk "$out\Verixa-32bit.apk"
+
 New-Item -ItemType Directory release -Force | Out-Null
 Copy-Item "$out\Verixa.apk" "release\Verixa-$Version.apk"
-# The download page serves the APK from its own site (docs/Verixa.apk), so
-# every browser downloads it directly instead of bouncing through GitHub.
 Copy-Item "$out\Verixa.apk" "docs\Verixa.apk" -Force
-git add docs/Verixa.apk
+Copy-Item "$out\Verixa-32bit.apk" "docs\Verixa-32bit.apk" -Force
+git add docs/Verixa.apk docs/Verixa-32bit.apk
 git commit -m "Download page: Verixa $Version APK"
 git push
 
 $notes = @"
-Verixa $Version - one APK for every Android phone.
+Verixa $Version
 
-**Easiest install:** open https://yashveera29p2-art.github.io/verixa on the phone and tap Download.
+**Install:** open https://yashveera29p2-art.github.io/verixa on the phone and tap Download.
+The same link always gives the newest version; to update, download again and tap **Update**.
 
-Or download **Verixa.apk** below, open it, and tap **Install** (or **Update**).
-If Play Protect warns, tap **More details -> Install anyway**.
-
-Sign-in uses phone numbers registered by the project owner.
+Files: **Verixa.apk** for almost all phones; **Verixa-32bit.apk** only for very old phones
+where Verixa.apk says "App not installed".
 "@
 # Notes go through a file: PowerShell 5 mangles quotes in long arguments.
 $notesFile = Join-Path $out 'notes.md'
 $notes | Set-Content -Encoding utf8 $notesFile
 $flags = @('--title', "Verixa $Version", '--notes-file', $notesFile, '--latest')
 if ($Draft) { $flags += '--draft' }
-gh release create "v$Version" "$out\Verixa.apk" @flags
+gh release create "v$Version" "$out\Verixa.apk" "$out\Verixa-32bit.apk" @flags

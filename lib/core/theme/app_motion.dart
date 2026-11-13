@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../widgets/aurora_background.dart';
 
 /// Motion tokens: one timing and easing language for the whole app.
 ///
@@ -57,17 +56,15 @@ class VerixaPageTransitionsBuilder extends PageTransitionsBuilder {
       curve: AppMotion.enter,
       reverseCurve: AppMotion.exit,
     );
+    // Pages are transparent over the shared background, so the page
+    // underneath fades out quickly instead of showing through.
     final outgoing = CurvedAnimation(
       parent: secondaryAnimation,
-      curve: AppMotion.enter,
-      reverseCurve: AppMotion.exit,
+      curve: const Interval(0, 0.6, curve: Curves.easeOut),
+      reverseCurve: const Interval(0.4, 1, curve: Curves.easeIn),
     );
-    // Each page carries its own ivory + aurora background, so pages stay
-    // opaque during transitions (the aurora shares one clock, so it looks
-    // continuous from page to page).
-    child = AuroraBackground(child: child);
     return FadeTransition(
-      opacity: Tween(begin: 1.0, end: 0.85).animate(outgoing),
+      opacity: Tween(begin: 1.0, end: 0.0).animate(outgoing),
       child: ScaleTransition(
         scale: Tween(begin: 1.0, end: 0.985).animate(outgoing),
         child: FadeTransition(
