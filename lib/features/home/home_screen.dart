@@ -45,13 +45,33 @@ class HomeScreen extends ConsumerWidget {
                   .copyWith(color: AppColors.mutedText),
             ),
             const SizedBox(height: AppSpacing.sm),
-            for (final category in CompanyCategory.values) ...[
-              CategoryCard(
-                category: category,
-                onTap: () => context.push(AppRoutes.companiesFor(category.id)),
+            // Bento: MNC wide on top, SME and Startup as two squares below.
+            CategoryCard(
+              category: CompanyCategory.mnc,
+              onTap: () => _open(context, CompanyCategory.mnc),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              height: AppSizes.bentoTileHeight,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final (i, c) in const [
+                    CompanyCategory.sme,
+                    CompanyCategory.startup,
+                  ].indexed) ...[
+                    if (i > 0) const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: CategoryCard(
+                        category: c,
+                        square: true,
+                        onTap: () => _open(context, c),
+                      ),
+                    ),
+                  ],
+                ],
               ),
-              const SizedBox(height: AppSpacing.md),
-            ],
+            ),
           ],
         ),
       ),
@@ -97,3 +117,6 @@ class _GreetingState extends State<_Greeting> {
     );
   }
 }
+
+void _open(BuildContext context, CompanyCategory c) =>
+    context.push(AppRoutes.companiesFor(c.id));

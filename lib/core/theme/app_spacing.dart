@@ -23,6 +23,9 @@ abstract final class AppRadius {
 /// Fixed component sizes shared across screens.
 abstract final class AppSizes {
   static const double buttonHeight = 52;
+
+  /// Height of the square SME / Startup tiles on Home.
+  static const double bentoTileHeight = 214;
   static const double borderWidth = 1;
 
   // ── Floating glass navigation pill ───────────────────────────────────────
