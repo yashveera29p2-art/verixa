@@ -169,6 +169,16 @@ def otp_start(body: OtpStart, request: Request) -> dict:
     return {"phone": phone, "session": session, "expiresIn": 300}
 
 
+@app.post("/v1/auth/account/exists")
+def account_exists(body: OtpStart, request: Request) -> dict:
+    """Whether this phone number already has a Verixa account (no SMS sent)."""
+    try:
+        phone, exists = otp.exists(body.phone, _client_ip(request))
+    except otp.OtpError as exc:
+        raise _otp_error(exc) from exc
+    return {"phone": phone, "exists": exists}
+
+
 @app.post("/v1/auth/otp/verify")
 def otp_verify(body: OtpVerify) -> dict:
     """Checks the code and returns a Firebase custom token for the one

@@ -187,3 +187,9 @@ def test_console_auth_token_is_used_directly(monkeypatch):
         assert seen["authToken"] == "console-token"
     finally:
         object.__setattr__(settings, "mc_auth_token", "")
+
+
+def test_account_exists(monkeypatch, fresh_limits):
+    monkeypatch.setattr(otp, "account_exists", lambda phone: phone == "+919876543210")
+    assert otp.exists("98765 43210", "1.2.3.4") == ("+919876543210", True)
+    assert otp.exists("+91 91234 56789", "1.2.3.4") == ("+919123456789", False)

@@ -66,3 +66,4 @@ class OtpLimits:
         self.attempts = SlidingWindow(5, 600)         # 5 tries per code
         self.failed_phone = SlidingWindow(15, 3600)   # 15 wrong codes per number per hour
         self.daily = DailyCap(daily_cap)
+        self.lookups = SlidingWindow(30, 3600)       # 30 account checks per IP per hour

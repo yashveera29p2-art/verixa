@@ -43,3 +43,14 @@ def custom_token_for(phone: str) -> tuple[str, bool]:
         log.info("created account uid=%s", user.uid)
     token = auth.create_custom_token(user.uid, app=app)
     return (token.decode() if isinstance(token, bytes) else token), is_new
+
+
+def account_exists(phone: str) -> bool:
+    """Whether a Verixa account already owns [phone]."""
+    from firebase_admin import auth
+
+    try:
+        auth.get_user_by_phone_number(phone, app=_app())
+        return True
+    except auth.UserNotFoundError:
+        return False

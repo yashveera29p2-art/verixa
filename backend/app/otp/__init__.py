@@ -7,7 +7,7 @@ import secrets
 
 from ..config import settings
 from . import codes, messagecentral
-from .accounts import custom_token_for
+from .accounts import account_exists, custom_token_for
 from .codes import OtpError
 from .limits import OtpLimits
 from .sms import send_otp
@@ -59,6 +59,15 @@ def start(raw_phone: str, client: str) -> tuple[str, str]:
     send_otp(phone, code)
     log.info("otp sent to %s****%s", phone[:5], phone[-2:])
     return phone, codes.issue(_secret, phone, code)
+
+
+def exists(raw_phone: str, client: str) -> tuple[str, bool]:
+    """Returns (normalised phone, whether an account already owns it).
+    Lets "Create account" send existing users to "Log in" instead."""
+    phone = codes.normalise_phone(raw_phone)
+    if not limits.lookups.hit(client):
+        raise RateLimited("Too many requests. Please try again later.", 3600)
+    return phone, account_exists(phone)
 
 
 def finish(token: str, code: str) -> tuple[str, str, bool]:
