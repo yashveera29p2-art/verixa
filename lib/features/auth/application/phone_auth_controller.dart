@@ -36,15 +36,14 @@ class PhoneAuthState {
     String? error,
     bool clearError = false,
     int? resendSecondsLeft,
-  }) =>
-      PhoneAuthState(
-        phoneNumber: phoneNumber ?? this.phoneNumber,
-        verificationId: verificationId ?? this.verificationId,
-        resendToken: resendToken ?? this.resendToken,
-        isBusy: isBusy ?? this.isBusy,
-        error: clearError ? null : (error ?? this.error),
-        resendSecondsLeft: resendSecondsLeft ?? this.resendSecondsLeft,
-      );
+  }) => PhoneAuthState(
+    phoneNumber: phoneNumber ?? this.phoneNumber,
+    verificationId: verificationId ?? this.verificationId,
+    resendToken: resendToken ?? this.resendToken,
+    isBusy: isBusy ?? this.isBusy,
+    error: clearError ? null : (error ?? this.error),
+    resendSecondsLeft: resendSecondsLeft ?? this.resendSecondsLeft,
+  );
 }
 
 /// What the UI should do after sending a code.
@@ -67,7 +66,9 @@ class SendFailed extends SendCodeOutcome {
 }
 
 final phoneAuthControllerProvider =
-    NotifierProvider<PhoneAuthController, PhoneAuthState>(PhoneAuthController.new);
+    NotifierProvider<PhoneAuthController, PhoneAuthState>(
+      PhoneAuthController.new,
+    );
 
 class PhoneAuthController extends Notifier<PhoneAuthState> {
   static const resendCooldownSeconds = 30;
@@ -87,6 +88,15 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
     _timer?.cancel();
     state = PhoneAuthState(phoneNumber: phoneNumber, isBusy: true);
     return _request(phoneNumber);
+  }
+
+  /// "Create account" check: true if [phoneNumber] already has an account,
+  /// so the screen can send the user to "Log in" instead.
+  Future<bool> isExistingAccount(String phoneNumber) async {
+    state = state.copyWith(isBusy: true, clearError: true);
+    final exists = await _auth.accountExists(phoneNumber);
+    state = state.copyWith(isBusy: false);
+    return exists ?? false;
   }
 
   /// Sends the code again to the same number.
@@ -110,8 +120,10 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
           _startCooldown();
           return const CodeSent();
         case OtpAutoVerified(:final user):
-          final route =
-              await routeForUser(user, ref.read(userRepositoryProvider));
+          final route = await routeForUser(
+            user,
+            ref.read(userRepositoryProvider),
+          );
           state = state.copyWith(isBusy: false);
           return SignedIn(route);
       }
@@ -132,8 +144,10 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
     if (verificationId == null || state.isBusy) return null;
     state = state.copyWith(isBusy: true, clearError: true);
     try {
-      final user =
-          await _auth.verifyOtp(verificationId: verificationId, code: code);
+      final user = await _auth.verifyOtp(
+        verificationId: verificationId,
+        code: code,
+      );
       final route = await routeForUser(user, ref.read(userRepositoryProvider));
       state = state.copyWith(isBusy: false);
       return route;

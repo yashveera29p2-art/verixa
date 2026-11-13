@@ -60,9 +60,15 @@ class _JdMatchScreenState extends ConsumerState<JdMatchScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             AppButton(
+              label: 'Create resume for this job',
+              onPressed: () =>
+                  context.push(AppRoutes.resumeNew, extra: _jd.text),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            AppButton(
               label: 'Update my profile',
               style: AppButtonStyle.outlined,
-              onPressed: () => context.go(AppRoutes.profile),
+              onPressed: () => context.push(AppRoutes.profile),
             ),
             TextButton(
               onPressed: controller.reset,

@@ -41,25 +41,33 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
-      child: Scaffold(
-        extendBody: true,
-        body: widget.navigationShell,
-        bottomNavigationBar: GlassNavBar(
-          currentIndex: widget.navigationShell.currentIndex,
-          onTap: _onTabTap,
-          onCentreTap: _openMenu,
-          centreOpen: _menuOpen,
-          playIntro: _playIntro,
-          introDelay: SplashExit.navIntroDelay,
-          left: const GlassNavItem(
-            label: 'Home',
-            icon: Icons.home_outlined,
-            activeIcon: Icons.home,
-          ),
-          right: const GlassNavItem(
-            label: 'Profile',
-            icon: Icons.person_outline,
-            activeIcon: Icons.person,
+      // Back on any tab other than Home returns to Home instead of closing
+      // the app.
+      child: PopScope(
+        canPop: widget.navigationShell.currentIndex == 0,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop) widget.navigationShell.goBranch(0);
+        },
+        child: Scaffold(
+          extendBody: true,
+          body: widget.navigationShell,
+          bottomNavigationBar: GlassNavBar(
+            currentIndex: widget.navigationShell.currentIndex,
+            onTap: _onTabTap,
+            onCentreTap: _openMenu,
+            centreOpen: _menuOpen,
+            playIntro: _playIntro,
+            introDelay: SplashExit.navIntroDelay,
+            left: const GlassNavItem(
+              label: 'Home',
+              icon: Icons.home_outlined,
+              activeIcon: Icons.home,
+            ),
+            right: const GlassNavItem(
+              label: 'Profile',
+              icon: Icons.person_outline,
+              activeIcon: Icons.person,
+            ),
           ),
         ),
       ),

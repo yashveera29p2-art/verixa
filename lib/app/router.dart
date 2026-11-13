@@ -63,8 +63,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.phone,
-        builder: (context, state) =>
-            PhoneScreen(isLogin: state.uri.queryParameters['mode'] == 'login'),
+        builder: (context, state) => PhoneScreen(
+          isLogin: state.uri.queryParameters['mode'] == 'login',
+          alreadyRegistered: state.uri.queryParameters['existing'] == '1',
+          initialPhone: state.extra as String?,
+        ),
       ),
       GoRoute(
         path: AppRoutes.otp,
@@ -156,8 +159,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.resumeNew,
         parentNavigatorKey: _rootKey,
-        builder: (context, state) =>
-            NewResumeScreen(companyId: state.uri.queryParameters['company']),
+        builder: (context, state) => NewResumeScreen(
+          companyId: state.uri.queryParameters['company'],
+          jobDescription: state.extra as String?,
+        ),
       ),
       GoRoute(
         path: AppRoutes.resumes,
@@ -214,10 +219,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           reverseTransitionDuration: const Duration(milliseconds: 420),
           // Fade only: the category card's Hero does the visible motion.
           transitionsBuilder: (context, animation, secondary, child) =>
-              _coverFade(secondary, FadeTransition(
-                opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-                child: child,
-              )),
+              _coverFade(
+                secondary,
+                FadeTransition(
+                  opacity: CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOut,
+                  ),
+                  child: child,
+                ),
+              ),
           child: CategoryScreen(
             category: CompanyCategory.fromId(state.pathParameters['category'])!,
           ),
@@ -239,8 +250,11 @@ final routerProvider = Provider<GoRouter>((ref) {
 /// Transition for top-level areas: right after the splash, the splash's
 /// exit plays over this page ([withNav]: the V lands in the nav bar's
 /// centre button); otherwise a fade.
-CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child,
-    {bool withNav = false}) {
+CustomTransitionPage<void> _fadePage(
+  GoRouterState state,
+  Widget child, {
+  bool withNav = false,
+}) {
   if (SplashExit.claim(state.pageKey)) {
     if (withNav) SplashExit.navIntro = true;
     return CustomTransitionPage<void>(
@@ -282,10 +296,12 @@ CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child,
 /// that page closes). Pages are transparent over the shared background, so
 /// without this the covered page would show through the new one.
 Widget _coverFade(Animation<double> secondary, Widget child) => FadeTransition(
-      opacity: Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(
-        parent: secondary,
-        curve: const Interval(0, 0.6, curve: Curves.easeOut),
-        reverseCurve: const Interval(0.4, 1, curve: Curves.easeIn),
-      )),
-      child: child,
-    );
+  opacity: Tween(begin: 1.0, end: 0.0).animate(
+    CurvedAnimation(
+      parent: secondary,
+      curve: const Interval(0, 0.6, curve: Curves.easeOut),
+      reverseCurve: const Interval(0.4, 1, curve: Curves.easeIn),
+    ),
+  ),
+  child: child,
+);

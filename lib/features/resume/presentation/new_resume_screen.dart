@@ -12,13 +12,17 @@ import '../../companies/application/company_providers.dart';
 import '../../companies/domain/company.dart';
 import '../application/resume_builder_controller.dart';
 import '../domain/resume_version.dart';
+import 'widgets/template_preview.dart';
 
 /// Pick what to tailor a new resume for (feature 9).
 class NewResumeScreen extends ConsumerStatefulWidget {
-  const NewResumeScreen({super.key, this.companyId});
+  const NewResumeScreen({super.key, this.companyId, this.jobDescription});
 
   /// Preselects "Company" with this company (from company detail).
   final String? companyId;
+
+  /// Preselects "Job description" with this text (from a match report).
+  final String? jobDescription;
 
   @override
   ConsumerState<NewResumeScreen> createState() => _NewResumeScreenState();
@@ -26,8 +30,10 @@ class NewResumeScreen extends ConsumerStatefulWidget {
 
 class _NewResumeScreenState extends ConsumerState<NewResumeScreen> {
   final _name = TextEditingController();
-  final _jd = TextEditingController();
-  late ResumeTargetKind _kind = widget.companyId == null
+  late final _jd = TextEditingController(text: widget.jobDescription);
+  late ResumeTargetKind _kind = widget.jobDescription != null
+      ? ResumeTargetKind.job
+      : widget.companyId == null
       ? ResumeTargetKind.general
       : ResumeTargetKind.company;
   ResumeTemplate _template = ResumeTemplate.classic;
@@ -148,6 +154,15 @@ class _NewResumeScreenState extends ConsumerState<NewResumeScreen> {
             onSelected: (t) => setState(() => _template = t),
           ),
           Text(_template.description, style: AppTypography.bodySmall),
+          const SizedBox(height: AppSpacing.md),
+          FormGroupLabel('Preview · ${_template.label}'),
+          TemplatePreview(template: _template),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'Sample layout. Your resume uses your own profile details.',
+            textAlign: TextAlign.center,
+            style: AppTypography.bodySmall.copyWith(color: AppColors.mutedText),
+          ),
           InlineError(error),
         ],
       ),

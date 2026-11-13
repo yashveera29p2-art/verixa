@@ -67,7 +67,13 @@ class ResumeImportController extends Notifier<ResumeImportState> {
   ResumeImportState build() => const ResumeImportState();
 
   Future<void> pickAndParse() async {
-    final picked = await ref.read(resumeFilePickerProvider).pick();
+    final PickedResume? picked;
+    try {
+      picked = await ref.read(resumeFilePickerProvider).pick();
+    } catch (_) {
+      state = state.copyWith(error: 'Couldn’t open the file. Please try again.');
+      return;
+    }
     if (picked == null) return; // cancelled
     if (picked.bytes.length > ApiConfig.maxUploadBytes) {
       state = state.copyWith(error: 'Please choose a file under 5 MB.');
@@ -149,7 +155,8 @@ class ResumeImportController extends Notifier<ResumeImportState> {
             projects: plan.projects,
             skills: plan.skills,
             extras: plan.extras,
-          );
+          )
+          .timeout(const Duration(seconds: 15));
       if (!ref.mounted) return false;
       state = state.copyWith(phase: ImportPhase.done);
       return true;

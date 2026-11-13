@@ -12,7 +12,28 @@
           "package_name": "com.verixa.verixa"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "530503472620-2cfns9bni5e6ues5vdp94f0dcliradfv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.verixa.verixa",
+            "certificate_hash": "6224977513db359e6f68506e8065ae589f3c3f0d"
+          }
+        },
+        {
+          "client_id": "530503472620-bst5f659306ev0k4i5gf5mu5h3ahjvfc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.verixa.verixa",
+            "certificate_hash": "eeeed02159ab0fe0d5e126751af07ca68c5d431d"
+          }
+        },
+        {
+          "client_id": "530503472620-5a2pdojb7llvr1vggfe36c19j2tl4klr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAvlB3u4I6rn2LX8s7_hRFB6kmJvNZID0A"
@@ -20,7 +41,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "530503472620-5a2pdojb7llvr1vggfe36c19j2tl4klr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

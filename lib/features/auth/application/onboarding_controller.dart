@@ -32,7 +32,7 @@ class OnboardingController extends Notifier<AsyncValue<void>> {
             fullName: fullName,
             status: status,
             organisation: organisation,
-          ));
+          )).timeout(const Duration(seconds: 15));
     });
     return !state.hasError;
   }

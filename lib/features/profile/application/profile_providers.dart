@@ -57,7 +57,9 @@ class ProfileSaveController extends Notifier<AsyncValue<void>> {
     }
     state = const AsyncLoading();
     state = await AsyncValue.guard(
-        () => write(uid, ref.read(profileRepositoryProvider)));
+      () => write(uid, ref.read(profileRepositoryProvider))
+          .timeout(const Duration(seconds: 15)),
+    );
     return !state.hasError;
   }
 

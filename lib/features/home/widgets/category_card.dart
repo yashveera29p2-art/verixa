@@ -78,76 +78,85 @@ extension on CategoryCard {
   static const _green = AppColors.botanicalGreen;
 
   Widget _title() => Text(
-        category.title,
-        style: AppTypography.headlineMedium.copyWith(color: _green, height: 1.1),
-      );
+    category.title,
+    style: AppTypography.headlineMedium.copyWith(
+      color: _green,
+      height: 1.1,
+      fontSize: 26,
+    ),
+  );
 
   Widget _fullName(String name) => Text(
-        name,
-        style: AppTypography.labelMedium
-            .copyWith(color: _green, fontSize: 11.5, letterSpacing: 0.2),
-      );
+    name,
+    style: AppTypography.labelMedium.copyWith(
+      color: _green,
+      fontSize: 12.5,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0.2,
+    ),
+  );
 
   Widget _description({int? maxLines}) => Text(
-        category.description,
-        maxLines: maxLines,
-        overflow: maxLines == null ? null : TextOverflow.ellipsis,
-        style: AppTypography.bodySmall.copyWith(
-          color: _green.withValues(alpha: 0.85),
-          fontSize: 12,
-          height: 1.35,
-        ),
-      );
+    category.description,
+    maxLines: maxLines,
+    overflow: maxLines == null ? null : TextOverflow.ellipsis,
+    style: AppTypography.bodySmall.copyWith(
+      color: _green,
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+      height: 1.35,
+    ),
+  );
 
   /// Wide row: icon · text · arrow.
   Widget _wide(String? fullName) => Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm + 2,
+    padding: const EdgeInsets.symmetric(
+      horizontal: AppSpacing.md,
+      vertical: AppSpacing.sm + 2,
+    ),
+    child: Row(
+      children: [
+        _IconFrame(icon: category.icon),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _title(),
+              if (fullName != null) _fullName(fullName),
+              const SizedBox(height: 3),
+              _description(),
+            ],
+          ),
         ),
-        child: Row(
-          children: [
-            _IconFrame(icon: category.icon),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _title(),
-                  if (fullName != null) _fullName(fullName),
-                  const SizedBox(height: 3),
-                  _description(),
-                ],
-              ),
-            ),
-            const SizedBox(width: AppSpacing.xs),
-            const Icon(Icons.arrow_forward, color: _green, size: 18),
-          ],
-        ),
-      );
+        const SizedBox(width: AppSpacing.xs),
+        const Icon(Icons.arrow_forward, color: _green, size: 18),
+      ],
+    ),
+  );
 
   /// Square tile: icon and arrow on top, text anchored to the bottom.
   Widget _square(String? fullName) => Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    padding: const EdgeInsets.all(AppSpacing.md),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            Row(
-              children: [
-                _IconFrame(icon: category.icon),
-                const Spacer(),
-                const Icon(Icons.arrow_forward, color: _green, size: 18),
-              ],
-            ),
+            _IconFrame(icon: category.icon),
             const Spacer(),
-            _title(),
-            if (fullName != null) _fullName(fullName),
-            const SizedBox(height: 4),
-            _description(maxLines: 4),
+            const Icon(Icons.arrow_forward, color: _green, size: 18),
           ],
         ),
-      );
+        const Spacer(),
+        _title(),
+        if (fullName != null) _fullName(fullName),
+        const SizedBox(height: 4),
+        _description(maxLines: 4),
+      ],
+    ),
+  );
 }
 
 /// Green line icon in a thin green outlined square.
@@ -163,9 +172,9 @@ class _IconFrame extends StatelessWidget {
       height: 44,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: AppColors.botanicalGreen, width: 1.2),
+        border: Border.all(color: AppColors.botanicalGreen, width: 1.6),
       ),
-      child: Icon(icon, color: AppColors.botanicalGreen, size: 22),
+      child: Icon(icon, color: AppColors.botanicalGreen, size: 24, weight: 700),
     );
   }
 }

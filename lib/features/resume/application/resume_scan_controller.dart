@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/utils/api_config.dart';
 import '../../auth/application/auth_providers.dart';
 import '../data/resume_api.dart';
+import '../data/resume_file_picker.dart';
 import '../data/scan_history_repository.dart';
 import '../domain/scan_report.dart';
 import 'resume_import_controller.dart';
@@ -59,7 +60,13 @@ class ResumeScanController extends Notifier<ResumeScanState> {
   ResumeScanState build() => const ResumeScanState();
 
   Future<void> pickAndScan() async {
-    final picked = await ref.read(resumeFilePickerProvider).pick();
+    final PickedResume? picked;
+    try {
+      picked = await ref.read(resumeFilePickerProvider).pick();
+    } catch (_) {
+      state = const ResumeScanState(error: 'Couldn’t open the file. Please try again.');
+      return;
+    }
     if (picked == null) return; // cancelled
     if (picked.bytes.length > ApiConfig.maxUploadBytes) {
       state = const ResumeScanState(error: 'Please choose a file under 5 MB.');

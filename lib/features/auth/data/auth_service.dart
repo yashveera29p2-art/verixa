@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'otp_api.dart';
 
@@ -39,9 +40,22 @@ class AuthService {
 
   /// Sends an OTP to [phoneNumber] (E.164, e.g. +919876543210).
   /// [resendToken] is unused (kept so callers don't change).
-  Future<OtpRequestResult> sendOtp(String phoneNumber, {int? resendToken}) async {
+  Future<OtpRequestResult> sendOtp(
+    String phoneNumber, {
+    int? resendToken,
+  }) async {
     final session = await _otp.start(phoneNumber);
     return OtpSent(verificationId: session);
+  }
+
+  /// Whether [phoneNumber] already has an account; null if the server
+  /// couldn't be asked (callers then just carry on with the OTP).
+  Future<bool?> accountExists(String phoneNumber) async {
+    try {
+      return await _otp.accountExists(phoneNumber);
+    } catch (_) {
+      return null;
+    }
   }
 
   /// Signs in with the 6-digit [code] the user typed.
@@ -54,9 +68,8 @@ class AuthService {
     return result.user!;
   }
 
-  /// Links a Google account to the signed-in (phone) user.
-  /// Used later from the Profile screen; requires the Google provider to be
-  /// enabled in the Firebase console.
+  /// Links a Google account to the signed-in (phone) user, using the
+  /// phone's own Google account picker (no browser).
   Future<User> linkGoogleAccount() async {
     final user = _auth.currentUser;
     if (user == null) {
@@ -65,14 +78,38 @@ class AuthService {
         message: 'Sign in with your phone number first.',
       );
     }
-    final result = await user.linkWithProvider(GoogleAuthProvider());
-    return result.user!;
+    final google = GoogleSignIn.instance;
+    await (_googleReady ??= google.initialize());
+    final GoogleSignInAccount account;
+    try {
+      account = await google.authenticate();
+    } on GoogleSignInException catch (e) {
+      throw FirebaseAuthException(
+        code: e.code == GoogleSignInExceptionCode.canceled
+            ? 'canceled'
+            : 'google-sign-in-failed',
+        message: 'Couldn’t open Google sign-in. Please try again.',
+      );
+    }
+    final idToken = account.authentication.idToken;
+    final credential = GoogleAuthProvider.credential(idToken: idToken);
+    try {
+      final result = await user.linkWithCredential(credential);
+      await result.user?.reload();
+      return _auth.currentUser ?? result.user!;
+    } finally {
+      // Forget the picker choice so another account can be picked next time.
+      await google.signOut();
+    }
   }
+
+  Future<void>? _googleReady;
 
   /// Whether a Google account is already linked.
   bool get hasGoogleLinked =>
-      _auth.currentUser?.providerData
-          .any((p) => p.providerId == GoogleAuthProvider.PROVIDER_ID) ??
+      _auth.currentUser?.providerData.any(
+        (p) => p.providerId == GoogleAuthProvider.PROVIDER_ID,
+      ) ??
       false;
 
   Future<void> signOut() => _auth.signOut();

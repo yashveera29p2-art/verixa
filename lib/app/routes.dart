@@ -42,6 +42,10 @@ abstract final class AppRoutes {
   static String phoneFor({required bool isLogin}) =>
       isLogin ? '$phone?mode=login' : phone;
 
+  /// "Log in" for a number that already has an account; the number is
+  /// passed as the route's `extra`.
+  static const phoneExisting = '$phone?mode=login&existing=1';
+
   static String companiesFor(String categoryId) => '$companies/$categoryId';
 
   /// Company detail: /companies/mnc/tcs

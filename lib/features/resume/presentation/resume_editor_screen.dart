@@ -65,10 +65,14 @@ class ResumeEditorScreen extends ConsumerWidget {
       ),
     );
     if (ok != true || !context.mounted) return;
+    _deletedIds.add(id); // stops the editor re-saving it as it closes
     context.pop();
     await deleteResumeVersion(ref, id);
   }
 }
+
+/// Versions deleted in this session; the editor never re-saves these.
+final _deletedIds = <String>{};
 
 class _Message extends StatelessWidget {
   const _Message(this.text);
@@ -107,6 +111,7 @@ class _EditorState extends ConsumerState<_Editor> {
 
   /// Saves the draft (Firestore queues it when offline).
   void _save() {
+    if (_deletedIds.contains(_v.id)) return;
     final v = _v.copyWith(name: _name.text, summary: _summary.text);
     if (_uid == null || v.name.trim().isEmpty) return;
     _v = v;

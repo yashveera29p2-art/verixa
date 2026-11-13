@@ -10,7 +10,9 @@ import '../../auth/application/auth_providers.dart';
 import '../application/profile_providers.dart';
 import '../domain/profile_data.dart';
 import '../domain/profile_section.dart';
+import '../../../core/widgets/glass_nav_bar.dart' show GlassPill;
 import 'widgets/completion_card.dart';
+import 'widgets/profile_popups.dart';
 import 'widgets/section_tile.dart';
 
 /// Profile tab: completion indicator plus the step-by-step sections
@@ -18,9 +20,10 @@ import 'widgets/section_tile.dart';
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
-  Future<void> _signOut(BuildContext context, WidgetRef ref) async {
+  Future<void> _signOut(BuildContext button, WidgetRef ref) async {
+    if (!await confirmSignOut(button)) return;
     await ref.read(authServiceProvider).signOut();
-    if (context.mounted) context.go(AppRoutes.welcome);
+    if (button.mounted) button.go(AppRoutes.welcome);
   }
 
   @override
@@ -49,12 +52,32 @@ class ProfileScreen extends ConsumerWidget {
           data: (data) => ListView(
             padding: EdgeInsets.fromLTRB(
               AppSpacing.pageGutter,
-              AppSpacing.xl,
+              AppSpacing.md,
               AppSpacing.pageGutter,
               navInset + AppSpacing.lg,
             ),
             children: staggered([
               if (data != null) ...[
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Builder(
+                    builder: (button) => _AboutCapsule(
+                      onTap: () => showAboutPanel(
+                        button,
+                        name: data.contact.fullName,
+                        phone: phone,
+                        gmail: ref
+                            .read(currentUserProvider)
+                            ?.providerData
+                            .where((p) => p.providerId == 'google.com')
+                            .map((p) => p.email)
+                            .nonNulls
+                            .firstOrNull,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
                 _Header(data: data, phone: phone),
                 const SizedBox(height: AppSpacing.lg),
                 CompletionCard(
@@ -95,6 +118,13 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 _LinkTile(
+                  icon: Icons.upload_file_outlined,
+                  title: 'Import from a resume',
+                  subtitle: 'Fill your profile from an old PDF or DOCX',
+                  onTap: () => context.push(AppRoutes.resumeImport),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                _LinkTile(
                   icon: Icons.description_outlined,
                   title: 'My resumes',
                   subtitle: 'Tailored versions, PDF/Word export, cover letters',
@@ -116,10 +146,12 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ],
               const SizedBox(height: AppSpacing.lg),
-              AppButton(
-                label: 'Sign out',
-                style: AppButtonStyle.outlined,
-                onPressed: () => _signOut(context, ref),
+              Builder(
+                builder: (button) => AppButton(
+                  label: 'Sign out',
+                  style: AppButtonStyle.outlined,
+                  onPressed: () => _signOut(button, ref),
+                ),
               ),
             ]),
           ),
@@ -205,6 +237,52 @@ class _LinkTile extends StatelessWidget {
                 ),
                 const Icon(Icons.chevron_right, color: AppColors.softSage),
               ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Small glass capsule at the top right: "About".
+class _AboutCapsule extends StatelessWidget {
+  const _AboutCapsule({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: 'About your account and Verixa',
+      excludeSemantics: true,
+      child: PressScale(
+        child: GlassPill(
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.xs,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.info_outline,
+                    size: 18,
+                    color: AppColors.botanicalGreen,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'About',
+                    style: AppTypography.labelLarge.copyWith(
+                      color: AppColors.botanicalGreen,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

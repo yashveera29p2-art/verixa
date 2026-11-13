@@ -194,6 +194,8 @@ class ResumeApi {
     return switch (r.statusCode) {
       401 => 'Your session has expired. Please sign in again.',
       400 || 413 || 415 => detail ?? 'This file can’t be read.',
+      422 =>
+        'Some text is too short or too long. Check the fields and try again.',
       _ =>
         'Something went wrong on our side (${r.statusCode}). Please try again.',
     };
