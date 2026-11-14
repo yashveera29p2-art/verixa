@@ -1,0 +1,667 @@
+{
+  "_note": "General guidance based on public hiring patterns. Not official statements from these companies. Review each entry and update lastReviewed when you do.",
+  "companies": [
+    {
+      "id": "tcs",
+      "name": "Tata Consultancy Services",
+      "category": "MNC",
+      "sector": "IT services & consulting",
+      "summary": "Solid programming basics, a consistent academic record and clear communication for large campus and off-campus drives.",
+      "expectations": {
+        "skills": ["Programming fundamentals (C, Java or Python)", "DBMS & SQL", "Object-oriented programming", "Aptitude & logical reasoning", "Written and spoken English"],
+        "academics": "Mass-recruitment drives commonly set minimum aggregate marks across 10th, 12th and degree (often around 60%) and limit active backlogs. Always check the specific drive's eligibility.",
+        "experience": "Freshers are hired in large numbers; internships and academic projects strengthen the profile.",
+        "traits": ["Willingness to learn new technologies", "Flexibility on location and shifts", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers",
+        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education with percentages/CGPA", "Technical skills", "Academic projects", "Internships", "Certifications", "Achievements & activities"],
+        "emphasise": ["Consistent marks in 10th, 12th and degree", "Core CS subjects and languages you actually know", "Certifications and coding practice", "Clear, error-free English"],
+        "avoid": ["Unexplained education gaps", "Listing tools you can't answer questions on", "Photos, tables and multi-column layouts"],
+        "atsNotes": "Applications usually go through an online portal that parses your resume. Use a single-column layout, standard headings and a text-based PDF."
+      },
+      "sources": ["https://www.tcs.com/careers"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "infosys",
+      "name": "Infosys",
+      "category": "MNC",
+      "sector": "IT services & consulting",
+      "summary": "Logical reasoning, problem-solving and clean coding basics, backed by a steady academic record.",
+      "expectations": {
+        "skills": ["Data structures basics", "Java or Python", "SQL", "Logical and analytical reasoning", "Reading comprehension"],
+        "academics": "Campus drives typically expect a consistent academic record without active backlogs; some specialist roles set higher cut-offs.",
+        "experience": "Primarily fresher hiring for entry roles; specialist and higher-package roles reward stronger coding skills and projects.",
+        "traits": ["Curiosity and self-learning", "Attention to detail", "Professional communication"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers",
+        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education with percentages/CGPA", "Technical skills", "Projects", "Internships", "Certifications", "Extracurriculars"],
+        "emphasise": ["Problem-solving and coding practice (contests, platforms)", "Projects with your specific contribution", "Relevant certifications"],
+        "avoid": ["Generic objectives copied from templates", "Skill ratings like stars or bars", "Graphics and icons"],
+        "atsNotes": "Keep headings standard (Education, Skills, Projects) so automated screening finds each section."
+      },
+      "sources": ["https://www.infosys.com/careers/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "wipro",
+      "name": "Wipro",
+      "category": "MNC",
+      "sector": "IT services & consulting",
+      "summary": "Aptitude, coding basics and adaptability for large-scale fresher hiring.",
+      "expectations": {
+        "skills": ["Programming in one language", "SQL basics", "Quantitative aptitude", "Verbal ability", "Basic networking or cloud awareness"],
+        "academics": "Fresher programmes usually state minimum marks across 10th, 12th and degree and a cap on backlogs; read each programme's criteria.",
+        "experience": "Freshers welcome; work-integrated programmes also hire non-engineering graduates in some years.",
+        "traits": ["Adaptability", "Learning agility", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers",
+        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education with percentages/CGPA", "Technical skills", "Projects", "Certifications", "Achievements"],
+        "emphasise": ["Consistent academics", "One or two solid projects you can explain end to end", "Online course certifications"],
+        "avoid": ["Very long skill lists", "Personal details beyond contact information"],
+        "atsNotes": "A clean, text-based PDF with standard section names parses best on large hiring portals."
+      },
+      "sources": ["https://careers.wipro.com/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "accenture",
+      "name": "Accenture India",
+      "category": "MNC",
+      "sector": "Consulting & technology services",
+      "summary": "Communication, adaptability and business awareness alongside technical fundamentals.",
+      "expectations": {
+        "skills": ["Programming fundamentals", "Cloud or data basics", "Communication and presentation", "Cognitive and technical aptitude"],
+        "academics": "Eligibility is usually based on degree and year of passing with a consistent record; criteria vary by role and drive.",
+        "experience": "Large fresher intake for associate roles; experienced hires are matched to specific capability areas.",
+        "traits": ["Client-facing communication", "Adaptability", "Collaboration"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers, up to 2 pages with experience",
+        "sectionOrder": ["Contact details", "Professional summary (2–3 lines)", "Education", "Skills", "Projects", "Internships / experience", "Certifications", "Leadership & activities"],
+        "emphasise": ["Communication-heavy activities (presentations, events, teaching)", "Cloud and data certifications", "Business impact of projects"],
+        "avoid": ["Jargon without explanation", "Dense paragraphs; use short bullet points"],
+        "atsNotes": "Mirror the job title and key skills from the posting where they genuinely apply to you."
+      },
+      "sources": ["https://www.accenture.com/in-en/careers"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "cognizant",
+      "name": "Cognizant",
+      "category": "MNC",
+      "sector": "IT services & consulting",
+      "summary": "Technical basics and aptitude for entry roles, with coding strength valued for higher tracks.",
+      "expectations": {
+        "skills": ["Programming fundamentals", "SQL", "Aptitude & reasoning", "Communication"],
+        "academics": "Campus drives commonly expect a consistent record and no active backlogs; check each drive's eligibility.",
+        "experience": "Freshers for entry tracks; stronger coding and projects open higher-paying tracks.",
+        "traits": ["Reliability", "Learning agility", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers",
+        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education with percentages/CGPA", "Technical skills", "Projects", "Internships", "Certifications"],
+        "emphasise": ["Coding practice and contest results if you have them", "Projects with clear technologies and outcomes"],
+        "avoid": ["Claims you can't back up in a technical interview", "Decorative templates"],
+        "atsNotes": "Use plain bullet points and keep dates in one consistent format."
+      },
+      "sources": ["https://careers.cognizant.com/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "hcltech",
+      "name": "HCLTech",
+      "category": "MNC",
+      "sector": "IT & engineering services",
+      "summary": "Technical fundamentals plus readiness for infrastructure, engineering or software tracks.",
+      "expectations": {
+        "skills": ["Programming fundamentals", "Networking & operating systems basics", "SQL", "Aptitude"],
+        "academics": "A consistent academic record is generally expected for campus hiring; criteria vary by programme.",
+        "experience": "Fresher programmes plus lateral hiring for infrastructure, cloud and engineering services.",
+        "traits": ["Process discipline", "Flexibility", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers",
+        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education", "Technical skills", "Projects", "Internships", "Certifications"],
+        "emphasise": ["Networking, OS or cloud certifications for infra roles", "Hands-on lab or project work"],
+        "avoid": ["Irrelevant hobbies taking space from technical work"],
+        "atsNotes": "Group skills by type (Languages, Tools, Platforms) so they are easy to scan."
+      },
+      "sources": ["https://www.hcltech.com/careers"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "capgemini",
+      "name": "Capgemini India",
+      "category": "MNC",
+      "sector": "Consulting & IT services",
+      "summary": "Aptitude, communication and coding basics, with a structured multi-round assessment.",
+      "expectations": {
+        "skills": ["Programming fundamentals", "Pseudocode and logic", "English communication", "Aptitude"],
+        "academics": "Fresher hiring usually sets minimum marks and backlog limits; check the drive notice.",
+        "experience": "Freshers for analyst roles; experienced hires by capability.",
+        "traits": ["Communication", "Collaboration", "Adaptability"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers",
+        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education", "Skills", "Projects", "Internships", "Certifications", "Activities"],
+        "emphasise": ["Clear communication examples", "Projects and internships with outcomes"],
+        "avoid": ["Spelling and grammar mistakes", "Overly long objectives"],
+        "atsNotes": "Single-column layout with standard headings; avoid text inside images."
+      },
+      "sources": ["https://www.capgemini.com/in-en/careers/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "deloitte-india",
+      "name": "Deloitte India",
+      "category": "MNC",
+      "sector": "Professional services & consulting",
+      "summary": "Analytical thinking, communication and business sense for consulting, audit, tax and technology roles.",
+      "expectations": {
+        "skills": ["Analytical and problem-solving skills", "Excel and data handling", "Business communication", "Domain knowledge for the role (tech, finance or risk)"],
+        "academics": "Strong academics help; some roles prefer specific degrees such as CA, MBA, B.Com or B.Tech.",
+        "experience": "Campus hiring for analyst roles; internships in consulting, audit or analytics are a plus.",
+        "traits": ["Structured thinking", "Client-ready communication", "Ownership"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers",
+        "sectionOrder": ["Contact details", "Summary (2–3 lines)", "Education", "Internships / experience", "Projects or case competitions", "Skills", "Certifications", "Leadership & activities"],
+        "emphasise": ["Case competitions and analytical projects", "Quantified outcomes", "Leadership roles in clubs or events"],
+        "avoid": ["Purely technical jargon for business roles", "Unquantified claims"],
+        "atsNotes": "Use the exact role title from the posting and keep bullet points action-led (Led, Analysed, Built)."
+      },
+      "sources": ["https://www2.deloitte.com/in/en/careers.html"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "ibm-india",
+      "name": "IBM India",
+      "category": "MNC",
+      "sector": "Technology & consulting",
+      "summary": "Technical depth in cloud, data or AI basics, with curiosity and continuous learning.",
+      "expectations": {
+        "skills": ["Programming (Python, Java or similar)", "Cloud or data fundamentals", "Linux basics", "Problem solving"],
+        "academics": "A solid academic record is expected; specific cut-offs vary by role.",
+        "experience": "Freshers for associate developer and consulting roles; open-source and research work stand out.",
+        "traits": ["Curiosity", "Continuous learning", "Collaboration"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers, up to 2 pages with experience",
+        "sectionOrder": ["Contact details (with GitHub)", "Summary (2 lines)", "Education", "Skills", "Projects", "Internships / experience", "Certifications & badges", "Publications or open source"],
+        "emphasise": ["Cloud, data and AI certifications", "Open-source contributions", "Projects with links"],
+        "avoid": ["Listing every course you attended", "Outdated technologies with no context"],
+        "atsNotes": "Include the main technologies from the posting where they truly match your experience."
+      },
+      "sources": ["https://www.ibm.com/careers"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "microsoft-india",
+      "name": "Microsoft India",
+      "category": "MNC",
+      "sector": "Product technology",
+      "summary": "Strong data structures and algorithms, problem solving and impactful projects. Highly competitive.",
+      "expectations": {
+        "skills": ["Data structures & algorithms", "One strong programming language", "System design basics (for experienced roles)", "Computer science fundamentals"],
+        "academics": "Strong fundamentals matter more than marks alone; good CGPA helps at campus stage.",
+        "experience": "Internships at product companies, competitive programming and substantial projects stand out.",
+        "traits": ["Problem-solving mindset", "Growth mindset", "Clear communication of trade-offs"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Education (brief)", "Experience / internships", "Projects", "Technical skills", "Achievements (contests, awards)"],
+        "emphasise": ["Measurable impact (\"reduced load time by 40%\")", "Contest ratings and ranks", "Projects that show depth, not just tutorials"],
+        "avoid": ["Career objectives", "Long coursework lists", "Soft-skill buzzwords without evidence"],
+        "atsNotes": "Recruiters scan quickly: put the strongest items at the top of each section and keep bullet points to one or two lines."
+      },
+      "sources": ["https://careers.microsoft.com/"],
+      "lastReviewed": "2026-11-11"
+    },
+
+    {
+      "id": "persistent",
+      "name": "Persistent Systems",
+      "category": "SME",
+      "sector": "Software product engineering",
+      "summary": "Hands-on engineering skills and projects that show you can build and ship features.",
+      "expectations": {
+        "skills": ["Java, Python or JavaScript", "Data structures basics", "SQL", "Git", "Web or cloud fundamentals"],
+        "academics": "A consistent record helps; demonstrated coding ability carries significant weight.",
+        "experience": "Freshers with strong projects; internships in product teams are valued.",
+        "traits": ["Ownership", "Hands-on approach", "Collaboration"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (with GitHub)", "Summary (2 lines)", "Technical skills", "Projects", "Internships / experience", "Education", "Certifications"],
+        "emphasise": ["Projects with tech stack and your role", "GitHub activity", "Practical tools (Git, Docker, cloud)"],
+        "avoid": ["Generic objectives", "Skills you haven't used in a project"],
+        "atsNotes": "Name technologies exactly as they appear in the posting (for example 'React', not 'React-based UI')."
+      },
+      "sources": ["https://www.persistent.com/careers/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "mphasis",
+      "name": "Mphasis",
+      "category": "SME",
+      "sector": "IT services (banking & finance focus)",
+      "summary": "Technical basics plus interest in banking, insurance and financial-services systems.",
+      "expectations": {
+        "skills": ["Java or .NET", "SQL", "Testing basics", "Cloud awareness", "Communication"],
+        "academics": "Campus drives usually expect a consistent record without active backlogs.",
+        "experience": "Freshers and laterals; domain exposure to BFSI is a plus.",
+        "traits": ["Reliability", "Domain curiosity", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers",
+        "sectionOrder": ["Contact details", "Summary (2 lines)", "Technical skills", "Projects", "Internships", "Education", "Certifications"],
+        "emphasise": ["Any finance or banking-related projects", "Database and backend skills", "Certifications in cloud or testing"],
+        "avoid": ["Unrelated certifications taking up space"],
+        "atsNotes": "Include domain keywords (banking, payments, insurance) only where your work genuinely involved them."
+      },
+      "sources": ["https://careers.mphasis.com/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "happiest-minds",
+      "name": "Happiest Minds Technologies",
+      "category": "SME",
+      "sector": "Digital transformation services",
+      "summary": "Modern tech skills (cloud, data, security, IoT) and a willingness to learn quickly.",
+      "expectations": {
+        "skills": ["Python or Java", "Cloud fundamentals", "Data or security basics", "Communication"],
+        "academics": "A consistent academic record is generally expected for campus hiring.",
+        "experience": "Freshers with relevant projects; internships in cloud, data or security help.",
+        "traits": ["Adaptability", "Positive attitude", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details", "Summary (2 lines)", "Skills", "Projects", "Internships", "Education", "Certifications"],
+        "emphasise": ["Projects in cloud, data, IoT or security", "Hands-on certifications"],
+        "avoid": ["Buzzwords without a project to show for them"],
+        "atsNotes": "Group skills by area (Cloud, Data, Languages) to match how roles are posted."
+      },
+      "sources": ["https://www.happiestminds.com/careers/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "tata-elxsi",
+      "name": "Tata Elxsi",
+      "category": "SME",
+      "sector": "Design & embedded engineering",
+      "summary": "Embedded, automotive or media-tech skills, or a strong design portfolio for design roles.",
+      "expectations": {
+        "skills": ["Embedded C / C++", "Microcontrollers and RTOS basics", "Python", "For design roles: UX/UI portfolio"],
+        "academics": "Electronics, CS and design graduates are common; consistent academics help.",
+        "experience": "Freshers with embedded or design projects; hardware lab work counts.",
+        "traits": ["Attention to detail", "Creativity", "Engineering rigour"]
+      },
+      "resumePattern": {
+        "length": "1 page (engineering); portfolio link essential for design",
+        "sectionOrder": ["Contact details (portfolio/GitHub)", "Summary (2 lines)", "Technical skills", "Projects", "Internships", "Education", "Certifications"],
+        "emphasise": ["Embedded or automotive projects with hardware used", "Portfolio for design roles", "Tools (Keil, MATLAB, Figma) you actually used"],
+        "avoid": ["Generic software-only resumes for embedded roles"],
+        "atsNotes": "List hardware platforms and protocols (CAN, I2C, SPI) explicitly when relevant."
+      },
+      "sources": ["https://www.tataelxsi.com/careers"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "kpit",
+      "name": "KPIT Technologies",
+      "category": "SME",
+      "sector": "Automotive software",
+      "summary": "Embedded and automotive software skills with strong engineering fundamentals.",
+      "expectations": {
+        "skills": ["C / C++", "Embedded systems", "Automotive protocols (CAN) basics", "MATLAB/Simulink (for some roles)"],
+        "academics": "Engineering graduates in CS, ECE, EEE or mechatronics; consistent record expected.",
+        "experience": "Freshers with embedded or automotive projects; student motorsport teams stand out.",
+        "traits": ["Engineering discipline", "Problem solving", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details", "Summary (2 lines)", "Technical skills", "Projects", "Internships", "Education", "Achievements (e.g. motorsport, robotics)"],
+        "emphasise": ["Embedded and automotive projects", "Competitions like student motorsport or robotics", "Specific microcontrollers and tools"],
+        "avoid": ["Web-only projects for embedded roles"],
+        "atsNotes": "Spell out acronyms once (for example 'Controller Area Network (CAN)') to match more search terms."
+      },
+      "sources": ["https://www.kpit.com/careers/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "cyient",
+      "name": "Cyient",
+      "category": "SME",
+      "sector": "Engineering & technology services",
+      "summary": "Engineering fundamentals across mechanical, electrical, software or geospatial work.",
+      "expectations": {
+        "skills": ["Core engineering for your branch", "CAD or GIS tools (for some roles)", "Programming basics", "Communication"],
+        "academics": "Hires across engineering branches; consistent academics expected.",
+        "experience": "Freshers welcome; branch-specific projects and internships help.",
+        "traits": ["Process orientation", "Quality focus", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details", "Summary (2 lines)", "Education", "Technical skills / tools", "Projects", "Internships", "Certifications"],
+        "emphasise": ["Branch-specific tools (CATIA, AutoCAD, ArcGIS, etc.)", "Projects linked to the role's domain"],
+        "avoid": ["Skipping your core branch skills in favour of trendy topics"],
+        "atsNotes": "Name tools and versions exactly; engineering roles are often screened on specific software."
+      },
+      "sources": ["https://www.cyient.com/careers"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "mastek",
+      "name": "Mastek",
+      "category": "SME",
+      "sector": "Enterprise digital services",
+      "summary": "Enterprise application, data and cloud skills with clear communication.",
+      "expectations": {
+        "skills": ["Java or .NET", "SQL & data basics", "Cloud fundamentals", "Communication"],
+        "academics": "A consistent academic record is generally expected.",
+        "experience": "Freshers and laterals; enterprise or data projects help.",
+        "traits": ["Customer focus", "Reliability", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers",
+        "sectionOrder": ["Contact details", "Summary (2 lines)", "Skills", "Projects", "Internships", "Education", "Certifications"],
+        "emphasise": ["Data and cloud projects", "Enterprise tools you have used (Salesforce, Oracle, etc.)"],
+        "avoid": ["Long lists of soft skills"],
+        "atsNotes": "Keep a clean, single-column layout and consistent date format."
+      },
+      "sources": ["https://www.mastek.com/careers"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "intellect-design",
+      "name": "Intellect Design Arena",
+      "category": "SME",
+      "sector": "Banking & financial software products",
+      "summary": "Product engineering skills with interest in banking and financial technology.",
+      "expectations": {
+        "skills": ["Java", "SQL", "Microservices basics", "Problem solving"],
+        "academics": "Consistent academics expected; finance-related coursework is a plus.",
+        "experience": "Freshers with strong projects; fintech internships help.",
+        "traits": ["Product mindset", "Domain curiosity", "Ownership"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (with GitHub)", "Summary (2 lines)", "Technical skills", "Projects", "Internships", "Education", "Certifications"],
+        "emphasise": ["Backend and database projects", "Any fintech or banking-related work"],
+        "avoid": ["Frontend-only projects for backend roles"],
+        "atsNotes": "Describe projects with problem, technology and result so they read well to both ATS and recruiters."
+      },
+      "sources": ["https://www.intellectdesign.com/careers/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "sonata-software",
+      "name": "Sonata Software",
+      "category": "SME",
+      "sector": "IT services & platforms",
+      "summary": "Practical development skills across Microsoft platforms, cloud and data.",
+      "expectations": {
+        "skills": [".NET or Java", "Azure or other cloud basics", "SQL", "Communication"],
+        "academics": "A consistent academic record is generally expected.",
+        "experience": "Freshers and laterals; Microsoft-stack projects or certifications help.",
+        "traits": ["Adaptability", "Learning agility", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page for freshers",
+        "sectionOrder": ["Contact details", "Summary (2 lines)", "Skills", "Projects", "Internships", "Education", "Certifications"],
+        "emphasise": ["Cloud certifications", "Projects on Microsoft or cloud platforms"],
+        "avoid": ["Listing every IDE and editor you've opened"],
+        "atsNotes": "Match platform names to the posting (Azure, Dynamics 365, Power BI) when you've used them."
+      },
+      "sources": ["https://www.sonata-software.com/careers"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "sasken",
+      "name": "Sasken Technologies",
+      "category": "SME",
+      "sector": "Embedded & telecom engineering",
+      "summary": "Embedded, telecom and device software skills with strong C/C++ fundamentals.",
+      "expectations": {
+        "skills": ["C / C++", "Embedded Linux basics", "Networking & telecom fundamentals", "Debugging skills"],
+        "academics": "CS and ECE graduates are common; consistent record expected.",
+        "experience": "Freshers with embedded or networking projects.",
+        "traits": ["Patience with low-level debugging", "Engineering rigour", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details", "Summary (2 lines)", "Technical skills", "Projects", "Internships", "Education", "Certifications"],
+        "emphasise": ["Embedded Linux, drivers or networking projects", "Specific boards and protocols used"],
+        "avoid": ["Vague project descriptions without the hardware or stack"],
+        "atsNotes": "Include low-level keywords you genuinely know (Linux kernel, device drivers, TCP/IP)."
+      },
+      "sources": ["https://www.sasken.com/careers"],
+      "lastReviewed": "2026-11-11"
+    },
+
+    {
+      "id": "zerodha",
+      "name": "Zerodha",
+      "category": "Startup",
+      "sector": "Fintech / stock broking",
+      "summary": "Self-driven builders who show real, shipped work and depth in their craft.",
+      "expectations": {
+        "skills": ["Strong programming in one language (Go, Python, etc.)", "Linux and systems basics", "Databases", "Ability to learn independently"],
+        "academics": "Degrees and marks matter less than demonstrated skill and work.",
+        "experience": "Open-source contributions and self-built projects are strong signals.",
+        "traits": ["Self-motivation", "Craftsmanship", "Frugal, practical engineering"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (GitHub, portfolio)", "One-line summary", "Projects (with links)", "Experience / internships", "Skills", "Education (brief)"],
+        "emphasise": ["Working projects with links and real users", "Open-source contributions", "What you built, not what you studied"],
+        "avoid": ["Career objectives", "Inflated titles", "Long lists of courses"],
+        "atsNotes": "Keep it simple and link to your work; reviewers often check GitHub directly."
+      },
+      "sources": ["https://zerodha.com/careers/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "razorpay",
+      "name": "Razorpay",
+      "category": "Startup",
+      "sector": "Fintech / payments",
+      "summary": "Strong problem solving, product sense and ownership of shipped features.",
+      "expectations": {
+        "skills": ["Data structures & algorithms", "Backend or frontend engineering", "System design basics", "APIs"],
+        "academics": "Competitive at campus stage; skills and projects matter most.",
+        "experience": "Internships at product companies and substantial projects stand out.",
+        "traits": ["Ownership", "Bias for action", "Customer focus"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
+        "emphasise": ["Impact with numbers", "Payments, APIs or high-scale work if you have it", "Ownership of features end to end"],
+        "avoid": ["Objectives and filler soft skills"],
+        "atsNotes": "Bullet points should start with an action verb and end with a result."
+      },
+      "sources": ["https://razorpay.com/jobs/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "cred",
+      "name": "CRED",
+      "category": "Startup",
+      "sector": "Fintech / consumer",
+      "summary": "High craft and attention to detail in engineering, design and product work.",
+      "expectations": {
+        "skills": ["Strong engineering or design craft", "Mobile or backend depth", "Problem solving"],
+        "academics": "Skills and quality of work outweigh grades.",
+        "experience": "Polished projects, design portfolios or product-company internships.",
+        "traits": ["Attention to detail", "High standards", "Ownership"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (portfolio, GitHub)", "Experience / internships", "Projects", "Skills", "Education"],
+        "emphasise": ["Quality and polish of shipped work", "Portfolio for design roles", "Mobile apps on stores, if any"],
+        "avoid": ["Cluttered layouts", "Generic templates"],
+        "atsNotes": "A clean, well-spaced one-pager reflects the craft they look for."
+      },
+      "sources": ["https://careers.cred.club/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "swiggy",
+      "name": "Swiggy",
+      "category": "Startup",
+      "sector": "Food & quick commerce",
+      "summary": "Problem solvers who can work at scale and move fast on customer-facing products.",
+      "expectations": {
+        "skills": ["Data structures & algorithms", "Backend, mobile or data engineering", "SQL and analytics (for business roles)"],
+        "academics": "Competitive campus hiring; skills and projects weigh heavily.",
+        "experience": "Internships, scalable projects and analytics work stand out.",
+        "traits": ["Bias for action", "Customer obsession", "Ownership"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
+        "emphasise": ["Scale and performance work", "Data-driven decisions with results", "Fast iteration on features"],
+        "avoid": ["Unquantified claims", "Long paragraphs"],
+        "atsNotes": "Use the posting's role title and core stack where they match your experience."
+      },
+      "sources": ["https://careers.swiggy.com/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "zepto",
+      "name": "Zepto",
+      "category": "Startup",
+      "sector": "Quick commerce",
+      "summary": "Speed, ownership and execution in a fast-growing operations-heavy business.",
+      "expectations": {
+        "skills": ["Engineering, product or operations skills for the role", "Data analysis (SQL, Excel)", "Problem solving"],
+        "academics": "Execution and ownership matter more than grades.",
+        "experience": "Internships with measurable outcomes and initiative-driven projects.",
+        "traits": ["Speed of execution", "Ownership", "Comfort with ambiguity"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
+        "emphasise": ["Things you launched or improved, with numbers", "Initiatives you started yourself"],
+        "avoid": ["Passive phrasing (\"was responsible for\")"],
+        "atsNotes": "Short, outcome-focused bullet points work best."
+      },
+      "sources": ["https://www.zeptonow.com/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "meesho",
+      "name": "Meesho",
+      "category": "Startup",
+      "sector": "E-commerce",
+      "summary": "Product-minded engineers and analysts who care about users in smaller cities and towns.",
+      "expectations": {
+        "skills": ["Data structures & algorithms", "Backend, Android or data skills", "SQL and analytics"],
+        "academics": "Skills and projects outweigh marks.",
+        "experience": "Product internships and user-facing projects help.",
+        "traits": ["User empathy", "Ownership", "Bias for action"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
+        "emphasise": ["User impact of your work", "Android or data projects with results"],
+        "avoid": ["Feature lists without outcomes"],
+        "atsNotes": "Describe impact on users, not just features built."
+      },
+      "sources": ["https://www.meesho.io/jobs"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "groww",
+      "name": "Groww",
+      "category": "Startup",
+      "sector": "Fintech / investing",
+      "summary": "Simple, reliable product thinking with strong engineering or analytics skills.",
+      "expectations": {
+        "skills": ["Data structures & algorithms", "Backend, frontend or mobile engineering", "Analytics (for business roles)"],
+        "academics": "Competitive; skills and projects weigh heavily.",
+        "experience": "Product internships and projects with real users.",
+        "traits": ["Customer focus", "Ownership", "Simplicity"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
+        "emphasise": ["Reliability and scale in your projects", "Finance-related projects if any"],
+        "avoid": ["Overloaded skill sections"],
+        "atsNotes": "Keep skills concise and grouped; highlight the ones the posting asks for."
+      },
+      "sources": ["https://groww.in/careers"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "phonepe",
+      "name": "PhonePe",
+      "category": "Startup",
+      "sector": "Fintech / payments",
+      "summary": "Engineering for scale and reliability on high-volume payment systems.",
+      "expectations": {
+        "skills": ["Data structures & algorithms", "Java or backend engineering", "Distributed systems basics", "Android (for mobile roles)"],
+        "academics": "Competitive campus hiring; strong fundamentals expected.",
+        "experience": "Internships and projects that handle scale, concurrency or reliability.",
+        "traits": ["Ownership", "Reliability mindset", "Problem solving"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements (contests)"],
+        "emphasise": ["Performance and reliability results", "Competitive programming ranks"],
+        "avoid": ["Generic CRUD projects without depth"],
+        "atsNotes": "Name the specific technologies (Kafka, Redis, Spring) you used, where true."
+      },
+      "sources": ["https://www.phonepe.com/careers/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "postman",
+      "name": "Postman",
+      "category": "Startup",
+      "sector": "Developer tools (SaaS)",
+      "summary": "Developer empathy and strong engineering for API tools used worldwide.",
+      "expectations": {
+        "skills": ["JavaScript / Node.js", "APIs and HTTP", "Data structures & algorithms", "Testing"],
+        "academics": "Skills and projects matter most.",
+        "experience": "Developer-tool projects, API work and open source stand out.",
+        "traits": ["Developer empathy", "Ownership", "Collaboration"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (GitHub)", "Experience / internships", "Projects", "Skills", "Education", "Open source"],
+        "emphasise": ["API-related projects", "Open-source contributions", "Developer community activity"],
+        "avoid": ["Projects without code links"],
+        "atsNotes": "Link your GitHub and keep project descriptions technical and specific."
+      },
+      "sources": ["https://www.postman.com/company/careers/"],
+      "lastReviewed": "2026-11-11"
+    },
+    {
+      "id": "dream-sports",
+      "name": "Dream Sports",
+      "category": "Startup",
+      "sector": "Sports technology",
+      "summary": "Engineering for high-traffic consumer products and a passion for sports.",
+      "expectations": {
+        "skills": ["Data structures & algorithms", "Backend or mobile engineering", "Scalability basics"],
+        "academics": "Competitive; strong fundamentals expected.",
+        "experience": "Internships and projects that handle traffic spikes or real-time data.",
+        "traits": ["Passion for sports", "Ownership", "Teamwork"]
+      },
+      "resumePattern": {
+        "length": "1 page",
+        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
+        "emphasise": ["Real-time or high-traffic work", "Sports-related projects if any"],
+        "avoid": ["Unquantified performance claims"],
+        "atsNotes": "Quantify scale where you can (users, requests per second, latency)."
+      },
+      "sources": ["https://www.dreamsports.group/"],
+      "lastReviewed": "2026-11-11"
+    }
+  ]
+}
