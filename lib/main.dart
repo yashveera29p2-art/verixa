@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/app.dart';
 import 'core/utils/install_counter.dart';
+import 'core/utils/perf_probe.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -13,4 +14,5 @@ Future<void> main() async {
   // Anonymous install count (device model, app version; no personal data).
   recordInstall(FirebaseFirestore.instance);
   runApp(const ProviderScope(child: VerixaApp()));
+  startPerfProbe();
 }

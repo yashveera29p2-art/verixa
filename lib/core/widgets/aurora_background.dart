@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'dart:async';
 
@@ -254,25 +255,51 @@ class _LeafPainter extends CustomPainter {
       canvas.save();
       canvas.translate(x + shift.dx, y + shift.dy);
       canvas.rotate(angle);
-      canvas.scale(leaf.size);
-      final paint = Paint()
-        ..color = leaf.color.withValues(alpha: leaf.alpha)
-        // Soft, slightly out-of-focus edges (blur is in leaf units here).
-        ..maskFilter =
-            lite ? null : MaskFilter.blur(BlurStyle.normal, 2.2 / leaf.size);
-      canvas.drawPath(_shape, paint);
-      // A faint midrib.
-      canvas.drawLine(
-        const Offset(0, -0.42),
-        const Offset(0, 0.38),
-        Paint()
-          ..color = AppColors.ivory.withValues(alpha: 0.35)
-          ..strokeWidth = 0.035
-          ..strokeCap = StrokeCap.round,
+      // The soft-edged leaf is drawn once into an image and reused every
+      // frame: much cheaper than blurring 14 shapes 60 times a second.
+      final sprite = _sprite(i, leaf);
+      final side = leaf.size + _pad;
+      canvas.drawImageRect(
+        sprite,
+        Rect.fromLTWH(0, 0, sprite.width.toDouble(), sprite.height.toDouble()),
+        Rect.fromCenter(center: Offset.zero, width: side, height: side),
+        _spritePaint,
       );
       canvas.restore();
     }
   }
+
+  static const _pad = 16.0; // room for the blurred edge
+  static const _spriteScale = 2.5; // sharp on high-density screens
+  static final _sprites = <int, ui.Image>{};
+  static final _spritePaint = Paint()..filterQuality = FilterQuality.medium;
+
+  static ui.Image _sprite(int i, _Leaf leaf) => _sprites[i] ??= () {
+        final side = leaf.size + _pad;
+        final recorder = ui.PictureRecorder();
+        final c = Canvas(recorder)
+          ..scale(_spriteScale)
+          ..translate(side / 2, side / 2)
+          ..scale(leaf.size);
+        c.drawPath(
+          _shape,
+          Paint()
+            ..color = leaf.color.withValues(alpha: leaf.alpha)
+            // Soft, slightly out-of-focus edges (blur is in leaf units).
+            ..maskFilter = MaskFilter.blur(BlurStyle.normal, 2.2 / leaf.size),
+        );
+        // A faint midrib.
+        c.drawLine(
+          const Offset(0, -0.42),
+          const Offset(0, 0.38),
+          Paint()
+            ..color = AppColors.ivory.withValues(alpha: 0.35)
+            ..strokeWidth = 0.035
+            ..strokeCap = StrokeCap.round,
+        );
+        final px = (side * _spriteScale).ceil();
+        return recorder.endRecording().toImageSync(px, px);
+      }();
 
   @override
   bool shouldRepaint(_LeafPainter old) => old.state != state;
