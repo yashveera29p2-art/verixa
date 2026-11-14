@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../domain/match_report.dart';
+import '../../../../core/widgets/disclaimer_note.dart';
 
 /// JD match report: score, job summary, requirement checklist, skill gaps
 /// and suggestions (feature 8).
@@ -67,6 +68,8 @@ class MatchReportView extends StatelessWidget {
               ),
             ),
         ],
+        const SizedBox(height: AppSpacing.md),
+        const DisclaimerNote(Disclaimers.match),
       ],
     );
   }

@@ -9,6 +9,7 @@ import '../application/company_providers.dart';
 import '../domain/company_category.dart';
 import '../../home/widgets/category_hero.dart';
 import 'widgets/company_tile.dart';
+import '../../../core/widgets/disclaimer_note.dart';
 
 /// List of companies in one category (MNC / SME / Startup).
 class CategoryScreen extends ConsumerWidget {
@@ -86,6 +87,17 @@ class CategoryScreen extends ConsumerWidget {
                               ),
                             ),
                           ),
+                        ),
+                      ),
+                      const SliverPadding(
+                        padding: EdgeInsets.fromLTRB(
+                          AppSpacing.pageGutter,
+                          0,
+                          AppSpacing.pageGutter,
+                          AppSpacing.xl,
+                        ),
+                        sliver: SliverToBoxAdapter(
+                          child: DisclaimerNote(Disclaimers.notAffiliated),
                         ),
                       ),
                     ],

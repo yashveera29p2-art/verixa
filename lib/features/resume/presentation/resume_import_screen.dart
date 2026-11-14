@@ -9,6 +9,7 @@ import '../../../core/widgets/auth_page.dart';
 import '../application/resume_import_controller.dart';
 import '../domain/parsed_resume.dart';
 import 'widgets/import_section_card.dart';
+import '../../../core/widgets/disclaimer_note.dart';
 
 /// A parse result handed over from the scan report, so the user goes
 /// straight to reviewing the genuine (visible-text) details.
@@ -85,6 +86,11 @@ class _ResumeImportScreenState extends ConsumerState<ResumeImportScreen> {
             _UploadingCard(fileName: state.fileName)
           else
             const _HowItWorks(),
+          const SizedBox(height: AppSpacing.sm),
+          const DisclaimerNote(
+            Disclaimers.importPrivacy,
+            icon: Icons.lock_outline,
+          ),
           InlineError(state.error),
         ],
       );

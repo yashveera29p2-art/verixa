@@ -13,6 +13,7 @@ import '../../companies/domain/company.dart';
 import '../application/resume_builder_controller.dart';
 import '../domain/resume_version.dart';
 import 'widgets/template_preview.dart';
+import '../../../core/widgets/disclaimer_note.dart';
 
 /// Pick what to tailor a new resume for (feature 9).
 class NewResumeScreen extends ConsumerStatefulWidget {
@@ -162,6 +163,11 @@ class _NewResumeScreenState extends ConsumerState<NewResumeScreen> {
             'Sample layout. Your resume uses your own profile details.',
             textAlign: TextAlign.center,
             style: AppTypography.bodySmall.copyWith(color: AppColors.mutedText),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          const DisclaimerNote(
+            Disclaimers.genuineResume,
+            icon: Icons.verified_outlined,
           ),
           InlineError(error),
         ],

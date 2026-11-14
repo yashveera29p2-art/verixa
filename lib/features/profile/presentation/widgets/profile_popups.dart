@@ -5,6 +5,7 @@ import '../../../../core/utils/install_counter.dart' show appVersion;
 import '../../../../core/utils/phone_utils.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/glass_popup.dart';
+import '../../../../core/widgets/disclaimer_note.dart';
 
 /// Asks "Sign out?" in a glass bar that grows out of the Sign out button.
 /// Returns true if the user confirmed.
@@ -153,6 +154,14 @@ class _AboutContent extends StatelessWidget {
                 icon: Icons.info_outline,
                 label: 'Version',
                 value: appVersion,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              const _Label('PLEASE NOTE'),
+              const DisclaimerNote(Disclaimers.notAffiliated),
+              const DisclaimerNote(
+                'Company guidance, ATS scores and match scores are '
+                'estimates to help you prepare, not guarantees of '
+                'shortlisting or selection.',
               ),
               const SizedBox(height: AppSpacing.md),
               const _Label('CREDITS'),

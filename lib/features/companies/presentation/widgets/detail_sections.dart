@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../domain/company.dart';
+import '../../../../core/widgets/disclaimer_note.dart';
 
 /// Serif section heading, e.g. "What they look for".
 class SectionTitle extends StatelessWidget {
@@ -302,12 +303,9 @@ class GuidanceNote extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            'General guidance based on public hiring patterns — not an '
-            'official statement from the company. Always check the actual '
-            'job posting.',
-            style: small,
-          ),
+          Text(Disclaimers.companyGuidance, style: small),
+          const SizedBox(height: AppSpacing.xs),
+          Text(Disclaimers.notAffiliated, style: small),
           const SizedBox(height: AppSpacing.sm),
           Text('Last reviewed: $_reviewed', style: small),
           if (sources.isNotEmpty) ...[

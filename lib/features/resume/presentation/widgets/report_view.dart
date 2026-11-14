@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../domain/scan_report.dart';
+import '../../../../core/widgets/disclaimer_note.dart';
 
 /// The full security + ATS report (features 2–4). Used for a fresh scan
 /// and for scans opened from history.
@@ -40,11 +41,11 @@ class ReportView extends StatelessWidget {
             _Suggestion(number: i + 1, text: report.suggestions[i]),
         ],
         const SizedBox(height: AppSpacing.md),
-        Text(
+        const DisclaimerNote(
           'The ATS score is an estimate — every applicant tracking system '
           'works differently.',
-          style: AppTypography.bodySmall,
         ),
+        const DisclaimerNote(Disclaimers.scan, icon: Icons.shield_outlined),
       ],
     );
   }
