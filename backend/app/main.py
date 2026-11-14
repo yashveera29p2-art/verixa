@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 from contextlib import asynccontextmanager
 
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile, status
 
 from .auth import CurrentUser, current_user
@@ -41,6 +42,19 @@ app = FastAPI(
     version="0.9.0",
     description="Resume parsing, security scanning, job matching and DOCX export for the Verixa app.",
     lifespan=_lifespan,
+)
+
+# The iPhone web app (GitHub Pages) and local web testing call the API from a
+# browser, which needs CORS. Native apps don't send an Origin, so they're
+# unaffected.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://yashveera29p2-art.github.io"],
+    allow_origin_regex=r"http://(localhost|127\.0\.0\.1)(:\d+)?",
+    allow_methods=["GET", "POST"],
+    allow_headers=["Authorization", "Content-Type"],
+    expose_headers=["Retry-After", "Content-Disposition"],
+    max_age=86400,
 )
 
 

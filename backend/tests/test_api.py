@@ -57,3 +57,16 @@ def test_requires_sign_in_when_auth_is_on(monkeypatch):
     assert _upload(make_pdf(STUDENT)).status_code == 401
     bad = _upload(make_pdf(STUDENT), headers={"Authorization": "Bearer not-a-real-token"})
     assert bad.status_code == 401
+
+
+def test_cors_allows_web_app():
+    r = client.options(
+        "/v1/auth/otp/start",
+        headers={
+            "Origin": "https://yashveera29p2-art.github.io",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert r.status_code == 200
+    assert r.headers["access-control-allow-origin"] == "https://yashveera29p2-art.github.io"
