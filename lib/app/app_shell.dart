@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/widgets/glass_nav_bar.dart';
+import '../core/widgets/motion_prompt.dart';
 import '../features/resume/presentation/resume_branch_menu.dart';
 import '../features/splash/splash_exit.dart';
 
@@ -22,6 +23,15 @@ class _AppShellState extends State<AppShell> {
 
   /// Pop the pill out of the centre button when we've just left the splash.
   final bool _playIntro = SplashExit.takeNavIntro();
+
+  @override
+  void initState() {
+    super.initState();
+    // iPhone web app: offer tilt-reactive leaves once, after the intro.
+    Future.delayed(const Duration(milliseconds: 1400), () {
+      if (mounted) maybeAskForMotion(context);
+    });
+  }
 
   void _onTabTap(int index) {
     widget.navigationShell.goBranch(

@@ -1,4 +1,3 @@
-import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 
@@ -43,7 +42,7 @@ class CategoryCard extends StatelessWidget {
             borderRadius: _radius,
             child: BackdropFilter(
               // Light blur: the leaves behind stay recognisable.
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              filter: AppGlass.filter(5),
               child: Material(
                 type: MaterialType.transparency,
                 child: Ink(
@@ -53,8 +52,8 @@ class CategoryCard extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        AppColors.white.withValues(alpha: 0.34),
-                        AppColors.ivory.withValues(alpha: 0.18),
+                        AppColors.white.withValues(alpha: AppGlass.fill(0.34)),
+                        AppColors.ivory.withValues(alpha: AppGlass.fill(0.18)),
                       ],
                     ),
                     border: Border.all(color: green.withValues(alpha: 0.75)),
@@ -62,7 +61,17 @@ class CategoryCard extends StatelessWidget {
                   child: InkWell(
                     onTap: onTap,
                     borderRadius: _radius,
-                    child: square ? _square(fullName) : _wide(fullName),
+                    child: Stack(
+                      children: [
+                        square ? _square(fullName) : _wide(fullName),
+                        Positioned.fill(
+                          child: SpecularRim(
+                            radius: AppRadius.lg,
+                            strength: 0.8,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

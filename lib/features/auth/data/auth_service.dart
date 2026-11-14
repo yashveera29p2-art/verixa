@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'otp_api.dart';
@@ -77,6 +78,11 @@ class AuthService {
         code: 'no-current-user',
         message: 'Sign in with your phone number first.',
       );
+    }
+    if (kIsWeb) {
+      // Web app: Google's own sign-in window.
+      final result = await user.linkWithPopup(GoogleAuthProvider());
+      return result.user ?? user;
     }
     final google = GoogleSignIn.instance;
     await (_googleReady ??= google.initialize());

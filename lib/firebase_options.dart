@@ -16,12 +16,7 @@ import 'package:flutter/foundation.dart'
 /// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
-    if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
-    }
+    if (kIsWeb) return web;
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
@@ -57,6 +52,16 @@ class DefaultFirebaseOptions {
     appId: '1:530503472620:android:e4c807b152c902def81cc9',
     messagingSenderId: '530503472620',
     projectId: 'verixa-app',
+    storageBucket: 'verixa-app.firebasestorage.app',
+  );
+
+  // The iPhone web app (Safari / home screen).
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyA0w0q1V6D-VTfTHl9prdmYbAHrbTz6h44',
+    appId: '1:530503472620:web:c942c7ab42cf0e51f81cc9',
+    messagingSenderId: '530503472620',
+    projectId: 'verixa-app',
+    authDomain: 'verixa-app.firebaseapp.com',
     storageBucket: 'verixa-app.firebasestorage.app',
   );
 }

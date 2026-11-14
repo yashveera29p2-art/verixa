@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Download Verixa</title>
-<meta name="description" content="Verixa: build genuine, ATS-friendly resumes and check resumes for manipulation. Download the Android app.">
+<title>Get Verixa</title>
+<meta name="description" content="Verixa: build genuine, ATS-friendly resumes and check resumes for manipulation. Android app and iPhone web app.">
 <meta property="og:title" content="Download Verixa">
-<meta property="og:description" content="Genuine, ATS-friendly resumes. Free Android app.">
+<meta property="og:description" content="Genuine, ATS-friendly resumes. Free for Android and iPhone.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -70,11 +70,30 @@
     <div style="font-size:13px;color:var(--muted);margin-top:8px">If nothing happens: tap <b>⋮</b> (top right) → <b>Open in browser</b>.</div>
   </section>
 
-  <section class="alert" id="ios">
-    <b>Verixa is Android-only for now.</b><br>
-    iPhones can’t install apps from a link. Open this page on an Android phone.
-  </section>
+  <!-- iPhone: the web app, added to the home screen. -->
+  <div id="iphone">
+    <section class="card">
+      <h2>Get Verixa on iPhone</h2>
+      <p>Free. Runs from your home screen like an app, with the iPhone glass look. No App Store needed.</p>
+      <a class="btn" id="openApp" href="app/">Open Verixa</a>
+      <div class="meta">Works on iPhone and iPad · always the latest version</div>
+    </section>
 
+    <section class="alert" id="iosInApp">
+      <b>Open this page in Safari first.</b><br>
+      Apps like WhatsApp and Instagram can’t add to the home screen. Tap <b>⋯</b> or the compass icon → <b>Open in Safari</b>.
+    </section>
+
+    <h3>Add it to your home screen</h3>
+    <ol>
+      <li>Tap <b>Open Verixa</b> above (in <b>Safari</b>).</li>
+      <li>Tap the <b>Share</b> button <b>⬆︎</b> at the bottom of Safari (on newer iPhones it may be under <b>⋯</b>).</li>
+      <li>Scroll down, tap <b>Add to Home Screen</b>, then <b>Add</b>. Open Verixa from its new icon from now on.</li>
+    </ol>
+    <p class="note">Opening from the home-screen icon gives the full-screen app and keeps you signed in.</p>
+  </div>
+
+  <div id="android">
   <section class="card" id="get">
     <h2>Get the Android app</h2>
     <p>Free. Works on any Android phone (Android 7 or newer).</p>
@@ -94,6 +113,9 @@
   <p class="note">If Play Protect says the app is unknown, tap <b>More details → Install anyway</b>. Android shows this for every app that isn’t from the Play Store.</p>
   <p class="note">Very old phone and it says <b>“App not installed”</b>? Use the <a href="Verixa-32bit.apk" download="Verixa.apk">version for older phones</a> instead.</p>
   <p class="note">Can’t find the file? Open your <b>Files</b> (or <b>My Files</b>) app → <b>Downloads</b> → <b>Verixa.apk</b>.</p>
+  </div>
+
+  <p class="note" id="otherDevice"></p>
 
   <footer>
     Verixa is an academic NLP project. Resume files are processed in memory and never stored.
@@ -107,8 +129,31 @@
     var isIOS = /iPhone|iPad|iPod/i.test(ua);
     var inApp = /WhatsApp|Instagram|FBAN|FBAV|FB_IAB|Line\/|LinkedInApp|Snapchat|Twitter|; wv\)|Telegram/i.test(ua);
 
-    if (isIOS) document.getElementById('ios').classList.add('show');
+    var iphone = document.getElementById('iphone');
+    var android = document.getElementById('android');
+    var other = document.getElementById('otherDevice');
+    if (isIOS) {
+      // iPhone: web app only; the APK can't be installed.
+      android.remove();
+      other.innerHTML = 'On Android? Open this same link there to get the Android app.';
+      if (!inApp) document.getElementById('iosInApp').remove();
+      else document.getElementById('iosInApp').classList.add('show');
+    } else {
+      document.getElementById('iosInApp').remove();
+      if (isAndroid) {
+        iphone.remove();
+        other.innerHTML = 'On iPhone? Open this same link there to get the iPhone version.';
+      } else {
+        // Computer: show both, Android first.
+        android.parentNode.insertBefore(android, iphone);
+        other.remove();
+      }
+    }
 
+    if (isIOS) {
+      document.getElementById('inapp').remove();
+      return; // nothing below applies to iPhones
+    }
     if (isAndroid && inApp) {
       document.getElementById('inapp').classList.add('show');
       // Android intent: opens this same page in the phone's default browser.

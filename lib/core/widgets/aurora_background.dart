@@ -2,10 +2,12 @@ import 'dart:math' as math;
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
+import '../platform/web_bridge.dart';
 import '../theme/theme.dart';
 
 /// The living background behind every screen: soft, slightly blurred green
@@ -59,6 +61,16 @@ class _AuroraInherited extends InheritedNotifier<AuroraState> {
 /// the phone's smoothed tilt for the parallax.
 class AuroraState extends ChangeNotifier {
   AuroraState() {
+    if (kIsWeb) {
+      // Browser (iPhone web app): Safari gives tilt angles instead.
+      _webSensor = orientationStream().listen((o) {
+        _targetTilt = Offset(
+          -math.sin(o.gamma * math.pi / 180).clamp(-1.0, 1.0),
+          (math.sin(o.beta * math.pi / 180) - 6.5 / 9.81).clamp(-1.0, 1.0),
+        );
+      });
+      return;
+    }
     try {
       _sensor = accelerometerEventStream(
         samplingPeriod: const Duration(milliseconds: 33),
@@ -79,23 +91,41 @@ class AuroraState extends ChangeNotifier {
   double time = 0;
   Duration _last = Duration.zero;
   StreamSubscription<AccelerometerEvent>? _sensor;
+  StreamSubscription<Object?>? _webSensor;
   Offset _targetTilt = Offset.zero;
 
   /// Smoothed tilt (−1…1 on each axis).
   Offset tilt = Offset.zero;
 
+  /// Lite mode: switched on automatically when the phone can't keep up
+  /// (half the leaves, no soft-focus blur), so slow phones stay smooth.
+  bool lite = false;
+  double _avgFrame = 1 / 60;
+  int _slowFrames = 0;
+
   void _tick(Duration elapsed) {
-    final dt = ((elapsed - _last).inMicroseconds / 1e6).clamp(0.0, 0.05);
+    final raw = (elapsed - _last).inMicroseconds / 1e6;
+    final dt = raw.clamp(0.0, 0.05);
     _last = elapsed;
+    _watchSpeed(raw);
     time += dt;
     // Ease towards the latest reading so the motion is fluid, not jittery.
     tilt = Offset.lerp(tilt, _targetTilt, (dt * 5).clamp(0.0, 1.0))!;
     notifyListeners();
   }
 
+  void _watchSpeed(double raw) {
+    if (lite || raw <= 0 || raw > 0.5) return; // ignore pauses (app hidden)
+    _avgFrame = _avgFrame * 0.95 + raw * 0.05;
+    // Averaging under ~40 fps for about 3 seconds: go lite for good.
+    _slowFrames = _avgFrame > 1 / 40 ? _slowFrames + 1 : 0;
+    if (_slowFrames > 120) lite = true;
+  }
+
   @override
   void dispose() {
     _sensor?.cancel();
+    _webSensor?.cancel();
     super.dispose();
   }
 }
@@ -201,7 +231,10 @@ class _LeafPainter extends CustomPainter {
     final t = state?.time ?? 0;
     final tilt = state?.tilt ?? Offset.zero;
     final w = size.width, h = size.height;
-    for (final leaf in _leaves) {
+    final lite = state?.lite ?? false;
+    for (var i = 0; i < _leaves.length; i++) {
+      if (lite && i.isOdd) continue;
+      final leaf = _leaves[i];
       // Fall and drift, wrapping around so leaves keep coming from the top.
       final margin = leaf.size * 1.5;
       final travelY = h + 2 * margin;
@@ -225,7 +258,8 @@ class _LeafPainter extends CustomPainter {
       final paint = Paint()
         ..color = leaf.color.withValues(alpha: leaf.alpha)
         // Soft, slightly out-of-focus edges (blur is in leaf units here).
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 2.2 / leaf.size);
+        ..maskFilter =
+            lite ? null : MaskFilter.blur(BlurStyle.normal, 2.2 / leaf.size);
       canvas.drawPath(_shape, paint);
       // A faint midrib.
       canvas.drawLine(

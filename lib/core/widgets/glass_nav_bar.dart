@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -293,7 +292,7 @@ class GlassPill extends StatelessWidget {
       child: ClipRRect(
         borderRadius: _radius,
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: AppSizes.glassBlur, sigmaY: AppSizes.glassBlur),
+          filter: AppGlass.filter(AppSizes.glassBlur),
           child: Container(
             decoration: BoxDecoration(
               // Very light frosting: most of the colour comes from what's
@@ -302,8 +301,12 @@ class GlassPill extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.white.withValues(alpha: AppSizes.glassOpacity + 0.12),
-                  AppColors.ivory.withValues(alpha: AppSizes.glassOpacity),
+                  AppColors.white.withValues(
+                    alpha: AppGlass.fill(AppSizes.glassOpacity + 0.12),
+                  ),
+                  AppColors.ivory.withValues(
+                    alpha: AppGlass.fill(AppSizes.glassOpacity),
+                  ),
                 ],
               ),
               borderRadius: _radius,
@@ -325,7 +328,15 @@ class GlassPill extends StatelessWidget {
                 ],
               ),
             ),
-            child: child,
+            child: Stack(
+              fit: StackFit.passthrough,
+              children: [
+                child,
+                Positioned.fill(
+                  child: SpecularRim(radius: AppSizes.navPillHeight),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -540,7 +551,7 @@ class _BubbleIn extends StatelessWidget {
             // Green glass.
             ClipOval(
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                filter: AppGlass.filter(10),
                 child: Container(
                   width: size,
                   height: size,

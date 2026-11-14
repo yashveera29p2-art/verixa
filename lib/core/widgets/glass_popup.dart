@@ -1,4 +1,3 @@
-import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 
@@ -124,10 +123,7 @@ class GlassPanel extends StatelessWidget {
       child: ClipRRect(
         borderRadius: r,
         child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: AppSizes.glassBlur * frost,
-            sigmaY: AppSizes.glassBlur * frost,
-          ),
+          filter: AppGlass.filter(AppSizes.glassBlur * frost),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: r,
@@ -135,8 +131,10 @@ class GlassPanel extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.white.withValues(alpha: opacity + 0.14),
-                  AppColors.ivory.withValues(alpha: opacity),
+                  AppColors.white.withValues(
+                    alpha: AppGlass.fill(opacity + 0.14),
+                  ),
+                  AppColors.ivory.withValues(alpha: AppGlass.fill(opacity)),
                 ],
               ),
               border: Border.all(
@@ -157,7 +155,17 @@ class GlassPanel extends StatelessWidget {
                 ],
               ),
             ),
-            child: Material(type: MaterialType.transparency, child: child),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: child,
+                  ),
+                ),
+                Positioned.fill(child: SpecularRim(radius: radius)),
+              ],
+            ),
           ),
         ),
       ),

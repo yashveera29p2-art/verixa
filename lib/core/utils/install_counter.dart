@@ -1,8 +1,11 @@
 import 'dart:async';
-import 'dart:io' show Platform;
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+
+import '../platform/web_bridge.dart';
 
 /// App version, set at build time by tool/release.ps1
 /// (`--dart-define=VERIXA_VERSION=1.7.0`).
@@ -13,13 +16,39 @@ const appVersion = String.fromEnvironment('VERIXA_VERSION', defaultValue: 'dev')
 /// dates. No name, number or location. Runs in the background and never
 /// blocks or breaks the app.
 void recordInstall(FirebaseFirestore db) {
-  if (!Platform.isAndroid) return;
+  if (!kIsWeb && defaultTargetPlatform != TargetPlatform.android) return;
   unawaited(_record(db).catchError((_) {}));
 }
 
+/// Web app: a random id kept in the browser stands in for the device id.
+Map<String, Object?> _webInfo() {
+  var id = storageGet('verixa.installId');
+  if (id == null) {
+    final r = Random.secure();
+    id = 'web-${List.generate(12, (_) => r.nextInt(16).toRadixString(16)).join()}';
+    storageSet('verixa.installId', id);
+  }
+  final ua = browserUserAgent;
+  final model = ua.contains('iPhone')
+      ? 'iPhone'
+      : ua.contains('iPad')
+      ? 'iPad'
+      : ua.contains('Android')
+      ? 'Android'
+      : 'Desktop';
+  return {
+    'id': id,
+    'manufacturer': 'Web app',
+    'model': model,
+    'android': isStandaloneWebApp ? 'home screen' : 'browser',
+  };
+}
+
 Future<void> _record(FirebaseFirestore db) async {
-  final info = await const MethodChannel('verixa/device')
-      .invokeMapMethod<String, Object?>('info');
+  final info = kIsWeb
+      ? _webInfo()
+      : await const MethodChannel('verixa/device')
+          .invokeMapMethod<String, Object?>('info');
   final id = info?['id'] as String?;
   if (id == null || id.isEmpty) return;
   final doc = db.collection('installs').doc(id);
