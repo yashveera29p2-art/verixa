@@ -115,13 +115,21 @@ class _BranchMenu extends StatelessWidget {
               child: AnimatedBuilder(
                 animation: backdrop,
                 // Translucent: the page stays visible behind, just softened.
-                builder: (context, _) => BackdropFilter(
-                  filter: ImageFilter.blur(
-                      sigmaX: 2.5 * backdrop.value, sigmaY: 2.5 * backdrop.value),
-                  child: ColoredBox(
-                    color: AppColors.ivory.withValues(alpha: 0.22 * backdrop.value),
-                  ),
-                ),
+                builder: (context, _) => AppGlass.liveBlur
+                    ? BackdropFilter(
+                        filter: ImageFilter.blur(
+                            sigmaX: 2.5 * backdrop.value,
+                            sigmaY: 2.5 * backdrop.value),
+                        child: ColoredBox(
+                          color: AppColors.ivory
+                              .withValues(alpha: 0.22 * backdrop.value),
+                        ),
+                      )
+                    // Web: a slightly stronger veil instead of a live blur.
+                    : ColoredBox(
+                        color: AppColors.ivory
+                            .withValues(alpha: 0.45 * backdrop.value),
+                      ),
               ),
             ),
           ),

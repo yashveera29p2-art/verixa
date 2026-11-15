@@ -43,6 +43,17 @@
       setTimeout(function () { el.remove(); }, 400);
     });
   </script>
+  <script>
+    // iPhones have 3x screens; drawing every frame at 3x makes Safari lag.
+    // 2x keeps text crisp and draws less than half the pixels.
+    (function () {
+      try {
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent) && window.devicePixelRatio > 2) {
+          Object.defineProperty(window, 'devicePixelRatio', { get: function () { return 2; } });
+        }
+      } catch (e) {}
+    })();
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

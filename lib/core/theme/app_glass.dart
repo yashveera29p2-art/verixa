@@ -28,8 +28,18 @@ abstract final class AppGlass {
     return ImageFilter.compose(outer: _saturate, inner: blur);
   }
 
-  /// Fill opacity: clearer glass on iPhone.
-  static double fill(double base) => isApple ? base * 0.72 : base;
+  /// Web app (iPhone Safari): a live blur over the always-moving leaves is
+  /// redrawn every frame and makes Safari lag, so the web version uses
+  /// "still glass" instead: a denser translucent fill, the edge shine and
+  /// no live blur. Native apps keep the real blur.
+  static const bool liveBlur = !kIsWeb;
+
+  /// Fill opacity: clearer glass on iPhone; denser on the web, where there's
+  /// no blur behind it.
+  static double fill(double base) {
+    if (!liveBlur) return (base * 2.1).clamp(0.0, 0.92);
+    return isApple ? base * 0.72 : base;
+  }
 
   static const _saturate = ColorFilter.matrix(<double>[
     1.2516, -0.2184, -0.0332, 0, 0, //
@@ -37,6 +47,22 @@ abstract final class AppGlass {
     -0.0484, -0.2184, 1.2668, 0, 0, //
     0, 0, 0, 1, 0,
   ]);
+}
+
+/// Blurs what's behind [child] like frosted glass (native apps), or just
+/// shows [child] on the web where live blur is too slow (see
+/// [AppGlass.liveBlur]).
+class GlassBlur extends StatelessWidget {
+  const GlassBlur({super.key, required this.sigma, required this.child});
+
+  final double sigma;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!AppGlass.liveBlur) return child;
+    return BackdropFilter(filter: AppGlass.filter(sigma), child: child);
+  }
 }
 
 /// The light catching a glass edge: a thin bright line strongest at the top

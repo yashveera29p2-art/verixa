@@ -122,8 +122,8 @@ class GlassPanel extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: r,
-        child: BackdropFilter(
-          filter: AppGlass.filter(AppSizes.glassBlur * frost),
+        child: GlassBlur(
+          sigma: AppSizes.glassBlur * frost,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: r,
@@ -155,14 +155,11 @@ class GlassPanel extends StatelessWidget {
                 ],
               ),
             ),
+            // The content sizes the panel; the shine just covers it.
             child: Stack(
+              fit: StackFit.passthrough,
               children: [
-                Positioned.fill(
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: child,
-                  ),
-                ),
+                Material(type: MaterialType.transparency, child: child),
                 Positioned.fill(child: SpecularRim(radius: radius)),
               ],
             ),

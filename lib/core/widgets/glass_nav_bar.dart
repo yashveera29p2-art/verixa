@@ -291,8 +291,8 @@ class GlassPill extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: _radius,
-        child: BackdropFilter(
-          filter: AppGlass.filter(AppSizes.glassBlur),
+        child: GlassBlur(
+          sigma: AppSizes.glassBlur,
           child: Container(
             decoration: BoxDecoration(
               // Very light frosting: most of the colour comes from what's
@@ -550,8 +550,8 @@ class _BubbleIn extends StatelessWidget {
           children: [
             // Green glass.
             ClipOval(
-              child: BackdropFilter(
-                filter: AppGlass.filter(10),
+              child: GlassBlur(
+                sigma: 10,
                 child: Container(
                   width: size,
                   height: size,

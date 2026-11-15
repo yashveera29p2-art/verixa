@@ -34,17 +34,29 @@ class AuroraScope extends StatefulWidget {
 
 class _AuroraScopeState extends State<AuroraScope> with SingleTickerProviderStateMixin {
   final _state = AuroraState();
-  late final Ticker _ticker;
+  Ticker? _ticker;
+  Timer? _webTimer;
 
   @override
   void initState() {
     super.initState();
-    _ticker = createTicker(_state._tick)..start();
+    if (kIsWeb) {
+      // Web app: the leaves move at 30 fps, halving the background's work
+      // in Safari. Taps, page changes and other animations stay at 60.
+      final clock = Stopwatch()..start();
+      _webTimer = Timer.periodic(
+        const Duration(milliseconds: 33),
+        (_) => _state._tick(clock.elapsed),
+      );
+    } else {
+      _ticker = createTicker(_state._tick)..start();
+    }
   }
 
   @override
   void dispose() {
-    _ticker.dispose();
+    _ticker?.dispose();
+    _webTimer?.cancel();
     _state.dispose();
     super.dispose();
   }
@@ -116,7 +128,9 @@ class AuroraState extends ChangeNotifier {
   }
 
   void _watchSpeed(double raw) {
-    if (lite || raw <= 0 || raw > 0.5) return; // ignore pauses (app hidden)
+    // Web runs the leaves at 30 fps on purpose, so frame gaps there say
+    // nothing about the phone's speed.
+    if (kIsWeb || lite || raw <= 0 || raw > 0.5) return; // ignore pauses
     _avgFrame = _avgFrame * 0.95 + raw * 0.05;
     // Averaging under ~40 fps for about 3 seconds: go lite for good.
     _slowFrames = _avgFrame > 1 / 40 ? _slowFrames + 1 : 0;
@@ -235,6 +249,8 @@ class _LeafPainter extends CustomPainter {
     final lite = state?.lite ?? false;
     for (var i = 0; i < _leaves.length; i++) {
       if (lite && i.isOdd) continue;
+      // Web app: fewer leaves (every third skipped) to keep Safari smooth.
+      if (kIsWeb && i % 3 == 2) continue;
       final leaf = _leaves[i];
       // Fall and drift, wrapping around so leaves keep coming from the top.
       final margin = leaf.size * 1.5;

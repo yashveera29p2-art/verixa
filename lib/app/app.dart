@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/theme/theme.dart';
+import '../core/widgets/add_to_home_hint.dart';
 import '../core/widgets/aurora_background.dart';
 import 'router.dart';
 
@@ -18,7 +19,7 @@ class VerixaApp extends ConsumerWidget {
       // One ivory + drifting-green background behind every screen; pages
       // are transparent and sit on top of it.
       builder: (context, child) => AuroraScope(
-        child: AuroraBackground(child: child!),
+        child: AuroraBackground(child: AddToHomeHint(child: child!)),
       ),
     );
   }

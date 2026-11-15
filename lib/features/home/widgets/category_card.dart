@@ -40,9 +40,9 @@ class CategoryCard extends StatelessWidget {
           radius: _radius,
           child: ClipRRect(
             borderRadius: _radius,
-            child: BackdropFilter(
+            child: GlassBlur(
               // Light blur: the leaves behind stay recognisable.
-              filter: AppGlass.filter(5),
+              sigma: 5,
               child: Material(
                 type: MaterialType.transparency,
                 child: Ink(
