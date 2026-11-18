@@ -43,7 +43,7 @@ class _TermsScreenState extends ConsumerState<TermsScreen> {
   ];
 
   Future<void> _accept() async {
-    final user = ref.read(currentUserProvider);
+    final user = ref.read(authServiceProvider).currentUser;
     if (user == null) return;
     setState(() {
       _saving = true;

@@ -9,6 +9,7 @@ import '../../../core/widgets/auth_page.dart';
 import '../application/auth_providers.dart';
 import '../application/onboarding_controller.dart';
 import '../domain/user_profile.dart';
+import '../application/session.dart';
 
 /// Step 3 (new users only): name, status, and college or company.
 /// Everything else is collected later from Profile.
@@ -95,6 +96,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               textStyle: AppTypography.labelLarge,
             ),
             child: const Text('Use a different number'),
+          ),
+          TextButton(
+            onPressed: saving.isLoading
+                ? null
+                : () {
+                    SignInIntent.role = UserRole.recruiter;
+                    context.go(AppRoutes.recruiterSetup);
+                  },
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.botanicalGreen,
+              textStyle: AppTypography.labelLarge,
+            ),
+            child: const Text('I’m a recruiter →'),
           ),
         ],
       ),

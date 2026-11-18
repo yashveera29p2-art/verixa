@@ -110,6 +110,22 @@ class _JobsScreenState extends ConsumerState<JobsScreen> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   _SourceNote(source: state.source, ranked: state.ranked, loading: state.loading),
+                  if (state.ranking)
+                    Padding(
+                      padding: const EdgeInsets.only(top: AppSpacing.xs),
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: AppColors.botanicalGreen),
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Text('Matching jobs to your profile…', style: AppTypography.bodySmall),
+                        ],
+                      ),
+                    ),
                   const SizedBox(height: AppSpacing.sm),
                 ]),
               ),
@@ -184,7 +200,7 @@ class _SourceNote extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            if (!ranked) const TextSpan(text: ' · not ranked (server busy)'),
+
           ]),
         ),
       );

@@ -28,6 +28,7 @@ class JobsState {
     this.source = '',
     this.jobs = const [],
     this.ranked = false,
+    this.ranking = false,
   });
 
   final String query;
@@ -42,6 +43,9 @@ class JobsState {
   /// False if ranking failed and jobs are shown unranked.
   final bool ranked;
 
+  /// Listings are shown; match % is still being worked out.
+  final bool ranking;
+
   List<RankedJob> get visible =>
       jobs.where((j) => filters.every((f) => f.test(j))).toList();
 
@@ -54,6 +58,7 @@ class JobsState {
     String? source,
     List<RankedJob>? jobs,
     bool? ranked,
+    bool? ranking,
   }) =>
       JobsState(
         query: query ?? this.query,
@@ -63,6 +68,7 @@ class JobsState {
         source: source ?? this.source,
         jobs: jobs ?? this.jobs,
         ranked: ranked ?? this.ranked,
+        ranking: ranking ?? this.ranking,
       );
 }
 
@@ -122,24 +128,25 @@ class JobsController extends Notifier<JobsState> {
       final companies = results[2] as List<Company>;
       final profile = results[3] as ProfileData?;
       final all = [...posted, ...listed];
+      List<RankedJob> build(Map<String, JobFit> fits) => [
+            for (final j in all)
+              RankedJob(job: j, fit: fits[j.id], company: matchCompany(j.company, companies)),
+          ]..sort((a, b) => (b.fit?.score ?? -1).compareTo(a.fit?.score ?? -1));
 
-      Map<String, JobFit> fits = const {};
-      var ranked = false;
-      if (profile != null && all.isNotEmpty) {
-        try {
-          fits = await api.rankJobs(profile: matchProfileJson(profile), jobs: all);
-          ranked = true;
-        } catch (_) {
-          // Show the listings unranked rather than nothing.
-        }
-      }
-      final jobs = [
-        for (final j in all)
-          RankedJob(job: j, fit: fits[j.id], company: matchCompany(j.company, companies)),
-      ]..sort((a, b) => (b.fit?.score ?? -1).compareTo(a.fit?.score ?? -1));
+      // Show the listings at once; the match % fills in when ranking ends.
       if (!ref.mounted) return;
       state = state.copyWith(
-          loading: false, source: source, jobs: jobs, ranked: ranked);
+          loading: false, ranking: profile != null, source: source,
+          jobs: build(const {}), ranked: false);
+      if (profile == null || all.isEmpty) return;
+      try {
+        final fits = await api.rankJobs(profile: matchProfileJson(profile), jobs: all);
+        if (!ref.mounted || state.query != query) return;
+        state = state.copyWith(ranking: false, jobs: build(fits), ranked: true);
+      } catch (_) {
+        if (!ref.mounted) return;
+        state = state.copyWith(ranking: false); // stays unranked
+      }
     } catch (e) {
       if (!ref.mounted) return;
       state = state.copyWith(loading: false, error: e.toString());

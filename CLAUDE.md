@@ -106,10 +106,16 @@ Resume templates that users pick can have their own themes; the app UI itself al
 
 ```
 App launch → Splash animation (every launch, all users)
-  ├─ Not logged in → Welcome: [Create account] [Log in]
-  │                    → Phone number → OTP → (new user) basic onboarding → Home
-  └─ Logged in     → Home
+  ├─ Not logged in → Welcome: [Create account] [Log in] side by side, then "I'm a recruiter →"
+  │                    → Phone number → OTP → Terms (once per installation) → …
+  │                       ├─ student:   (new user) basic onboarding → Home (+ guided tour once per install)
+  │                       └─ recruiter: setup → waiting for team approval → Find talent (+ tour)
+  └─ Logged in     → Terms if not yet accepted on this installation → Home / recruiter side
 ```
+
+Verixa is two-sided: students discover companies and jobs and prepare; approved recruiters find
+students who opt in. Admins (team phone numbers in `lib/core/utils/admin.dart` and
+`firestore.rules`) approve recruiters and hide reviews / job posts.
 
 ### 3.1 Splash animation (plays on EVERY launch, new and existing users)
 
@@ -143,11 +149,20 @@ looks seamless.
 ### 3.3 Bottom navigation bar (on main screens)
 - Frosted glass style: translucent ivory with background blur, thin `stone` border, no glow,
   no heavy shadow.
-- Three items: **Home** | a **slightly larger circle in the centre with a document-outline icon** |
-  **Profile**.
+- Students: **Home | Jobs | (centre circle with document-outline icon) | Prep | Profile**.
+- Recruiters: **Find talent | (centre "+" Post a job) | My jobs**, over a softly blurred tree that
+  sways in a breeze (students see falling leaves); charcoal-led headers with green accents.
 - Active item uses `botanicalGreen`; inactive items use `softSage`/`mutedText`.
 - The centre button opens the resume actions (bottom sheet): Create resume, Upload & scan resume,
-  Match with a job description. Until those features exist, show the sheet with "Coming soon" states.
+  Match with a job description.
+
+### 3.4 Terms, guided tour, disclaimers
+- Terms of use (`docs/terms.html`, linked from About) must be accepted once per installation after
+  sign-in; version in `lib/features/legal/legal.dart` (bump to ask everyone again).
+- Guided tour on first run per installation: solid ivory bubbles with a thin green border pointing
+  at each option (Next / Skip). "Take the tour again" in About.
+- In-app disclaimers only in three places (company pages, scores, resume creation); the full text
+  lives in the Terms.
 
 ---
 
@@ -245,6 +260,26 @@ text that gets parsed into fields.
     cover letters, PDF/DOCX export.
 
 ---
+
+### 6.1 Company-side features (added after the 9 phases)
+
+11. **Personalised job discovery** — Jobs tab: Adzuna India listings (server key
+    `VERIXA_ADZUNA_APP_ID/KEY`; bundled samples without it) plus jobs recruiters post, ranked for the
+    student; filters: high package, low layoffs, work-life balance, good / lower / no pay,
+    internship / full-time. "Jobs by Adzuna" attribution is required.
+12. **Company insights & reviews** — per company: fresher pay band, layoff risk, work-life
+    (indicative, `insights` in `companies.json`) plus anonymous user reviews (moderated).
+13. **Placement prep** — Prep tab: hiring rounds, topics, common questions, and a checklist from
+    the student's own skill gaps.
+14. **Recruiter mode** — recruiters (approved by the team) post jobs and find students who switch
+    on "Visible to recruiters", ranked by skills they've proven and an optional work-style fit
+    (15-question quiz; traits teamwork, ownership, structure, communication, adaptability).
+15. **Context-aware matching (v2)** — requirements compared with profile sentences by meaning,
+    proven skills (projects / internships) count more than listed ones, "A or B" means either,
+    plain-language reasons and gaps; used in both directions.
+
+Later: customer support (mail-only complaints and suggestions) and a creator/team dashboard
+(users, installs, feedback).
 
 ## 7. Build phases
 

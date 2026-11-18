@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
@@ -18,23 +20,28 @@ class TourStep {
 Future<void> showGuidedTour(BuildContext context, List<TourStep> steps) async {
   final visible = steps.where((s) => s.target.currentContext != null).toList();
   if (visible.isEmpty) return;
-  await Navigator.of(context, rootNavigator: true).push(
-    PageRouteBuilder<void>(
-      opaque: false,
-      barrierDismissible: false,
-      transitionDuration: AppMotion.medium,
-      reverseTransitionDuration: AppMotion.short,
-      pageBuilder: (_, _, _) => _Tour(steps: visible),
-      transitionsBuilder: (_, a, _, child) =>
-          FadeTransition(opacity: a, child: child),
+  // An overlay, not a page: pushing a page would fade out the screen the
+  // tour is pointing at.
+  final done = Completer<void>();
+  late final OverlayEntry entry;
+  entry = OverlayEntry(
+    builder: (_) => _Tour(
+      steps: visible,
+      onDone: () {
+        entry.remove();
+        if (!done.isCompleted) done.complete();
+      },
     ),
   );
+  Overlay.of(context, rootOverlay: true).insert(entry);
+  return done.future;
 }
 
 class _Tour extends StatefulWidget {
-  const _Tour({required this.steps});
+  const _Tour({required this.steps, required this.onDone});
 
   final List<TourStep> steps;
+  final VoidCallback onDone;
 
   @override
   State<_Tour> createState() => _TourState();
@@ -53,7 +60,7 @@ class _TourState extends State<_Tour> {
     if (_i < widget.steps.length - 1) {
       setState(() => _i++);
     } else {
-      Navigator.of(context).pop();
+      widget.onDone();
     }
   }
 
@@ -102,7 +109,7 @@ class _TourState extends State<_Tour> {
                 arrowUp: below,
                 last: last,
                 onNext: _next,
-                onSkip: () => Navigator.of(context).pop(),
+                onSkip: widget.onDone,
               ),
             ),
           ),

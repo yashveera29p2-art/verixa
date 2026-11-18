@@ -37,7 +37,7 @@ class ProfileScreen extends ConsumerWidget {
     ref.listen(profileDataProvider, (_, next) {
       final data = next.value;
       final ws = ref.read(workStyleProvider).value;
-      final uid = ref.read(currentUserProvider)?.uid;
+      final uid = ref.read(authServiceProvider).currentUser?.uid;
       if (data != null && uid != null && ws?.visible == true && !_published) {
         _published = true;
         ref.read(candidateSyncProvider).publish(uid, data, ws!.traits).ignore();
@@ -314,7 +314,7 @@ class _RecruiterSection extends ConsumerWidget {
   const _RecruiterSection();
 
   Future<void> _toggle(BuildContext context, WidgetRef ref, bool on) async {
-    final uid = ref.read(currentUserProvider)?.uid;
+    final uid = ref.read(authServiceProvider).currentUser?.uid;
     if (uid == null) return;
     final profile = ref.read(profileDataProvider).value;
     final ws = ref.read(workStyleProvider).value ?? const WorkStyle();

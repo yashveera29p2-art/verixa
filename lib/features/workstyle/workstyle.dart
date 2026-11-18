@@ -150,7 +150,7 @@ class _WorkStyleQuizScreenState extends ConsumerState<WorkStyleQuizScreen> {
   }
 
   Future<void> _save() async {
-    final user = ref.read(currentUserProvider);
+    final user = ref.read(authServiceProvider).currentUser;
     if (user == null) return;
     setState(() => _saving = true);
     final traits = _score();

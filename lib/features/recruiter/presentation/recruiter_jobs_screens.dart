@@ -43,7 +43,7 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
   }
 
   Future<void> _post() async {
-    final uid = ref.read(currentUserProvider)?.uid;
+    final uid = ref.read(authServiceProvider).currentUser?.uid;
     final account = ref.read(myRecruiterAccountProvider).value;
     if (uid == null || account == null) return;
     final min = double.tryParse(_min.text.trim()) ?? 0;

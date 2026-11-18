@@ -29,7 +29,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
 
   Future<void> _expressInterest() async {
     final job = widget.ranked.job.posted;
-    final user = ref.read(currentUserProvider);
+    final user = ref.read(authServiceProvider).currentUser;
     if (job == null || user == null) return;
     setState(() => _sending = true);
     try {

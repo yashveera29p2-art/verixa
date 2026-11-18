@@ -17,7 +17,7 @@ Future<void> maybeRunTour(
   List<TourStep> steps, {
   bool force = false,
 }) async {
-  final uid = ref.read(currentUserProvider)?.uid;
+  final uid = ref.read(authServiceProvider).currentUser?.uid;
   if (uid == null) return;
   final consent = ref.read(consentRepositoryProvider);
   try {

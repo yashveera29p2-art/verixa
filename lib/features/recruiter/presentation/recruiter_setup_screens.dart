@@ -37,7 +37,7 @@ class _RecruiterSetupScreenState extends ConsumerState<RecruiterSetupScreen> {
   }
 
   Future<void> _submit() async {
-    final user = ref.read(currentUserProvider);
+    final user = ref.read(authServiceProvider).currentUser;
     if (user == null) return;
     final email = _email.text.trim();
     if (_name.text.trim().isEmpty || _company.text.trim().isEmpty ||

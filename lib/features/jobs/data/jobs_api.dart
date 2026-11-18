@@ -40,7 +40,7 @@ class JobsApi {
     final body = await _post('/v1/jobs/rank', {
       'profile': profile,
       'jobs': [
-        for (final j in jobs.take(40))
+        for (final j in jobs.take(25))
           {
             'id': j.id,
             'title': j.title,

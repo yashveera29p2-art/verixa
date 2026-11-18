@@ -43,7 +43,7 @@ AsyncValue<ResumeContent> watchResumeContent(WidgetRef ref, ResumeVersion v) =>
 
 /// Same as [watchResumeContent], for event handlers. Null while loading.
 ResumeContent? readResumeContent(WidgetRef ref, ResumeVersion v) => _content(
-  ref.read(currentUserProvider),
+  ref.read(authServiceProvider).currentUser,
   ref.read(profileDataProvider),
   v,
 ).value;
