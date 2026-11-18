@@ -8,20 +8,82 @@
       "sector": "IT services & consulting",
       "summary": "Solid programming basics, a consistent academic record and clear communication for large campus and off-campus drives.",
       "expectations": {
-        "skills": ["Programming fundamentals (C, Java or Python)", "DBMS & SQL", "Object-oriented programming", "Aptitude & logical reasoning", "Written and spoken English"],
+        "skills": [
+          "Programming fundamentals (C, Java or Python)",
+          "DBMS & SQL",
+          "Object-oriented programming",
+          "Aptitude & logical reasoning",
+          "Written and spoken English"
+        ],
         "academics": "Mass-recruitment drives commonly set minimum aggregate marks across 10th, 12th and degree (often around 60%) and limit active backlogs. Always check the specific drive's eligibility.",
         "experience": "Freshers are hired in large numbers; internships and academic projects strengthen the profile.",
-        "traits": ["Willingness to learn new technologies", "Flexibility on location and shifts", "Teamwork"]
+        "traits": [
+          "Willingness to learn new technologies",
+          "Flexibility on location and shifts",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers",
-        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education with percentages/CGPA", "Technical skills", "Academic projects", "Internships", "Certifications", "Achievements & activities"],
-        "emphasise": ["Consistent marks in 10th, 12th and degree", "Core CS subjects and languages you actually know", "Certifications and coding practice", "Clear, error-free English"],
-        "avoid": ["Unexplained education gaps", "Listing tools you can't answer questions on", "Photos, tables and multi-column layouts"],
+        "sectionOrder": [
+          "Contact details",
+          "Career objective (2 lines)",
+          "Education with percentages/CGPA",
+          "Technical skills",
+          "Academic projects",
+          "Internships",
+          "Certifications",
+          "Achievements & activities"
+        ],
+        "emphasise": [
+          "Consistent marks in 10th, 12th and degree",
+          "Core CS subjects and languages you actually know",
+          "Certifications and coding practice",
+          "Clear, error-free English"
+        ],
+        "avoid": [
+          "Unexplained education gaps",
+          "Listing tools you can't answer questions on",
+          "Photos, tables and multi-column layouts"
+        ],
         "atsNotes": "Applications usually go through an online portal that parses your resume. Use a single-column layout, standard headings and a text-based PDF."
       },
-      "sources": ["https://www.tcs.com/careers"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.tcs.com/careers"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹3.4–11.5 LPA (Ninja / Digital / Prime roles)",
+        "payMaxLpa": 11.5,
+        "payLevel": "high",
+        "layoffRisk": "low",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "infosys",
@@ -30,20 +92,81 @@
       "sector": "IT services & consulting",
       "summary": "Logical reasoning, problem-solving and clean coding basics, backed by a steady academic record.",
       "expectations": {
-        "skills": ["Data structures basics", "Java or Python", "SQL", "Logical and analytical reasoning", "Reading comprehension"],
+        "skills": [
+          "Data structures basics",
+          "Java or Python",
+          "SQL",
+          "Logical and analytical reasoning",
+          "Reading comprehension"
+        ],
         "academics": "Campus drives typically expect a consistent academic record without active backlogs; some specialist roles set higher cut-offs.",
         "experience": "Primarily fresher hiring for entry roles; specialist and higher-package roles reward stronger coding skills and projects.",
-        "traits": ["Curiosity and self-learning", "Attention to detail", "Professional communication"]
+        "traits": [
+          "Curiosity and self-learning",
+          "Attention to detail",
+          "Professional communication"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers",
-        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education with percentages/CGPA", "Technical skills", "Projects", "Internships", "Certifications", "Extracurriculars"],
-        "emphasise": ["Problem-solving and coding practice (contests, platforms)", "Projects with your specific contribution", "Relevant certifications"],
-        "avoid": ["Generic objectives copied from templates", "Skill ratings like stars or bars", "Graphics and icons"],
+        "sectionOrder": [
+          "Contact details",
+          "Career objective (2 lines)",
+          "Education with percentages/CGPA",
+          "Technical skills",
+          "Projects",
+          "Internships",
+          "Certifications",
+          "Extracurriculars"
+        ],
+        "emphasise": [
+          "Problem-solving and coding practice (contests, platforms)",
+          "Projects with your specific contribution",
+          "Relevant certifications"
+        ],
+        "avoid": [
+          "Generic objectives copied from templates",
+          "Skill ratings like stars or bars",
+          "Graphics and icons"
+        ],
         "atsNotes": "Keep headings standard (Education, Skills, Projects) so automated screening finds each section."
       },
-      "sources": ["https://www.infosys.com/careers/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.infosys.com/careers/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹3.6–9.5 LPA (Systems Engineer to Power Programmer)",
+        "payMaxLpa": 9.5,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "wipro",
@@ -52,20 +175,79 @@
       "sector": "IT services & consulting",
       "summary": "Aptitude, coding basics and adaptability for large-scale fresher hiring.",
       "expectations": {
-        "skills": ["Programming in one language", "SQL basics", "Quantitative aptitude", "Verbal ability", "Basic networking or cloud awareness"],
+        "skills": [
+          "Programming in one language",
+          "SQL basics",
+          "Quantitative aptitude",
+          "Verbal ability",
+          "Basic networking or cloud awareness"
+        ],
         "academics": "Fresher programmes usually state minimum marks across 10th, 12th and degree and a cap on backlogs; read each programme's criteria.",
         "experience": "Freshers welcome; work-integrated programmes also hire non-engineering graduates in some years.",
-        "traits": ["Adaptability", "Learning agility", "Teamwork"]
+        "traits": [
+          "Adaptability",
+          "Learning agility",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers",
-        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education with percentages/CGPA", "Technical skills", "Projects", "Certifications", "Achievements"],
-        "emphasise": ["Consistent academics", "One or two solid projects you can explain end to end", "Online course certifications"],
-        "avoid": ["Very long skill lists", "Personal details beyond contact information"],
+        "sectionOrder": [
+          "Contact details",
+          "Career objective (2 lines)",
+          "Education with percentages/CGPA",
+          "Technical skills",
+          "Projects",
+          "Certifications",
+          "Achievements"
+        ],
+        "emphasise": [
+          "Consistent academics",
+          "One or two solid projects you can explain end to end",
+          "Online course certifications"
+        ],
+        "avoid": [
+          "Very long skill lists",
+          "Personal details beyond contact information"
+        ],
         "atsNotes": "A clean, text-based PDF with standard section names parses best on large hiring portals."
       },
-      "sources": ["https://careers.wipro.com/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://careers.wipro.com/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹3.5–6.5 LPA (Elite / Turbo)",
+        "payMaxLpa": 6.5,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "accenture",
@@ -74,20 +256,79 @@
       "sector": "Consulting & technology services",
       "summary": "Communication, adaptability and business awareness alongside technical fundamentals.",
       "expectations": {
-        "skills": ["Programming fundamentals", "Cloud or data basics", "Communication and presentation", "Cognitive and technical aptitude"],
+        "skills": [
+          "Programming fundamentals",
+          "Cloud or data basics",
+          "Communication and presentation",
+          "Cognitive and technical aptitude"
+        ],
         "academics": "Eligibility is usually based on degree and year of passing with a consistent record; criteria vary by role and drive.",
         "experience": "Large fresher intake for associate roles; experienced hires are matched to specific capability areas.",
-        "traits": ["Client-facing communication", "Adaptability", "Collaboration"]
+        "traits": [
+          "Client-facing communication",
+          "Adaptability",
+          "Collaboration"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers, up to 2 pages with experience",
-        "sectionOrder": ["Contact details", "Professional summary (2–3 lines)", "Education", "Skills", "Projects", "Internships / experience", "Certifications", "Leadership & activities"],
-        "emphasise": ["Communication-heavy activities (presentations, events, teaching)", "Cloud and data certifications", "Business impact of projects"],
-        "avoid": ["Jargon without explanation", "Dense paragraphs; use short bullet points"],
+        "sectionOrder": [
+          "Contact details",
+          "Professional summary (2–3 lines)",
+          "Education",
+          "Skills",
+          "Projects",
+          "Internships / experience",
+          "Certifications",
+          "Leadership & activities"
+        ],
+        "emphasise": [
+          "Communication-heavy activities (presentations, events, teaching)",
+          "Cloud and data certifications",
+          "Business impact of projects"
+        ],
+        "avoid": [
+          "Jargon without explanation",
+          "Dense paragraphs; use short bullet points"
+        ],
         "atsNotes": "Mirror the job title and key skills from the posting where they genuinely apply to you."
       },
-      "sources": ["https://www.accenture.com/in-en/careers"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.accenture.com/in-en/careers"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹4.5–6.5 LPA (ASE / Advanced ASE)",
+        "payMaxLpa": 6.5,
+        "payLevel": "good",
+        "layoffRisk": "medium",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "cognizant",
@@ -96,20 +337,77 @@
       "sector": "IT services & consulting",
       "summary": "Technical basics and aptitude for entry roles, with coding strength valued for higher tracks.",
       "expectations": {
-        "skills": ["Programming fundamentals", "SQL", "Aptitude & reasoning", "Communication"],
+        "skills": [
+          "Programming fundamentals",
+          "SQL",
+          "Aptitude & reasoning",
+          "Communication"
+        ],
         "academics": "Campus drives commonly expect a consistent record and no active backlogs; check each drive's eligibility.",
         "experience": "Freshers for entry tracks; stronger coding and projects open higher-paying tracks.",
-        "traits": ["Reliability", "Learning agility", "Teamwork"]
+        "traits": [
+          "Reliability",
+          "Learning agility",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers",
-        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education with percentages/CGPA", "Technical skills", "Projects", "Internships", "Certifications"],
-        "emphasise": ["Coding practice and contest results if you have them", "Projects with clear technologies and outcomes"],
-        "avoid": ["Claims you can't back up in a technical interview", "Decorative templates"],
+        "sectionOrder": [
+          "Contact details",
+          "Career objective (2 lines)",
+          "Education with percentages/CGPA",
+          "Technical skills",
+          "Projects",
+          "Internships",
+          "Certifications"
+        ],
+        "emphasise": [
+          "Coding practice and contest results if you have them",
+          "Projects with clear technologies and outcomes"
+        ],
+        "avoid": [
+          "Claims you can't back up in a technical interview",
+          "Decorative templates"
+        ],
         "atsNotes": "Use plain bullet points and keep dates in one consistent format."
       },
-      "sources": ["https://careers.cognizant.com/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://careers.cognizant.com/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹4–6.75 LPA (GenC / GenC Next)",
+        "payMaxLpa": 6.75,
+        "payLevel": "good",
+        "layoffRisk": "medium",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "hcltech",
@@ -118,20 +416,76 @@
       "sector": "IT & engineering services",
       "summary": "Technical fundamentals plus readiness for infrastructure, engineering or software tracks.",
       "expectations": {
-        "skills": ["Programming fundamentals", "Networking & operating systems basics", "SQL", "Aptitude"],
+        "skills": [
+          "Programming fundamentals",
+          "Networking & operating systems basics",
+          "SQL",
+          "Aptitude"
+        ],
         "academics": "A consistent academic record is generally expected for campus hiring; criteria vary by programme.",
         "experience": "Fresher programmes plus lateral hiring for infrastructure, cloud and engineering services.",
-        "traits": ["Process discipline", "Flexibility", "Teamwork"]
+        "traits": [
+          "Process discipline",
+          "Flexibility",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers",
-        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education", "Technical skills", "Projects", "Internships", "Certifications"],
-        "emphasise": ["Networking, OS or cloud certifications for infra roles", "Hands-on lab or project work"],
-        "avoid": ["Irrelevant hobbies taking space from technical work"],
+        "sectionOrder": [
+          "Contact details",
+          "Career objective (2 lines)",
+          "Education",
+          "Technical skills",
+          "Projects",
+          "Internships",
+          "Certifications"
+        ],
+        "emphasise": [
+          "Networking, OS or cloud certifications for infra roles",
+          "Hands-on lab or project work"
+        ],
+        "avoid": [
+          "Irrelevant hobbies taking space from technical work"
+        ],
         "atsNotes": "Group skills by type (Languages, Tools, Platforms) so they are easy to scan."
       },
-      "sources": ["https://www.hcltech.com/careers"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.hcltech.com/careers"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹3.5–6 LPA (Graduate Engineer Trainee)",
+        "payMaxLpa": 6,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "capgemini",
@@ -140,20 +494,78 @@
       "sector": "Consulting & IT services",
       "summary": "Aptitude, communication and coding basics, with a structured multi-round assessment.",
       "expectations": {
-        "skills": ["Programming fundamentals", "Pseudocode and logic", "English communication", "Aptitude"],
+        "skills": [
+          "Programming fundamentals",
+          "Pseudocode and logic",
+          "English communication",
+          "Aptitude"
+        ],
         "academics": "Fresher hiring usually sets minimum marks and backlog limits; check the drive notice.",
         "experience": "Freshers for analyst roles; experienced hires by capability.",
-        "traits": ["Communication", "Collaboration", "Adaptability"]
+        "traits": [
+          "Communication",
+          "Collaboration",
+          "Adaptability"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers",
-        "sectionOrder": ["Contact details", "Career objective (2 lines)", "Education", "Skills", "Projects", "Internships", "Certifications", "Activities"],
-        "emphasise": ["Clear communication examples", "Projects and internships with outcomes"],
-        "avoid": ["Spelling and grammar mistakes", "Overly long objectives"],
+        "sectionOrder": [
+          "Contact details",
+          "Career objective (2 lines)",
+          "Education",
+          "Skills",
+          "Projects",
+          "Internships",
+          "Certifications",
+          "Activities"
+        ],
+        "emphasise": [
+          "Clear communication examples",
+          "Projects and internships with outcomes"
+        ],
+        "avoid": [
+          "Spelling and grammar mistakes",
+          "Overly long objectives"
+        ],
         "atsNotes": "Single-column layout with standard headings; avoid text inside images."
       },
-      "sources": ["https://www.capgemini.com/in-en/careers/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.capgemini.com/in-en/careers/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹4–7.5 LPA (Analyst / Senior Analyst)",
+        "payMaxLpa": 7.5,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "good",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "deloitte-india",
@@ -162,20 +574,76 @@
       "sector": "Professional services & consulting",
       "summary": "Analytical thinking, communication and business sense for consulting, audit, tax and technology roles.",
       "expectations": {
-        "skills": ["Analytical and problem-solving skills", "Excel and data handling", "Business communication", "Domain knowledge for the role (tech, finance or risk)"],
+        "skills": [
+          "Analytical and problem-solving skills",
+          "Excel and data handling",
+          "Business communication",
+          "Domain knowledge for the role (tech, finance or risk)"
+        ],
         "academics": "Strong academics help; some roles prefer specific degrees such as CA, MBA, B.Com or B.Tech.",
         "experience": "Campus hiring for analyst roles; internships in consulting, audit or analytics are a plus.",
-        "traits": ["Structured thinking", "Client-ready communication", "Ownership"]
+        "traits": [
+          "Structured thinking",
+          "Client-ready communication",
+          "Ownership"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers",
-        "sectionOrder": ["Contact details", "Summary (2–3 lines)", "Education", "Internships / experience", "Projects or case competitions", "Skills", "Certifications", "Leadership & activities"],
-        "emphasise": ["Case competitions and analytical projects", "Quantified outcomes", "Leadership roles in clubs or events"],
-        "avoid": ["Purely technical jargon for business roles", "Unquantified claims"],
+        "sectionOrder": [
+          "Contact details",
+          "Summary (2–3 lines)",
+          "Education",
+          "Internships / experience",
+          "Projects or case competitions",
+          "Skills",
+          "Certifications",
+          "Leadership & activities"
+        ],
+        "emphasise": [
+          "Case competitions and analytical projects",
+          "Quantified outcomes",
+          "Leadership roles in clubs or events"
+        ],
+        "avoid": [
+          "Purely technical jargon for business roles",
+          "Unquantified claims"
+        ],
         "atsNotes": "Use the exact role title from the posting and keep bullet points action-led (Led, Analysed, Built)."
       },
-      "sources": ["https://www2.deloitte.com/in/en/careers.html"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www2.deloitte.com/in/en/careers.html"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹6–9 LPA (Analyst / Associate)",
+        "payMaxLpa": 9,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "demanding",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, written English",
+            "Group discussion or case discussion",
+            "Technical / domain interview",
+            "Partner or HR interview"
+          ],
+          "topics": [
+            "Aptitude and data interpretation",
+            "Business awareness and current affairs",
+            "Structured problem solving (cases)",
+            "SQL / Excel basics",
+            "Communication and presentation"
+          ],
+          "questions": [
+            "How would you estimate the number of cars in Hyderabad?",
+            "Tell me about a time you led a team.",
+            "What do you know about our service lines?",
+            "Explain a technical concept to a non-technical client.",
+            "Where do you see yourself in three years?"
+          ]
+        }
+      }
     },
     {
       "id": "ibm-india",
@@ -184,20 +652,79 @@
       "sector": "Technology & consulting",
       "summary": "Technical depth in cloud, data or AI basics, with curiosity and continuous learning.",
       "expectations": {
-        "skills": ["Programming (Python, Java or similar)", "Cloud or data fundamentals", "Linux basics", "Problem solving"],
+        "skills": [
+          "Programming (Python, Java or similar)",
+          "Cloud or data fundamentals",
+          "Linux basics",
+          "Problem solving"
+        ],
         "academics": "A solid academic record is expected; specific cut-offs vary by role.",
         "experience": "Freshers for associate developer and consulting roles; open-source and research work stand out.",
-        "traits": ["Curiosity", "Continuous learning", "Collaboration"]
+        "traits": [
+          "Curiosity",
+          "Continuous learning",
+          "Collaboration"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers, up to 2 pages with experience",
-        "sectionOrder": ["Contact details (with GitHub)", "Summary (2 lines)", "Education", "Skills", "Projects", "Internships / experience", "Certifications & badges", "Publications or open source"],
-        "emphasise": ["Cloud, data and AI certifications", "Open-source contributions", "Projects with links"],
-        "avoid": ["Listing every course you attended", "Outdated technologies with no context"],
+        "sectionOrder": [
+          "Contact details (with GitHub)",
+          "Summary (2 lines)",
+          "Education",
+          "Skills",
+          "Projects",
+          "Internships / experience",
+          "Certifications & badges",
+          "Publications or open source"
+        ],
+        "emphasise": [
+          "Cloud, data and AI certifications",
+          "Open-source contributions",
+          "Projects with links"
+        ],
+        "avoid": [
+          "Listing every course you attended",
+          "Outdated technologies with no context"
+        ],
         "atsNotes": "Include the main technologies from the posting where they truly match your experience."
       },
-      "sources": ["https://www.ibm.com/careers"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.ibm.com/careers"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹4.5–8 LPA (Associate System Engineer / Developer)",
+        "payMaxLpa": 8,
+        "payLevel": "good",
+        "layoffRisk": "medium",
+        "workLife": "good",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "microsoft-india",
@@ -206,22 +733,79 @@
       "sector": "Product technology",
       "summary": "Strong data structures and algorithms, problem solving and impactful projects. Highly competitive.",
       "expectations": {
-        "skills": ["Data structures & algorithms", "One strong programming language", "System design basics (for experienced roles)", "Computer science fundamentals"],
+        "skills": [
+          "Data structures & algorithms",
+          "One strong programming language",
+          "System design basics (for experienced roles)",
+          "Computer science fundamentals"
+        ],
         "academics": "Strong fundamentals matter more than marks alone; good CGPA helps at campus stage.",
         "experience": "Internships at product companies, competitive programming and substantial projects stand out.",
-        "traits": ["Problem-solving mindset", "Growth mindset", "Clear communication of trade-offs"]
+        "traits": [
+          "Problem-solving mindset",
+          "Growth mindset",
+          "Clear communication of trade-offs"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Education (brief)", "Experience / internships", "Projects", "Technical skills", "Achievements (contests, awards)"],
-        "emphasise": ["Measurable impact (\"reduced load time by 40%\")", "Contest ratings and ranks", "Projects that show depth, not just tutorials"],
-        "avoid": ["Career objectives", "Long coursework lists", "Soft-skill buzzwords without evidence"],
+        "sectionOrder": [
+          "Contact details (GitHub, LinkedIn)",
+          "Education (brief)",
+          "Experience / internships",
+          "Projects",
+          "Technical skills",
+          "Achievements (contests, awards)"
+        ],
+        "emphasise": [
+          "Measurable impact (\"reduced load time by 40%\")",
+          "Contest ratings and ranks",
+          "Projects that show depth, not just tutorials"
+        ],
+        "avoid": [
+          "Career objectives",
+          "Long coursework lists",
+          "Soft-skill buzzwords without evidence"
+        ],
         "atsNotes": "Recruiters scan quickly: put the strongest items at the top of each section and keep bullet points to one or two lines."
       },
-      "sources": ["https://careers.microsoft.com/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://careers.microsoft.com/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹25–50 LPA (Software Engineer, total compensation)",
+        "payMaxLpa": 50,
+        "payLevel": "high",
+        "layoffRisk": "medium",
+        "workLife": "good",
+        "prep": {
+          "rounds": [
+            "Online assessment: 2–3 DSA problems",
+            "Technical interview 1: data structures & algorithms",
+            "Technical interview 2: problem solving / low-level design, your projects",
+            "Hiring manager or culture-fit round"
+          ],
+          "topics": [
+            "Arrays, strings, hashing",
+            "Trees, graphs, BFS/DFS",
+            "Dynamic programming basics",
+            "Time and space complexity",
+            "OOP and basic system/low-level design",
+            "One project you can explain in depth",
+            "Operating systems and networking basics"
+          ],
+          "questions": [
+            "Find the first non-repeating character in a string.",
+            "Detect a cycle in a linked list.",
+            "Design a URL shortener (basic).",
+            "Walk me through the hardest bug you fixed in a project.",
+            "Why this company, and what would you build here?",
+            "How does a HashMap work internally?"
+          ]
+        }
+      }
     },
-
     {
       "id": "persistent",
       "name": "Persistent Systems",
@@ -229,20 +813,79 @@
       "sector": "Software product engineering",
       "summary": "Hands-on engineering skills and projects that show you can build and ship features.",
       "expectations": {
-        "skills": ["Java, Python or JavaScript", "Data structures basics", "SQL", "Git", "Web or cloud fundamentals"],
+        "skills": [
+          "Java, Python or JavaScript",
+          "Data structures basics",
+          "SQL",
+          "Git",
+          "Web or cloud fundamentals"
+        ],
         "academics": "A consistent record helps; demonstrated coding ability carries significant weight.",
         "experience": "Freshers with strong projects; internships in product teams are valued.",
-        "traits": ["Ownership", "Hands-on approach", "Collaboration"]
+        "traits": [
+          "Ownership",
+          "Hands-on approach",
+          "Collaboration"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (with GitHub)", "Summary (2 lines)", "Technical skills", "Projects", "Internships / experience", "Education", "Certifications"],
-        "emphasise": ["Projects with tech stack and your role", "GitHub activity", "Practical tools (Git, Docker, cloud)"],
-        "avoid": ["Generic objectives", "Skills you haven't used in a project"],
+        "sectionOrder": [
+          "Contact details (with GitHub)",
+          "Summary (2 lines)",
+          "Technical skills",
+          "Projects",
+          "Internships / experience",
+          "Education",
+          "Certifications"
+        ],
+        "emphasise": [
+          "Projects with tech stack and your role",
+          "GitHub activity",
+          "Practical tools (Git, Docker, cloud)"
+        ],
+        "avoid": [
+          "Generic objectives",
+          "Skills you haven't used in a project"
+        ],
         "atsNotes": "Name technologies exactly as they appear in the posting (for example 'React', not 'React-based UI')."
       },
-      "sources": ["https://www.persistent.com/careers/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.persistent.com/careers/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹4.5–9 LPA",
+        "payMaxLpa": 9,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "mphasis",
@@ -251,20 +894,78 @@
       "sector": "IT services (banking & finance focus)",
       "summary": "Technical basics plus interest in banking, insurance and financial-services systems.",
       "expectations": {
-        "skills": ["Java or .NET", "SQL", "Testing basics", "Cloud awareness", "Communication"],
+        "skills": [
+          "Java or .NET",
+          "SQL",
+          "Testing basics",
+          "Cloud awareness",
+          "Communication"
+        ],
         "academics": "Campus drives usually expect a consistent record without active backlogs.",
         "experience": "Freshers and laterals; domain exposure to BFSI is a plus.",
-        "traits": ["Reliability", "Domain curiosity", "Teamwork"]
+        "traits": [
+          "Reliability",
+          "Domain curiosity",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers",
-        "sectionOrder": ["Contact details", "Summary (2 lines)", "Technical skills", "Projects", "Internships", "Education", "Certifications"],
-        "emphasise": ["Any finance or banking-related projects", "Database and backend skills", "Certifications in cloud or testing"],
-        "avoid": ["Unrelated certifications taking up space"],
+        "sectionOrder": [
+          "Contact details",
+          "Summary (2 lines)",
+          "Technical skills",
+          "Projects",
+          "Internships",
+          "Education",
+          "Certifications"
+        ],
+        "emphasise": [
+          "Any finance or banking-related projects",
+          "Database and backend skills",
+          "Certifications in cloud or testing"
+        ],
+        "avoid": [
+          "Unrelated certifications taking up space"
+        ],
         "atsNotes": "Include domain keywords (banking, payments, insurance) only where your work genuinely involved them."
       },
-      "sources": ["https://careers.mphasis.com/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://careers.mphasis.com/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹3.5–6 LPA",
+        "payMaxLpa": 6,
+        "payLevel": "good",
+        "layoffRisk": "medium",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "happiest-minds",
@@ -273,20 +974,76 @@
       "sector": "Digital transformation services",
       "summary": "Modern tech skills (cloud, data, security, IoT) and a willingness to learn quickly.",
       "expectations": {
-        "skills": ["Python or Java", "Cloud fundamentals", "Data or security basics", "Communication"],
+        "skills": [
+          "Python or Java",
+          "Cloud fundamentals",
+          "Data or security basics",
+          "Communication"
+        ],
         "academics": "A consistent academic record is generally expected for campus hiring.",
         "experience": "Freshers with relevant projects; internships in cloud, data or security help.",
-        "traits": ["Adaptability", "Positive attitude", "Teamwork"]
+        "traits": [
+          "Adaptability",
+          "Positive attitude",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details", "Summary (2 lines)", "Skills", "Projects", "Internships", "Education", "Certifications"],
-        "emphasise": ["Projects in cloud, data, IoT or security", "Hands-on certifications"],
-        "avoid": ["Buzzwords without a project to show for them"],
+        "sectionOrder": [
+          "Contact details",
+          "Summary (2 lines)",
+          "Skills",
+          "Projects",
+          "Internships",
+          "Education",
+          "Certifications"
+        ],
+        "emphasise": [
+          "Projects in cloud, data, IoT or security",
+          "Hands-on certifications"
+        ],
+        "avoid": [
+          "Buzzwords without a project to show for them"
+        ],
         "atsNotes": "Group skills by area (Cloud, Data, Languages) to match how roles are posted."
       },
-      "sources": ["https://www.happiestminds.com/careers/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.happiestminds.com/careers/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹4–6.5 LPA",
+        "payMaxLpa": 6.5,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "good",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "tata-elxsi",
@@ -295,20 +1052,76 @@
       "sector": "Design & embedded engineering",
       "summary": "Embedded, automotive or media-tech skills, or a strong design portfolio for design roles.",
       "expectations": {
-        "skills": ["Embedded C / C++", "Microcontrollers and RTOS basics", "Python", "For design roles: UX/UI portfolio"],
+        "skills": [
+          "Embedded C / C++",
+          "Microcontrollers and RTOS basics",
+          "Python",
+          "For design roles: UX/UI portfolio"
+        ],
         "academics": "Electronics, CS and design graduates are common; consistent academics help.",
         "experience": "Freshers with embedded or design projects; hardware lab work counts.",
-        "traits": ["Attention to detail", "Creativity", "Engineering rigour"]
+        "traits": [
+          "Attention to detail",
+          "Creativity",
+          "Engineering rigour"
+        ]
       },
       "resumePattern": {
         "length": "1 page (engineering); portfolio link essential for design",
-        "sectionOrder": ["Contact details (portfolio/GitHub)", "Summary (2 lines)", "Technical skills", "Projects", "Internships", "Education", "Certifications"],
-        "emphasise": ["Embedded or automotive projects with hardware used", "Portfolio for design roles", "Tools (Keil, MATLAB, Figma) you actually used"],
-        "avoid": ["Generic software-only resumes for embedded roles"],
+        "sectionOrder": [
+          "Contact details (portfolio/GitHub)",
+          "Summary (2 lines)",
+          "Technical skills",
+          "Projects",
+          "Internships",
+          "Education",
+          "Certifications"
+        ],
+        "emphasise": [
+          "Embedded or automotive projects with hardware used",
+          "Portfolio for design roles",
+          "Tools (Keil, MATLAB, Figma) you actually used"
+        ],
+        "avoid": [
+          "Generic software-only resumes for embedded roles"
+        ],
         "atsNotes": "List hardware platforms and protocols (CAN, I2C, SPI) explicitly when relevant."
       },
-      "sources": ["https://www.tataelxsi.com/careers"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.tataelxsi.com/careers"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹4.5–7.5 LPA",
+        "payMaxLpa": 7.5,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude + C programming",
+            "Technical interview: C/C++, microcontrollers, electronics basics",
+            "Project discussion",
+            "HR interview"
+          ],
+          "topics": [
+            "C pointers, memory, bit manipulation",
+            "C++ basics and OOP",
+            "Microcontrollers, interrupts, timers",
+            "Communication protocols (UART, SPI, I2C, CAN)",
+            "RTOS basics",
+            "Digital electronics fundamentals"
+          ],
+          "questions": [
+            "What is a volatile variable in C and when do you use it?",
+            "Explain how an interrupt is handled.",
+            "Difference between UART, SPI and I2C?",
+            "Write a function to reverse the bits of a byte.",
+            "Explain your embedded/electronics project.",
+            "What is a race condition and how do you avoid it?"
+          ]
+        }
+      }
     },
     {
       "id": "kpit",
@@ -317,20 +1130,76 @@
       "sector": "Automotive software",
       "summary": "Embedded and automotive software skills with strong engineering fundamentals.",
       "expectations": {
-        "skills": ["C / C++", "Embedded systems", "Automotive protocols (CAN) basics", "MATLAB/Simulink (for some roles)"],
+        "skills": [
+          "C / C++",
+          "Embedded systems",
+          "Automotive protocols (CAN) basics",
+          "MATLAB/Simulink (for some roles)"
+        ],
         "academics": "Engineering graduates in CS, ECE, EEE or mechatronics; consistent record expected.",
         "experience": "Freshers with embedded or automotive projects; student motorsport teams stand out.",
-        "traits": ["Engineering discipline", "Problem solving", "Teamwork"]
+        "traits": [
+          "Engineering discipline",
+          "Problem solving",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details", "Summary (2 lines)", "Technical skills", "Projects", "Internships", "Education", "Achievements (e.g. motorsport, robotics)"],
-        "emphasise": ["Embedded and automotive projects", "Competitions like student motorsport or robotics", "Specific microcontrollers and tools"],
-        "avoid": ["Web-only projects for embedded roles"],
+        "sectionOrder": [
+          "Contact details",
+          "Summary (2 lines)",
+          "Technical skills",
+          "Projects",
+          "Internships",
+          "Education",
+          "Achievements (e.g. motorsport, robotics)"
+        ],
+        "emphasise": [
+          "Embedded and automotive projects",
+          "Competitions like student motorsport or robotics",
+          "Specific microcontrollers and tools"
+        ],
+        "avoid": [
+          "Web-only projects for embedded roles"
+        ],
         "atsNotes": "Spell out acronyms once (for example 'Controller Area Network (CAN)') to match more search terms."
       },
-      "sources": ["https://www.kpit.com/careers/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.kpit.com/careers/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹4–7 LPA",
+        "payMaxLpa": 7,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "demanding",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude + C programming",
+            "Technical interview: C/C++, microcontrollers, electronics basics",
+            "Project discussion",
+            "HR interview"
+          ],
+          "topics": [
+            "C pointers, memory, bit manipulation",
+            "C++ basics and OOP",
+            "Microcontrollers, interrupts, timers",
+            "Communication protocols (UART, SPI, I2C, CAN)",
+            "RTOS basics",
+            "Digital electronics fundamentals"
+          ],
+          "questions": [
+            "What is a volatile variable in C and when do you use it?",
+            "Explain how an interrupt is handled.",
+            "Difference between UART, SPI and I2C?",
+            "Write a function to reverse the bits of a byte.",
+            "Explain your embedded/electronics project.",
+            "What is a race condition and how do you avoid it?"
+          ]
+        }
+      }
     },
     {
       "id": "cyient",
@@ -339,20 +1208,75 @@
       "sector": "Engineering & technology services",
       "summary": "Engineering fundamentals across mechanical, electrical, software or geospatial work.",
       "expectations": {
-        "skills": ["Core engineering for your branch", "CAD or GIS tools (for some roles)", "Programming basics", "Communication"],
+        "skills": [
+          "Core engineering for your branch",
+          "CAD or GIS tools (for some roles)",
+          "Programming basics",
+          "Communication"
+        ],
         "academics": "Hires across engineering branches; consistent academics expected.",
         "experience": "Freshers welcome; branch-specific projects and internships help.",
-        "traits": ["Process orientation", "Quality focus", "Teamwork"]
+        "traits": [
+          "Process orientation",
+          "Quality focus",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details", "Summary (2 lines)", "Education", "Technical skills / tools", "Projects", "Internships", "Certifications"],
-        "emphasise": ["Branch-specific tools (CATIA, AutoCAD, ArcGIS, etc.)", "Projects linked to the role's domain"],
-        "avoid": ["Skipping your core branch skills in favour of trendy topics"],
+        "sectionOrder": [
+          "Contact details",
+          "Summary (2 lines)",
+          "Education",
+          "Technical skills / tools",
+          "Projects",
+          "Internships",
+          "Certifications"
+        ],
+        "emphasise": [
+          "Branch-specific tools (CATIA, AutoCAD, ArcGIS, etc.)",
+          "Projects linked to the role's domain"
+        ],
+        "avoid": [
+          "Skipping your core branch skills in favour of trendy topics"
+        ],
         "atsNotes": "Name tools and versions exactly; engineering roles are often screened on specific software."
       },
-      "sources": ["https://www.cyient.com/careers"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.cyient.com/careers"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹3.5–5.5 LPA",
+        "payMaxLpa": 5.5,
+        "payLevel": "lower",
+        "layoffRisk": "medium",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude + C programming",
+            "Technical interview: C/C++, microcontrollers, electronics basics",
+            "Project discussion",
+            "HR interview"
+          ],
+          "topics": [
+            "C pointers, memory, bit manipulation",
+            "C++ basics and OOP",
+            "Microcontrollers, interrupts, timers",
+            "Communication protocols (UART, SPI, I2C, CAN)",
+            "RTOS basics",
+            "Digital electronics fundamentals"
+          ],
+          "questions": [
+            "What is a volatile variable in C and when do you use it?",
+            "Explain how an interrupt is handled.",
+            "Difference between UART, SPI and I2C?",
+            "Write a function to reverse the bits of a byte.",
+            "Explain your embedded/electronics project.",
+            "What is a race condition and how do you avoid it?"
+          ]
+        }
+      }
     },
     {
       "id": "mastek",
@@ -361,20 +1285,76 @@
       "sector": "Enterprise digital services",
       "summary": "Enterprise application, data and cloud skills with clear communication.",
       "expectations": {
-        "skills": ["Java or .NET", "SQL & data basics", "Cloud fundamentals", "Communication"],
+        "skills": [
+          "Java or .NET",
+          "SQL & data basics",
+          "Cloud fundamentals",
+          "Communication"
+        ],
         "academics": "A consistent academic record is generally expected.",
         "experience": "Freshers and laterals; enterprise or data projects help.",
-        "traits": ["Customer focus", "Reliability", "Teamwork"]
+        "traits": [
+          "Customer focus",
+          "Reliability",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers",
-        "sectionOrder": ["Contact details", "Summary (2 lines)", "Skills", "Projects", "Internships", "Education", "Certifications"],
-        "emphasise": ["Data and cloud projects", "Enterprise tools you have used (Salesforce, Oracle, etc.)"],
-        "avoid": ["Long lists of soft skills"],
+        "sectionOrder": [
+          "Contact details",
+          "Summary (2 lines)",
+          "Skills",
+          "Projects",
+          "Internships",
+          "Education",
+          "Certifications"
+        ],
+        "emphasise": [
+          "Data and cloud projects",
+          "Enterprise tools you have used (Salesforce, Oracle, etc.)"
+        ],
+        "avoid": [
+          "Long lists of soft skills"
+        ],
         "atsNotes": "Keep a clean, single-column layout and consistent date format."
       },
-      "sources": ["https://www.mastek.com/careers"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.mastek.com/careers"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹4–6 LPA",
+        "payMaxLpa": 6,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "good",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "intellect-design",
@@ -383,20 +1363,76 @@
       "sector": "Banking & financial software products",
       "summary": "Product engineering skills with interest in banking and financial technology.",
       "expectations": {
-        "skills": ["Java", "SQL", "Microservices basics", "Problem solving"],
+        "skills": [
+          "Java",
+          "SQL",
+          "Microservices basics",
+          "Problem solving"
+        ],
         "academics": "Consistent academics expected; finance-related coursework is a plus.",
         "experience": "Freshers with strong projects; fintech internships help.",
-        "traits": ["Product mindset", "Domain curiosity", "Ownership"]
+        "traits": [
+          "Product mindset",
+          "Domain curiosity",
+          "Ownership"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (with GitHub)", "Summary (2 lines)", "Technical skills", "Projects", "Internships", "Education", "Certifications"],
-        "emphasise": ["Backend and database projects", "Any fintech or banking-related work"],
-        "avoid": ["Frontend-only projects for backend roles"],
+        "sectionOrder": [
+          "Contact details (with GitHub)",
+          "Summary (2 lines)",
+          "Technical skills",
+          "Projects",
+          "Internships",
+          "Education",
+          "Certifications"
+        ],
+        "emphasise": [
+          "Backend and database projects",
+          "Any fintech or banking-related work"
+        ],
+        "avoid": [
+          "Frontend-only projects for backend roles"
+        ],
         "atsNotes": "Describe projects with problem, technology and result so they read well to both ATS and recruiters."
       },
-      "sources": ["https://www.intellectdesign.com/careers/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.intellectdesign.com/careers/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹5–9 LPA",
+        "payMaxLpa": 9,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "sonata-software",
@@ -405,20 +1441,76 @@
       "sector": "IT services & platforms",
       "summary": "Practical development skills across Microsoft platforms, cloud and data.",
       "expectations": {
-        "skills": [".NET or Java", "Azure or other cloud basics", "SQL", "Communication"],
+        "skills": [
+          ".NET or Java",
+          "Azure or other cloud basics",
+          "SQL",
+          "Communication"
+        ],
         "academics": "A consistent academic record is generally expected.",
         "experience": "Freshers and laterals; Microsoft-stack projects or certifications help.",
-        "traits": ["Adaptability", "Learning agility", "Teamwork"]
+        "traits": [
+          "Adaptability",
+          "Learning agility",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page for freshers",
-        "sectionOrder": ["Contact details", "Summary (2 lines)", "Skills", "Projects", "Internships", "Education", "Certifications"],
-        "emphasise": ["Cloud certifications", "Projects on Microsoft or cloud platforms"],
-        "avoid": ["Listing every IDE and editor you've opened"],
+        "sectionOrder": [
+          "Contact details",
+          "Summary (2 lines)",
+          "Skills",
+          "Projects",
+          "Internships",
+          "Education",
+          "Certifications"
+        ],
+        "emphasise": [
+          "Cloud certifications",
+          "Projects on Microsoft or cloud platforms"
+        ],
+        "avoid": [
+          "Listing every IDE and editor you've opened"
+        ],
         "atsNotes": "Match platform names to the posting (Azure, Dynamics 365, Power BI) when you've used them."
       },
-      "sources": ["https://www.sonata-software.com/careers"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.sonata-software.com/careers"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹4–6.5 LPA",
+        "payMaxLpa": 6.5,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "good",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude, logical reasoning, verbal",
+            "Coding test (1–2 easy/medium problems)",
+            "Technical interview: programming basics, DBMS, OOP, your projects",
+            "HR interview"
+          ],
+          "topics": [
+            "Quantitative aptitude (percentages, time & work, probability)",
+            "Logical reasoning and puzzles",
+            "Verbal ability and reading comprehension",
+            "Programming basics in one language (C/Java/Python)",
+            "OOP concepts",
+            "DBMS and SQL queries",
+            "Explaining your final-year project"
+          ],
+          "questions": [
+            "Tell me about yourself.",
+            "Explain your final-year project and your role in it.",
+            "What is the difference between a class and an object?",
+            "Write a SQL query to find the second-highest salary.",
+            "What are the four pillars of OOP?",
+            "Are you willing to relocate or work in shifts?"
+          ]
+        }
+      }
     },
     {
       "id": "sasken",
@@ -427,22 +1519,76 @@
       "sector": "Embedded & telecom engineering",
       "summary": "Embedded, telecom and device software skills with strong C/C++ fundamentals.",
       "expectations": {
-        "skills": ["C / C++", "Embedded Linux basics", "Networking & telecom fundamentals", "Debugging skills"],
+        "skills": [
+          "C / C++",
+          "Embedded Linux basics",
+          "Networking & telecom fundamentals",
+          "Debugging skills"
+        ],
         "academics": "CS and ECE graduates are common; consistent record expected.",
         "experience": "Freshers with embedded or networking projects.",
-        "traits": ["Patience with low-level debugging", "Engineering rigour", "Teamwork"]
+        "traits": [
+          "Patience with low-level debugging",
+          "Engineering rigour",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details", "Summary (2 lines)", "Technical skills", "Projects", "Internships", "Education", "Certifications"],
-        "emphasise": ["Embedded Linux, drivers or networking projects", "Specific boards and protocols used"],
-        "avoid": ["Vague project descriptions without the hardware or stack"],
+        "sectionOrder": [
+          "Contact details",
+          "Summary (2 lines)",
+          "Technical skills",
+          "Projects",
+          "Internships",
+          "Education",
+          "Certifications"
+        ],
+        "emphasise": [
+          "Embedded Linux, drivers or networking projects",
+          "Specific boards and protocols used"
+        ],
+        "avoid": [
+          "Vague project descriptions without the hardware or stack"
+        ],
         "atsNotes": "Include low-level keywords you genuinely know (Linux kernel, device drivers, TCP/IP)."
       },
-      "sources": ["https://www.sasken.com/careers"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.sasken.com/careers"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹4–6.5 LPA",
+        "payMaxLpa": 6.5,
+        "payLevel": "good",
+        "layoffRisk": "low",
+        "workLife": "good",
+        "prep": {
+          "rounds": [
+            "Online test: aptitude + C programming",
+            "Technical interview: C/C++, microcontrollers, electronics basics",
+            "Project discussion",
+            "HR interview"
+          ],
+          "topics": [
+            "C pointers, memory, bit manipulation",
+            "C++ basics and OOP",
+            "Microcontrollers, interrupts, timers",
+            "Communication protocols (UART, SPI, I2C, CAN)",
+            "RTOS basics",
+            "Digital electronics fundamentals"
+          ],
+          "questions": [
+            "What is a volatile variable in C and when do you use it?",
+            "Explain how an interrupt is handled.",
+            "Difference between UART, SPI and I2C?",
+            "Write a function to reverse the bits of a byte.",
+            "Explain your embedded/electronics project.",
+            "What is a race condition and how do you avoid it?"
+          ]
+        }
+      }
     },
-
     {
       "id": "zerodha",
       "name": "Zerodha",
@@ -450,20 +1596,78 @@
       "sector": "Fintech / stock broking",
       "summary": "Self-driven builders who show real, shipped work and depth in their craft.",
       "expectations": {
-        "skills": ["Strong programming in one language (Go, Python, etc.)", "Linux and systems basics", "Databases", "Ability to learn independently"],
+        "skills": [
+          "Strong programming in one language (Go, Python, etc.)",
+          "Linux and systems basics",
+          "Databases",
+          "Ability to learn independently"
+        ],
         "academics": "Degrees and marks matter less than demonstrated skill and work.",
         "experience": "Open-source contributions and self-built projects are strong signals.",
-        "traits": ["Self-motivation", "Craftsmanship", "Frugal, practical engineering"]
+        "traits": [
+          "Self-motivation",
+          "Craftsmanship",
+          "Frugal, practical engineering"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (GitHub, portfolio)", "One-line summary", "Projects (with links)", "Experience / internships", "Skills", "Education (brief)"],
-        "emphasise": ["Working projects with links and real users", "Open-source contributions", "What you built, not what you studied"],
-        "avoid": ["Career objectives", "Inflated titles", "Long lists of courses"],
+        "sectionOrder": [
+          "Contact details (GitHub, portfolio)",
+          "One-line summary",
+          "Projects (with links)",
+          "Experience / internships",
+          "Skills",
+          "Education (brief)"
+        ],
+        "emphasise": [
+          "Working projects with links and real users",
+          "Open-source contributions",
+          "What you built, not what you studied"
+        ],
+        "avoid": [
+          "Career objectives",
+          "Inflated titles",
+          "Long lists of courses"
+        ],
         "atsNotes": "Keep it simple and link to your work; reviewers often check GitHub directly."
       },
-      "sources": ["https://zerodha.com/careers/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://zerodha.com/careers/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹10–25 LPA (engineering, varies)",
+        "payMaxLpa": 25,
+        "payLevel": "high",
+        "layoffRisk": "low",
+        "workLife": "good",
+        "prep": {
+          "rounds": [
+            "Online assessment: 2–3 DSA problems",
+            "Technical interview 1: data structures & algorithms",
+            "Technical interview 2: problem solving / low-level design, your projects",
+            "Hiring manager or culture-fit round"
+          ],
+          "topics": [
+            "Arrays, strings, hashing",
+            "Trees, graphs, BFS/DFS",
+            "Dynamic programming basics",
+            "Time and space complexity",
+            "OOP and basic system/low-level design",
+            "One project you can explain in depth",
+            "Operating systems and networking basics"
+          ],
+          "questions": [
+            "Find the first non-repeating character in a string.",
+            "Detect a cycle in a linked list.",
+            "Design a URL shortener (basic).",
+            "Walk me through the hardest bug you fixed in a project.",
+            "Why this company, and what would you build here?",
+            "How does a HashMap work internally?"
+          ]
+        }
+      }
     },
     {
       "id": "razorpay",
@@ -472,20 +1676,76 @@
       "sector": "Fintech / payments",
       "summary": "Strong problem solving, product sense and ownership of shipped features.",
       "expectations": {
-        "skills": ["Data structures & algorithms", "Backend or frontend engineering", "System design basics", "APIs"],
+        "skills": [
+          "Data structures & algorithms",
+          "Backend or frontend engineering",
+          "System design basics",
+          "APIs"
+        ],
         "academics": "Competitive at campus stage; skills and projects matter most.",
         "experience": "Internships at product companies and substantial projects stand out.",
-        "traits": ["Ownership", "Bias for action", "Customer focus"]
+        "traits": [
+          "Ownership",
+          "Bias for action",
+          "Customer focus"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
-        "emphasise": ["Impact with numbers", "Payments, APIs or high-scale work if you have it", "Ownership of features end to end"],
-        "avoid": ["Objectives and filler soft skills"],
+        "sectionOrder": [
+          "Contact details (GitHub, LinkedIn)",
+          "Experience / internships",
+          "Projects",
+          "Skills",
+          "Education",
+          "Achievements"
+        ],
+        "emphasise": [
+          "Impact with numbers",
+          "Payments, APIs or high-scale work if you have it",
+          "Ownership of features end to end"
+        ],
+        "avoid": [
+          "Objectives and filler soft skills"
+        ],
         "atsNotes": "Bullet points should start with an action verb and end with a result."
       },
-      "sources": ["https://razorpay.com/jobs/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://razorpay.com/jobs/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹14–28 LPA (SDE-1)",
+        "payMaxLpa": 28,
+        "payLevel": "high",
+        "layoffRisk": "medium",
+        "workLife": "demanding",
+        "prep": {
+          "rounds": [
+            "Online assessment: 2–3 DSA problems",
+            "Technical interview 1: data structures & algorithms",
+            "Technical interview 2: problem solving / low-level design, your projects",
+            "Hiring manager or culture-fit round"
+          ],
+          "topics": [
+            "Arrays, strings, hashing",
+            "Trees, graphs, BFS/DFS",
+            "Dynamic programming basics",
+            "Time and space complexity",
+            "OOP and basic system/low-level design",
+            "One project you can explain in depth",
+            "Operating systems and networking basics"
+          ],
+          "questions": [
+            "Find the first non-repeating character in a string.",
+            "Detect a cycle in a linked list.",
+            "Design a URL shortener (basic).",
+            "Walk me through the hardest bug you fixed in a project.",
+            "Why this company, and what would you build here?",
+            "How does a HashMap work internally?"
+          ]
+        }
+      }
     },
     {
       "id": "cred",
@@ -494,20 +1754,75 @@
       "sector": "Fintech / consumer",
       "summary": "High craft and attention to detail in engineering, design and product work.",
       "expectations": {
-        "skills": ["Strong engineering or design craft", "Mobile or backend depth", "Problem solving"],
+        "skills": [
+          "Strong engineering or design craft",
+          "Mobile or backend depth",
+          "Problem solving"
+        ],
         "academics": "Skills and quality of work outweigh grades.",
         "experience": "Polished projects, design portfolios or product-company internships.",
-        "traits": ["Attention to detail", "High standards", "Ownership"]
+        "traits": [
+          "Attention to detail",
+          "High standards",
+          "Ownership"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (portfolio, GitHub)", "Experience / internships", "Projects", "Skills", "Education"],
-        "emphasise": ["Quality and polish of shipped work", "Portfolio for design roles", "Mobile apps on stores, if any"],
-        "avoid": ["Cluttered layouts", "Generic templates"],
+        "sectionOrder": [
+          "Contact details (portfolio, GitHub)",
+          "Experience / internships",
+          "Projects",
+          "Skills",
+          "Education"
+        ],
+        "emphasise": [
+          "Quality and polish of shipped work",
+          "Portfolio for design roles",
+          "Mobile apps on stores, if any"
+        ],
+        "avoid": [
+          "Cluttered layouts",
+          "Generic templates"
+        ],
         "atsNotes": "A clean, well-spaced one-pager reflects the craft they look for."
       },
-      "sources": ["https://careers.cred.club/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://careers.cred.club/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹16–30 LPA (SDE-1)",
+        "payMaxLpa": 30,
+        "payLevel": "high",
+        "layoffRisk": "medium",
+        "workLife": "demanding",
+        "prep": {
+          "rounds": [
+            "Online assessment: 2–3 DSA problems",
+            "Technical interview 1: data structures & algorithms",
+            "Technical interview 2: problem solving / low-level design, your projects",
+            "Hiring manager or culture-fit round"
+          ],
+          "topics": [
+            "Arrays, strings, hashing",
+            "Trees, graphs, BFS/DFS",
+            "Dynamic programming basics",
+            "Time and space complexity",
+            "OOP and basic system/low-level design",
+            "One project you can explain in depth",
+            "Operating systems and networking basics"
+          ],
+          "questions": [
+            "Find the first non-repeating character in a string.",
+            "Detect a cycle in a linked list.",
+            "Design a URL shortener (basic).",
+            "Walk me through the hardest bug you fixed in a project.",
+            "Why this company, and what would you build here?",
+            "How does a HashMap work internally?"
+          ]
+        }
+      }
     },
     {
       "id": "swiggy",
@@ -516,20 +1831,76 @@
       "sector": "Food & quick commerce",
       "summary": "Problem solvers who can work at scale and move fast on customer-facing products.",
       "expectations": {
-        "skills": ["Data structures & algorithms", "Backend, mobile or data engineering", "SQL and analytics (for business roles)"],
+        "skills": [
+          "Data structures & algorithms",
+          "Backend, mobile or data engineering",
+          "SQL and analytics (for business roles)"
+        ],
         "academics": "Competitive campus hiring; skills and projects weigh heavily.",
         "experience": "Internships, scalable projects and analytics work stand out.",
-        "traits": ["Bias for action", "Customer obsession", "Ownership"]
+        "traits": [
+          "Bias for action",
+          "Customer obsession",
+          "Ownership"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
-        "emphasise": ["Scale and performance work", "Data-driven decisions with results", "Fast iteration on features"],
-        "avoid": ["Unquantified claims", "Long paragraphs"],
+        "sectionOrder": [
+          "Contact details (GitHub, LinkedIn)",
+          "Experience / internships",
+          "Projects",
+          "Skills",
+          "Education",
+          "Achievements"
+        ],
+        "emphasise": [
+          "Scale and performance work",
+          "Data-driven decisions with results",
+          "Fast iteration on features"
+        ],
+        "avoid": [
+          "Unquantified claims",
+          "Long paragraphs"
+        ],
         "atsNotes": "Use the posting's role title and core stack where they match your experience."
       },
-      "sources": ["https://careers.swiggy.com/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://careers.swiggy.com/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹14–26 LPA (SDE-1)",
+        "payMaxLpa": 26,
+        "payLevel": "high",
+        "layoffRisk": "high",
+        "workLife": "demanding",
+        "prep": {
+          "rounds": [
+            "Online assessment: 2–3 DSA problems",
+            "Technical interview 1: data structures & algorithms",
+            "Technical interview 2: problem solving / low-level design, your projects",
+            "Hiring manager or culture-fit round"
+          ],
+          "topics": [
+            "Arrays, strings, hashing",
+            "Trees, graphs, BFS/DFS",
+            "Dynamic programming basics",
+            "Time and space complexity",
+            "OOP and basic system/low-level design",
+            "One project you can explain in depth",
+            "Operating systems and networking basics"
+          ],
+          "questions": [
+            "Find the first non-repeating character in a string.",
+            "Detect a cycle in a linked list.",
+            "Design a URL shortener (basic).",
+            "Walk me through the hardest bug you fixed in a project.",
+            "Why this company, and what would you build here?",
+            "How does a HashMap work internally?"
+          ]
+        }
+      }
     },
     {
       "id": "zepto",
@@ -538,20 +1909,74 @@
       "sector": "Quick commerce",
       "summary": "Speed, ownership and execution in a fast-growing operations-heavy business.",
       "expectations": {
-        "skills": ["Engineering, product or operations skills for the role", "Data analysis (SQL, Excel)", "Problem solving"],
+        "skills": [
+          "Engineering, product or operations skills for the role",
+          "Data analysis (SQL, Excel)",
+          "Problem solving"
+        ],
         "academics": "Execution and ownership matter more than grades.",
         "experience": "Internships with measurable outcomes and initiative-driven projects.",
-        "traits": ["Speed of execution", "Ownership", "Comfort with ambiguity"]
+        "traits": [
+          "Speed of execution",
+          "Ownership",
+          "Comfort with ambiguity"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
-        "emphasise": ["Things you launched or improved, with numbers", "Initiatives you started yourself"],
-        "avoid": ["Passive phrasing (\"was responsible for\")"],
+        "sectionOrder": [
+          "Contact details",
+          "Experience / internships",
+          "Projects",
+          "Skills",
+          "Education",
+          "Achievements"
+        ],
+        "emphasise": [
+          "Things you launched or improved, with numbers",
+          "Initiatives you started yourself"
+        ],
+        "avoid": [
+          "Passive phrasing (\"was responsible for\")"
+        ],
         "atsNotes": "Short, outcome-focused bullet points work best."
       },
-      "sources": ["https://www.zeptonow.com/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.zeptonow.com/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹12–24 LPA (SDE-1)",
+        "payMaxLpa": 24,
+        "payLevel": "high",
+        "layoffRisk": "medium",
+        "workLife": "demanding",
+        "prep": {
+          "rounds": [
+            "Online assessment: 2–3 DSA problems",
+            "Technical interview 1: data structures & algorithms",
+            "Technical interview 2: problem solving / low-level design, your projects",
+            "Hiring manager or culture-fit round"
+          ],
+          "topics": [
+            "Arrays, strings, hashing",
+            "Trees, graphs, BFS/DFS",
+            "Dynamic programming basics",
+            "Time and space complexity",
+            "OOP and basic system/low-level design",
+            "One project you can explain in depth",
+            "Operating systems and networking basics"
+          ],
+          "questions": [
+            "Find the first non-repeating character in a string.",
+            "Detect a cycle in a linked list.",
+            "Design a URL shortener (basic).",
+            "Walk me through the hardest bug you fixed in a project.",
+            "Why this company, and what would you build here?",
+            "How does a HashMap work internally?"
+          ]
+        }
+      }
     },
     {
       "id": "meesho",
@@ -560,20 +1985,74 @@
       "sector": "E-commerce",
       "summary": "Product-minded engineers and analysts who care about users in smaller cities and towns.",
       "expectations": {
-        "skills": ["Data structures & algorithms", "Backend, Android or data skills", "SQL and analytics"],
+        "skills": [
+          "Data structures & algorithms",
+          "Backend, Android or data skills",
+          "SQL and analytics"
+        ],
         "academics": "Skills and projects outweigh marks.",
         "experience": "Product internships and user-facing projects help.",
-        "traits": ["User empathy", "Ownership", "Bias for action"]
+        "traits": [
+          "User empathy",
+          "Ownership",
+          "Bias for action"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
-        "emphasise": ["User impact of your work", "Android or data projects with results"],
-        "avoid": ["Feature lists without outcomes"],
+        "sectionOrder": [
+          "Contact details (GitHub, LinkedIn)",
+          "Experience / internships",
+          "Projects",
+          "Skills",
+          "Education",
+          "Achievements"
+        ],
+        "emphasise": [
+          "User impact of your work",
+          "Android or data projects with results"
+        ],
+        "avoid": [
+          "Feature lists without outcomes"
+        ],
         "atsNotes": "Describe impact on users, not just features built."
       },
-      "sources": ["https://www.meesho.io/jobs"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.meesho.io/jobs"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹14–25 LPA (SDE-1)",
+        "payMaxLpa": 25,
+        "payLevel": "high",
+        "layoffRisk": "high",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online assessment: 2–3 DSA problems",
+            "Technical interview 1: data structures & algorithms",
+            "Technical interview 2: problem solving / low-level design, your projects",
+            "Hiring manager or culture-fit round"
+          ],
+          "topics": [
+            "Arrays, strings, hashing",
+            "Trees, graphs, BFS/DFS",
+            "Dynamic programming basics",
+            "Time and space complexity",
+            "OOP and basic system/low-level design",
+            "One project you can explain in depth",
+            "Operating systems and networking basics"
+          ],
+          "questions": [
+            "Find the first non-repeating character in a string.",
+            "Detect a cycle in a linked list.",
+            "Design a URL shortener (basic).",
+            "Walk me through the hardest bug you fixed in a project.",
+            "Why this company, and what would you build here?",
+            "How does a HashMap work internally?"
+          ]
+        }
+      }
     },
     {
       "id": "groww",
@@ -582,20 +2061,74 @@
       "sector": "Fintech / investing",
       "summary": "Simple, reliable product thinking with strong engineering or analytics skills.",
       "expectations": {
-        "skills": ["Data structures & algorithms", "Backend, frontend or mobile engineering", "Analytics (for business roles)"],
+        "skills": [
+          "Data structures & algorithms",
+          "Backend, frontend or mobile engineering",
+          "Analytics (for business roles)"
+        ],
         "academics": "Competitive; skills and projects weigh heavily.",
         "experience": "Product internships and projects with real users.",
-        "traits": ["Customer focus", "Ownership", "Simplicity"]
+        "traits": [
+          "Customer focus",
+          "Ownership",
+          "Simplicity"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
-        "emphasise": ["Reliability and scale in your projects", "Finance-related projects if any"],
-        "avoid": ["Overloaded skill sections"],
+        "sectionOrder": [
+          "Contact details (GitHub, LinkedIn)",
+          "Experience / internships",
+          "Projects",
+          "Skills",
+          "Education",
+          "Achievements"
+        ],
+        "emphasise": [
+          "Reliability and scale in your projects",
+          "Finance-related projects if any"
+        ],
+        "avoid": [
+          "Overloaded skill sections"
+        ],
         "atsNotes": "Keep skills concise and grouped; highlight the ones the posting asks for."
       },
-      "sources": ["https://groww.in/careers"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://groww.in/careers"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹14–26 LPA (SDE-1)",
+        "payMaxLpa": 26,
+        "payLevel": "high",
+        "layoffRisk": "medium",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online assessment: 2–3 DSA problems",
+            "Technical interview 1: data structures & algorithms",
+            "Technical interview 2: problem solving / low-level design, your projects",
+            "Hiring manager or culture-fit round"
+          ],
+          "topics": [
+            "Arrays, strings, hashing",
+            "Trees, graphs, BFS/DFS",
+            "Dynamic programming basics",
+            "Time and space complexity",
+            "OOP and basic system/low-level design",
+            "One project you can explain in depth",
+            "Operating systems and networking basics"
+          ],
+          "questions": [
+            "Find the first non-repeating character in a string.",
+            "Detect a cycle in a linked list.",
+            "Design a URL shortener (basic).",
+            "Walk me through the hardest bug you fixed in a project.",
+            "Why this company, and what would you build here?",
+            "How does a HashMap work internally?"
+          ]
+        }
+      }
     },
     {
       "id": "phonepe",
@@ -604,20 +2137,75 @@
       "sector": "Fintech / payments",
       "summary": "Engineering for scale and reliability on high-volume payment systems.",
       "expectations": {
-        "skills": ["Data structures & algorithms", "Java or backend engineering", "Distributed systems basics", "Android (for mobile roles)"],
+        "skills": [
+          "Data structures & algorithms",
+          "Java or backend engineering",
+          "Distributed systems basics",
+          "Android (for mobile roles)"
+        ],
         "academics": "Competitive campus hiring; strong fundamentals expected.",
         "experience": "Internships and projects that handle scale, concurrency or reliability.",
-        "traits": ["Ownership", "Reliability mindset", "Problem solving"]
+        "traits": [
+          "Ownership",
+          "Reliability mindset",
+          "Problem solving"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements (contests)"],
-        "emphasise": ["Performance and reliability results", "Competitive programming ranks"],
-        "avoid": ["Generic CRUD projects without depth"],
+        "sectionOrder": [
+          "Contact details (GitHub, LinkedIn)",
+          "Experience / internships",
+          "Projects",
+          "Skills",
+          "Education",
+          "Achievements (contests)"
+        ],
+        "emphasise": [
+          "Performance and reliability results",
+          "Competitive programming ranks"
+        ],
+        "avoid": [
+          "Generic CRUD projects without depth"
+        ],
         "atsNotes": "Name the specific technologies (Kafka, Redis, Spring) you used, where true."
       },
-      "sources": ["https://www.phonepe.com/careers/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.phonepe.com/careers/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹14–28 LPA (SDE-1)",
+        "payMaxLpa": 28,
+        "payLevel": "high",
+        "layoffRisk": "medium",
+        "workLife": "average",
+        "prep": {
+          "rounds": [
+            "Online assessment: 2–3 DSA problems",
+            "Technical interview 1: data structures & algorithms",
+            "Technical interview 2: problem solving / low-level design, your projects",
+            "Hiring manager or culture-fit round"
+          ],
+          "topics": [
+            "Arrays, strings, hashing",
+            "Trees, graphs, BFS/DFS",
+            "Dynamic programming basics",
+            "Time and space complexity",
+            "OOP and basic system/low-level design",
+            "One project you can explain in depth",
+            "Operating systems and networking basics"
+          ],
+          "questions": [
+            "Find the first non-repeating character in a string.",
+            "Detect a cycle in a linked list.",
+            "Design a URL shortener (basic).",
+            "Walk me through the hardest bug you fixed in a project.",
+            "Why this company, and what would you build here?",
+            "How does a HashMap work internally?"
+          ]
+        }
+      }
     },
     {
       "id": "postman",
@@ -626,20 +2214,76 @@
       "sector": "Developer tools (SaaS)",
       "summary": "Developer empathy and strong engineering for API tools used worldwide.",
       "expectations": {
-        "skills": ["JavaScript / Node.js", "APIs and HTTP", "Data structures & algorithms", "Testing"],
+        "skills": [
+          "JavaScript / Node.js",
+          "APIs and HTTP",
+          "Data structures & algorithms",
+          "Testing"
+        ],
         "academics": "Skills and projects matter most.",
         "experience": "Developer-tool projects, API work and open source stand out.",
-        "traits": ["Developer empathy", "Ownership", "Collaboration"]
+        "traits": [
+          "Developer empathy",
+          "Ownership",
+          "Collaboration"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (GitHub)", "Experience / internships", "Projects", "Skills", "Education", "Open source"],
-        "emphasise": ["API-related projects", "Open-source contributions", "Developer community activity"],
-        "avoid": ["Projects without code links"],
+        "sectionOrder": [
+          "Contact details (GitHub)",
+          "Experience / internships",
+          "Projects",
+          "Skills",
+          "Education",
+          "Open source"
+        ],
+        "emphasise": [
+          "API-related projects",
+          "Open-source contributions",
+          "Developer community activity"
+        ],
+        "avoid": [
+          "Projects without code links"
+        ],
         "atsNotes": "Link your GitHub and keep project descriptions technical and specific."
       },
-      "sources": ["https://www.postman.com/company/careers/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.postman.com/company/careers/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹18–32 LPA (SDE-1)",
+        "payMaxLpa": 32,
+        "payLevel": "high",
+        "layoffRisk": "low",
+        "workLife": "good",
+        "prep": {
+          "rounds": [
+            "Online assessment: 2–3 DSA problems",
+            "Technical interview 1: data structures & algorithms",
+            "Technical interview 2: problem solving / low-level design, your projects",
+            "Hiring manager or culture-fit round"
+          ],
+          "topics": [
+            "Arrays, strings, hashing",
+            "Trees, graphs, BFS/DFS",
+            "Dynamic programming basics",
+            "Time and space complexity",
+            "OOP and basic system/low-level design",
+            "One project you can explain in depth",
+            "Operating systems and networking basics"
+          ],
+          "questions": [
+            "Find the first non-repeating character in a string.",
+            "Detect a cycle in a linked list.",
+            "Design a URL shortener (basic).",
+            "Walk me through the hardest bug you fixed in a project.",
+            "Why this company, and what would you build here?",
+            "How does a HashMap work internally?"
+          ]
+        }
+      }
     },
     {
       "id": "dream-sports",
@@ -648,20 +2292,75 @@
       "sector": "Sports technology",
       "summary": "Engineering for high-traffic consumer products and a passion for sports.",
       "expectations": {
-        "skills": ["Data structures & algorithms", "Backend or mobile engineering", "Scalability basics"],
+        "skills": [
+          "Data structures & algorithms",
+          "Backend or mobile engineering",
+          "Scalability basics"
+        ],
         "academics": "Competitive; strong fundamentals expected.",
         "experience": "Internships and projects that handle traffic spikes or real-time data.",
-        "traits": ["Passion for sports", "Ownership", "Teamwork"]
+        "traits": [
+          "Passion for sports",
+          "Ownership",
+          "Teamwork"
+        ]
       },
       "resumePattern": {
         "length": "1 page",
-        "sectionOrder": ["Contact details (GitHub, LinkedIn)", "Experience / internships", "Projects", "Skills", "Education", "Achievements"],
-        "emphasise": ["Real-time or high-traffic work", "Sports-related projects if any"],
-        "avoid": ["Unquantified performance claims"],
+        "sectionOrder": [
+          "Contact details (GitHub, LinkedIn)",
+          "Experience / internships",
+          "Projects",
+          "Skills",
+          "Education",
+          "Achievements"
+        ],
+        "emphasise": [
+          "Real-time or high-traffic work",
+          "Sports-related projects if any"
+        ],
+        "avoid": [
+          "Unquantified performance claims"
+        ],
         "atsNotes": "Quantify scale where you can (users, requests per second, latency)."
       },
-      "sources": ["https://www.dreamsports.group/"],
-      "lastReviewed": "2026-11-11"
+      "sources": [
+        "https://www.dreamsports.group/"
+      ],
+      "lastReviewed": "2026-11-11",
+      "insights": {
+        "payBand": "₹14–24 LPA (SDE-1)",
+        "payMaxLpa": 24,
+        "payLevel": "high",
+        "layoffRisk": "low",
+        "workLife": "good",
+        "prep": {
+          "rounds": [
+            "Online assessment: 2–3 DSA problems",
+            "Technical interview 1: data structures & algorithms",
+            "Technical interview 2: problem solving / low-level design, your projects",
+            "Hiring manager or culture-fit round"
+          ],
+          "topics": [
+            "Arrays, strings, hashing",
+            "Trees, graphs, BFS/DFS",
+            "Dynamic programming basics",
+            "Time and space complexity",
+            "OOP and basic system/low-level design",
+            "One project you can explain in depth",
+            "Operating systems and networking basics"
+          ],
+          "questions": [
+            "Find the first non-repeating character in a string.",
+            "Detect a cycle in a linked list.",
+            "Design a URL shortener (basic).",
+            "Walk me through the hardest bug you fixed in a project.",
+            "Why this company, and what would you build here?",
+            "How does a HashMap work internally?"
+          ]
+        }
+      }
     }
-  ]
+  ],
+  "_insightsNote": "insights: the team's indicative summary of public information (campus offer announcements, layoff news, public review trends). Approximate and may be outdated; shown with a disclaimer."
 }
