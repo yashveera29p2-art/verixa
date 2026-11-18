@@ -150,8 +150,8 @@ looks seamless.
 - Frosted glass style: translucent ivory with background blur, thin `stone` border, no glow,
   no heavy shadow.
 - Students: **Home | Jobs | (centre circle with document-outline icon) | Prep | Profile**.
-- Recruiters: **Find talent | (centre "+" Post a job) | My jobs**, over a softly blurred tree that
-  sways in a breeze (students see falling leaves); charcoal-led headers with green accents.
+- Recruiters: **Find talent | (centre "+" Post a job) | My jobs**, same falling-leaves background;
+  charcoal-led headers with green accents.
 - Active item uses `botanicalGreen`; inactive items use `softSage`/`mutedText`.
 - The centre button opens the resume actions (bottom sheet): Create resume, Upload & scan resume,
   Match with a job description.

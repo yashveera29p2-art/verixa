@@ -10,7 +10,6 @@ import 'package:sensors_plus/sensors_plus.dart';
 
 import '../platform/web_bridge.dart';
 import '../theme/theme.dart';
-import 'tree_background.dart';
 
 /// The living background behind every screen: soft, slightly blurred green
 /// leaves drifting down across the ivory in a light breeze, swaying and
@@ -104,8 +103,6 @@ class AuroraState extends ChangeNotifier {
 
   double time = 0;
 
-  /// [time] as a listenable, for painters that only need the clock.
-  final seconds = ValueNotifier<double>(0);
   Duration _last = Duration.zero;
   StreamSubscription<AccelerometerEvent>? _sensor;
   StreamSubscription<Object?>? _webSensor;
@@ -126,7 +123,6 @@ class AuroraState extends ChangeNotifier {
     _last = elapsed;
     _watchSpeed(raw);
     time += dt;
-    seconds.value = time;
     // Ease towards the latest reading so the motion is fluid, not jittery.
     tilt = Offset.lerp(tilt, _targetTilt, (dt * 5).clamp(0.0, 1.0))!;
     notifyListeners();
@@ -223,15 +219,7 @@ class AuroraBackground extends StatelessWidget {
       children: [
         Positioned.fill(
           child: RepaintBoundary(
-            // Recruiter screens show the swaying tree instead of leaves.
-            child: ValueListenableBuilder<bool>(
-              valueListenable: recruiterBackground,
-              builder: (context, tree, _) => CustomPaint(
-                painter: tree && state != null
-                    ? TreePainter(state.seconds)
-                    : _LeafPainter(state),
-              ),
-            ),
+            child: CustomPaint(painter: _LeafPainter(state)),
           ),
         ),
         child,

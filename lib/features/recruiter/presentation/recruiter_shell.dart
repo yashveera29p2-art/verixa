@@ -6,11 +6,10 @@ import 'package:go_router/go_router.dart';
 import '../../../app/routes.dart';
 import '../../../app/tour_keys.dart';
 import '../../../core/widgets/glass_nav_bar.dart';
-import '../../../core/widgets/tree_background.dart';
 import '../../legal/tour_runner.dart';
 
 /// Recruiter tabs (Find talent, My jobs) with "Post a job" in the centre,
-/// over the swaying-tree background.
+/// over the same falling-leaves background as the student side.
 class RecruiterShell extends ConsumerStatefulWidget {
   const RecruiterShell({super.key, required this.navigationShell});
 
@@ -24,7 +23,6 @@ class _RecruiterShellState extends ConsumerState<RecruiterShell> {
   @override
   void initState() {
     super.initState();
-    recruiterBackground.value = true;
     replayTour.addListener(_replay);
     Future.delayed(const Duration(milliseconds: 900), () {
       if (mounted) maybeRunTour(context, ref, 'recruiter', TourKeys.recruiter);
@@ -41,7 +39,6 @@ class _RecruiterShellState extends ConsumerState<RecruiterShell> {
   @override
   void dispose() {
     replayTour.removeListener(_replay);
-    recruiterBackground.value = false;
     super.dispose();
   }
 
