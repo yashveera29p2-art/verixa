@@ -23,6 +23,9 @@ from pydantic import BaseModel, Field
 from .matching import match_profile
 from .matching.matcher import semantic_available
 from .matching.profile import ProfileIn
+from .matching.ranking import (RankCandidatesRequest, RankItem, RankJobsRequest,
+                               rank_candidates, rank_jobs)
+from .jobs import JobListing, search_jobs
 from .models import MatchReport, ParsedResume, ScanReport
 from .parsing import parse_resume
 from .parsing.common import nlp
@@ -126,6 +129,49 @@ def match_job(
     log.info("matched job uid=%s requirements=%d score=%d semantic=%s",
              user.uid, len(report.requirements), report.matchScore, report.semantic)
     return report
+
+
+class JobSearchRequest(BaseModel):
+    query: str = Field(default="", max_length=120)
+    location: str = Field(default="", max_length=80)
+    page: int = Field(default=1, ge=1, le=10)
+    internship: bool = False
+
+
+class JobSearchResponse(BaseModel):
+    source: str  # "adzuna" | "sample"
+    jobs: list[JobListing]
+
+
+@app.post("/v1/jobs/search", response_model=JobSearchResponse)
+def jobs_search(body: JobSearchRequest,
+                user: CurrentUser = Depends(current_user)) -> JobSearchResponse:
+    """Job listings for the Jobs tab (Adzuna India, or sample listings)."""
+    source, jobs = search_jobs(body.query, body.location, body.page, body.internship)
+    return JobSearchResponse(source=source, jobs=jobs)
+
+
+class RankResponse(BaseModel):
+    results: list[RankItem]
+
+
+@app.post("/v1/jobs/rank", response_model=RankResponse)
+def jobs_rank(body: RankJobsRequest,
+              user: CurrentUser = Depends(current_user)) -> RankResponse:
+    """Ranks job listings for the signed-in student, with reasons and gaps."""
+    results = rank_jobs(body)
+    log.info("ranked jobs uid=%s n=%d", user.uid, len(results))
+    return RankResponse(results=results)
+
+
+@app.post("/v1/candidates/rank", response_model=RankResponse)
+def candidates_rank(body: RankCandidatesRequest,
+                    user: CurrentUser = Depends(current_user)) -> RankResponse:
+    """Ranks opted-in students for a recruiter's job (skills, evidence and
+    optional work-style fit)."""
+    results = rank_candidates(body)
+    log.info("ranked candidates uid=%s n=%d", user.uid, len(results))
+    return RankResponse(results=results)
 
 
 DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"

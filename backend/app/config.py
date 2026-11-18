@@ -40,6 +40,11 @@ class Settings:
     # create login tokens. Never commit it; set it as a secret on the host.
     firebase_service_account: str = os.getenv("VERIXA_FIREBASE_SERVICE_ACCOUNT", "")
 
+    # Adzuna job search (https://developer.adzuna.com). Without these the
+    # Jobs tab shows bundled sample listings.
+    adzuna_app_id: str = os.getenv("VERIXA_ADZUNA_APP_ID", "")
+    adzuna_app_key: str = os.getenv("VERIXA_ADZUNA_APP_KEY", "")
+
     # Largest upload we accept.
     max_upload_bytes: int = int(os.getenv("VERIXA_MAX_UPLOAD_MB", "5")) * 1024 * 1024
 

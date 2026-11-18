@@ -46,9 +46,20 @@ def _model():
         return None
 
 
+_VECTORS: dict[str, np.ndarray] = {}
+
+
 def _embed(model, texts: list[str]) -> np.ndarray:
-    vectors = np.array(list(model.embed(texts)), dtype=np.float32)
-    return vectors / np.linalg.norm(vectors, axis=1, keepdims=True).clip(min=1e-9)
+    """Normalised embeddings, cached per text: ranking many jobs (or many
+    candidates) reuses the same profile sentences over and over."""
+    todo = [t for t in dict.fromkeys(texts) if t not in _VECTORS]
+    if todo:
+        vectors = np.array(list(model.embed(todo)), dtype=np.float32)
+        vectors /= np.linalg.norm(vectors, axis=1, keepdims=True).clip(min=1e-9)
+        if len(_VECTORS) > 20_000:
+            _VECTORS.clear()
+        _VECTORS.update(zip(todo, vectors))
+    return np.stack([_VECTORS[t] for t in texts])
 
 
 def semantic_available() -> bool:
@@ -113,6 +124,9 @@ def _education_status(req: Requirement, profile: ProfileIn) -> tuple[str, str]:
     return "met", have
 
 
+_ALTERNATIVES = re.compile(r"\b(or|either|any of|one of)\b|/", re.I)
+
+
 def match_profile(jd_text: str, profile: ProfileIn) -> MatchReport:
     job: JobAnalysis = analyze_jd(jd_text)
     facts = evidence(profile)
@@ -135,6 +149,9 @@ def match_profile(jd_text: str, profile: ProfileIn) -> MatchReport:
         elif req.kind == "skill" and req.skills:
             covered = [s for s in req.skills if s.lower() in have]
             share = len(covered) / len(req.skills)
+            # "Java, Python or C": any one of the alternatives is enough.
+            if covered and _ALTERNATIVES.search(req.text):
+                share = 1.0
             if share == 1:
                 status, label, score = "met", "Skills: " + ", ".join(covered), 1.0
             elif covered:
