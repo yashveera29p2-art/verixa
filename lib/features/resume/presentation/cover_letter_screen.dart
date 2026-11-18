@@ -11,7 +11,6 @@ import '../application/resume_builder_controller.dart';
 import '../data/resume_api.dart';
 import '../domain/resume_builder.dart';
 import '../domain/resume_version.dart';
-import '../../../core/widgets/disclaimer_note.dart';
 
 /// A cover letter written from profile facts, editable, saved with the
 /// resume version, and shareable as PDF or Word (feature 10).
@@ -117,8 +116,7 @@ class _LetterEditorState extends ConsumerState<_LetterEditor> {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Drafted from your profile for ${v.targetLabel.isNotEmpty ? v.targetLabel : 'this resume'}. '
-                  'Read it through and make it yours — it saves automatically. '
-                  '${Disclaimers.coverLetter}',
+                  'Read it through and make it yours — it saves automatically.',
                   style: AppTypography.bodyMedium.copyWith(
                     color: AppColors.mutedText,
                   ),

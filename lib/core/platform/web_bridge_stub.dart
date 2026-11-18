@@ -15,3 +15,7 @@ bool get isStandaloneWebApp => false;
 /// Phone tilt in degrees (beta = front/back, gamma = left/right).
 Stream<({double beta, double gamma})> orientationStream() =>
     const Stream.empty();
+
+/// Web only: opens [url] in a new browser tab. Native builds use the
+/// platform channel instead (see core/utils/links.dart).
+bool openInBrowser(String url) => false;

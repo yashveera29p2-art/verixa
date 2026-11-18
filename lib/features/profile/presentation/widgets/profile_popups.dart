@@ -6,6 +6,9 @@ import '../../../../core/utils/phone_utils.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/glass_popup.dart';
 import '../../../../core/widgets/disclaimer_note.dart';
+import '../../../../core/utils/links.dart';
+import '../../../legal/legal.dart';
+import '../../../legal/tour_runner.dart';
 
 /// Asks "Sign out?" in a glass bar that grows out of the Sign out button.
 /// Returns true if the user confirmed.
@@ -155,6 +158,24 @@ class _AboutContent extends StatelessWidget {
                 label: 'Version',
                 value: appVersion,
               ),
+              _LinkRow(
+                icon: Icons.description_outlined,
+                label: 'Terms of use',
+                onTap: () => openLink(Legal.termsUrl),
+              ),
+              _LinkRow(
+                icon: Icons.tour_outlined,
+                label: 'Take the tour again',
+                onTap: () {
+                  Navigator.pop(context);
+                  replayTour.value++;
+                },
+              ),
+              _LinkRow(
+                icon: Icons.mail_outline,
+                label: 'Contact the team',
+                onTap: () => openLink('mailto:${Legal.contactEmail}'),
+              ),
               const SizedBox(height: AppSpacing.md),
               const _Label('PLEASE NOTE'),
               const DisclaimerNote(Disclaimers.notAffiliated),
@@ -274,4 +295,41 @@ class _Row extends StatelessWidget {
       ),
     );
   }
+}
+
+
+class _LinkRow extends StatelessWidget {
+  const _LinkRow({required this.icon, required this.label, required this.onTap});
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+        child: Material(
+          color: AppColors.white.withValues(alpha: 0.45),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            side: BorderSide(color: AppColors.stone.withValues(alpha: 0.8)),
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+              child: Row(
+                children: [
+                  Icon(icon, size: 20, color: AppColors.botanicalGreen),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(child: Text(label, style: AppTypography.labelLarge)),
+                  const Icon(Icons.chevron_right, color: AppColors.mutedText),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
 }

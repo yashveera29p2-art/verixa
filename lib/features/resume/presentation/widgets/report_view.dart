@@ -45,7 +45,6 @@ class ReportView extends StatelessWidget {
           'The ATS score is an estimate — every applicant tracking system '
           'works differently.',
         ),
-        const DisclaimerNote(Disclaimers.scan, icon: Icons.shield_outlined),
       ],
     );
   }

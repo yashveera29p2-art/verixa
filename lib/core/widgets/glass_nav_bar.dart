@@ -5,22 +5,26 @@ import 'package:flutter/services.dart';
 
 import '../theme/theme.dart';
 
-/// One side item of the bar (Home, Profile).
+/// One side item of the bar (Home, Jobs, Prep, Profile …).
 class GlassNavItem {
   const GlassNavItem({
     required this.label,
     required this.icon,
     required this.activeIcon,
+    this.tourKey,
   });
 
   final String label;
   final IconData icon;
   final IconData activeIcon;
+
+  /// Lets the guided tour point at this item.
+  final GlobalKey? tourKey;
 }
 
 /// Floating frosted-glass pill (iOS style) at the bottom of the main tabs.
 ///
-/// Layout: [left item] [centre scan button] [right item]. A soft green
+/// Layout: [half the items] [centre button] [other half]. A soft green
 /// bubble slides under the active item; icons bounce when tapped. Glass =
 /// very translucent ivory + strong background blur + a thin green rim.
 ///
@@ -31,8 +35,7 @@ class GlassNavItem {
 class GlassNavBar extends StatefulWidget {
   const GlassNavBar({
     super.key,
-    required this.left,
-    required this.right,
+    required this.items,
     required this.currentIndex,
     required this.onTap,
     required this.onCentreTap,
@@ -41,13 +44,15 @@ class GlassNavBar extends StatefulWidget {
     this.centreLabel = 'Resume actions',
     this.playIntro = false,
     this.introDelay = Duration.zero,
-  });
+    this.centreTourKey,
+  }) : assert(items.length % 2 == 0, 'Items are split evenly around the centre');
 
-  final GlassNavItem left;
-  final GlassNavItem right;
+  /// Side items, left to right; half go before the centre button.
+  final List<GlassNavItem> items;
 
-  /// 0 = left item active, 1 = right item active.
+  /// Index into [items] of the active tab.
   final int currentIndex;
+  final GlobalKey? centreTourKey;
   final ValueChanged<int> onTap;
   final VoidCallback onCentreTap;
 
@@ -172,18 +177,35 @@ class _GlassNavBarState extends State<GlassNavBar>
 
   Widget _content(double width) {
     final w = widget;
-    final side = (width - AppSizes.navCentreButton - 2 * AppSpacing.md) / 2;
+    final n = w.items.length;
+    final half = n ~/ 2;
+    final slot = (width - AppSizes.navCentreButton - 2 * AppSpacing.md) / n;
+    // Left items start at the left edge, right items end at the right edge.
+    double slotLeft(int i) => i < half ? i * slot : width - (n - i) * slot;
+
+    Widget item(int i) => SizedBox(
+          key: w.items[i].tourKey,
+          width: slot,
+          child: _SideFade(
+            child: _SideItem(
+              item: w.items[i],
+              active: w.currentIndex == i,
+              compact: n > 2,
+              onTap: () => w.onTap(i),
+            ),
+          ),
+        );
+
     return Stack(
       children: [
         // The sliding "selected" bubble.
         AnimatedPositioned(
           duration: AppMotion.page,
           curve: Curves.easeOutBack,
-          // Centred under the item (items are side + 6 wide).
-          left: w.currentIndex == 0 ? 3 : width - side - 3,
+          left: slotLeft(w.currentIndex) + 3,
           top: 6,
           bottom: 6,
-          width: side,
+          width: slot - 6,
           child: _SideFade(
             child: DecoratedBox(
               decoration: BoxDecoration(
@@ -195,34 +217,19 @@ class _GlassNavBarState extends State<GlassNavBar>
         ),
         Row(
           children: [
-            SizedBox(
-              width: side + 6,
-              child: _SideFade(
-                child: _SideItem(
-                  item: w.left,
-                  active: w.currentIndex == 0,
-                  onTap: () => w.onTap(0),
-                ),
+            for (var i = 0; i < half; i++) item(i),
+            const Spacer(),
+            KeyedSubtree(
+              key: w.centreTourKey,
+              child: _CentreButton(
+                icon: w.centreIcon,
+                label: w.centreLabel,
+                open: w.centreOpen,
+                onTap: w.onCentreTap,
               ),
             ),
             const Spacer(),
-            _CentreButton(
-              icon: w.centreIcon,
-              label: w.centreLabel,
-              open: w.centreOpen,
-              onTap: w.onCentreTap,
-            ),
-            const Spacer(),
-            SizedBox(
-              width: side + 6,
-              child: _SideFade(
-                child: _SideItem(
-                  item: w.right,
-                  active: w.currentIndex == 1,
-                  onTap: () => w.onTap(1),
-                ),
-              ),
-            ),
+            for (var i = half; i < n; i++) item(i),
           ],
         ),
       ],
@@ -384,11 +391,15 @@ class _SideItem extends StatefulWidget {
     required this.item,
     required this.active,
     required this.onTap,
+    this.compact = false,
   });
 
   final GlassNavItem item;
   final bool active;
   final VoidCallback onTap;
+
+  /// Four or more items: slightly smaller labels so they fit.
+  final bool compact;
 
   @override
   State<_SideItem> createState() => _SideItemState();
@@ -434,9 +445,15 @@ class _SideItemState extends State<_SideItem> {
                 duration: AppMotion.medium,
                 style: AppTypography.labelMedium.copyWith(
                   color: color,
+                  fontSize: widget.compact ? 11 : null,
                   fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                 ),
-                child: Text(widget.item.label),
+                child: Text(
+                  widget.item.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
               ),
             ],
           ),

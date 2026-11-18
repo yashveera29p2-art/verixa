@@ -17,7 +17,11 @@ class PhoneScreen extends ConsumerStatefulWidget {
     this.isLogin = false,
     this.alreadyRegistered = false,
     this.initialPhone,
+    this.recruiter = false,
   });
+
+  /// Recruiter sign-in (one screen for new and existing recruiters).
+  final bool recruiter;
 
   /// "Log in" vs "Create account". Both use the same phone flow, but
   /// "Create account" first checks the number isn't already registered.
@@ -72,7 +76,9 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
       _numberController.text,
     );
     final controller = ref.read(phoneAuthControllerProvider.notifier);
-    if (!widget.isLogin && await controller.isExistingAccount(phone)) {
+    if (!widget.isLogin &&
+        !widget.recruiter &&
+        await controller.isExistingAccount(phone)) {
       // Already registered: switch to "Log in" with the number filled in.
       if (mounted) {
         context.pushReplacement(AppRoutes.phoneExisting, extra: phone);
@@ -100,9 +106,18 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
     final error = _validationError ?? state.error;
 
     return AuthPage(
-      title: widget.isLogin ? 'Welcome back' : 'Create your account',
+      title: widget.recruiter
+          ? 'Recruiter sign-in'
+          : widget.isLogin
+          ? 'Welcome back'
+          : 'Create your account',
+      eyebrow: widget.recruiter ? 'FOR RECRUITERS' : null,
       subtitle: Text(
-        widget.isLogin
+        widget.recruiter
+            ? 'New or returning, enter your phone number. New recruiter '
+                  'accounts are reviewed by the Verixa team before you can '
+                  'search students.'
+            : widget.isLogin
             ? 'Enter the phone number you signed up with. We’ll text you a '
                   '6-digit code.'
             : 'Your phone number is your Verixa account. We’ll text you a '

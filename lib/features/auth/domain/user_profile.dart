@@ -25,6 +25,16 @@ enum UserStatus {
   }
 }
 
+/// Student (default) or recruiter. Recruiters use a separate part of the
+/// app after their account is approved by the Verixa team.
+enum UserRole {
+  student,
+  recruiter;
+
+  static UserRole fromId(String? id) =>
+      id == 'recruiter' ? UserRole.recruiter : UserRole.student;
+}
+
 /// The profile stored at `users/{uid}` in Firestore.
 ///
 /// Phase 2 only collects the basics. More fields (CLAUDE.md §5) are added
@@ -36,6 +46,7 @@ class UserProfile {
     required this.fullName,
     required this.status,
     required this.organisation,
+    this.role = UserRole.student,
   });
 
   final String uid;
@@ -45,6 +56,7 @@ class UserProfile {
 
   /// College (student / fresher) or company (working professional).
   final String organisation;
+  final UserRole role;
 
   String get firstName => fullName.trim().split(RegExp(r'\s+')).first;
 
@@ -63,6 +75,7 @@ class UserProfile {
       fullName: data['fullName'] as String? ?? '',
       status: status,
       organisation: data['organisation'] as String? ?? '',
+      role: UserRole.fromId(data['role'] as String?),
     );
   }
 
@@ -72,5 +85,6 @@ class UserProfile {
         'fullName': fullName.trim(),
         'status': status.id,
         'organisation': organisation.trim(),
+        'role': role.name,
       };
 }

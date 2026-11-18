@@ -35,6 +35,22 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == uid;
     }
 
+    // Verixa team members (must match lib/core/utils/admin.dart).
+    function isAdmin() {
+      return signedIn() && request.auth.token.phone_number in ['+919999999999'];
+    }
+
+    // A recruiter whose account the Verixa team has approved.
+    function approvedRecruiter() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/recruiters/$(request.auth.uid))
+        && get(/databases/$(database)/documents/recruiters/$(request.auth.uid)).data.status == 'approved';
+    }
+
+    function shortString(v, max) {
+      return v is string && v.size() <= max;
+    }
+
     // Checks the onboarding fields that every profile must have.
     function validProfile(uid) {
       let d = request.resource.data;
@@ -53,7 +69,11 @@ service cloud.firestore {
           'uid', 'phone', 'fullName', 'status', 'organisation',
           'createdAt', 'updatedAt',
           'contact', 'statusDetails', 'education', 'careerGoal',
-          'experience', 'projects', 'skills', 'extras'])
+          'experience', 'projects', 'skills', 'extras',
+          'role', 'workStyle', 'visibleToRecruiters'])
+        && (!('role' in d) || d.role in ['student', 'recruiter'])
+        && (!('workStyle' in d) || d.workStyle is map)
+        && (!('visibleToRecruiters' in d) || d.visibleToRecruiters is bool)
         && (!('contact' in d) || d.contact is map)
         && (!('statusDetails' in d) || d.statusDetails is map)
         && (!('education' in d) || (d.education is map
@@ -95,6 +115,15 @@ service cloud.firestore {
         allow read, delete: if isOwner(uid);
         allow create: if isOwner(uid) && validMatch(request.resource.data);
         allow update: if false;
+      }
+
+      // What this user has seen on each installation (Terms, guided tour).
+      match /installs/{installKey} {
+        allow read: if isOwner(uid);
+        allow create, update: if isOwner(uid)
+          && request.resource.data.keys().hasOnly(
+               ['termsVersion', 'termsAcceptedAt', 'tour_student', 'tour_recruiter']);
+        allow delete: if false;
       }
 
       // Resume versions (Phase 9): only the user's choices (order, template,
@@ -153,6 +182,116 @@ service cloud.firestore {
         && d.threats is list && d.threats.size() <= 50
         && d.breakdown is list && d.breakdown.size() <= 10
         && d.suggestions is list && d.suggestions.size() <= 20;
+    }
+
+    // ── Recruiters ─────────────────────────────────────────────────────
+    // A recruiter asks for access (status "pending"); only the Verixa team
+    // can change the status.
+    match /recruiters/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(
+             ['fullName', 'company', 'designation', 'workEmail', 'phone', 'status', 'createdAt'])
+        && request.resource.data.status == 'pending'
+        && request.resource.data.phone == request.auth.token.phone_number
+        && shortString(request.resource.data.fullName, 100)
+        && shortString(request.resource.data.company, 120)
+        && shortString(request.resource.data.designation, 100)
+        && shortString(request.resource.data.workEmail, 150)
+        && request.resource.data.createdAt == request.time;
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status in ['pending', 'approved', 'rejected'];
+      allow delete: if false;
+
+      // Shortlisted candidates (name and headline only).
+      match /shortlist/{candidateUid} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && approvedRecruiter()
+          && request.resource.data.keys().hasOnly(['fullName', 'headline', 'jobTitle', 'addedAt']);
+      }
+    }
+
+    // Jobs posted by approved recruiters; students see them in Jobs.
+    match /jobs/{jobId} {
+      allow read: if signedIn();
+      allow create: if approvedRecruiter() && validJob(request.resource.data)
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.hidden == false
+        && request.resource.data.createdAt == request.time;
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hidden']);
+      allow delete: if (signedIn() && resource.data.ownerUid == request.auth.uid) || isAdmin();
+
+      // "I'm interested" from a student; the job's recruiter can see who.
+      match /interested/{studentUid} {
+        allow read: if isOwner(studentUid)
+          || (signedIn() && get(/databases/$(database)/documents/jobs/$(jobId)).data.ownerUid == request.auth.uid);
+        allow create: if isOwner(studentUid) && request.resource.data.keys().hasOnly(['at']);
+        allow delete: if isOwner(studentUid);
+      }
+    }
+
+    function validJob(d) {
+      return d.keys().hasOnly(['ownerUid', 'company', 'title', 'location', 'type',
+                               'payMinLpa', 'payMaxLpa', 'description', 'skills',
+                               'wantedTraits', 'hidden', 'createdAt'])
+        && shortString(d.company, 120) && d.company.size() > 0
+        && shortString(d.title, 120) && d.title.size() > 0
+        && shortString(d.location, 120)
+        && d.type in ['full_time', 'internship', 'part_time']
+        && d.payMinLpa is number && d.payMaxLpa is number
+        && d.payMinLpa >= 0 && d.payMaxLpa >= 0 && d.payMaxLpa <= 500
+        && shortString(d.description, 4000)
+        && d.skills is list && d.skills.size() <= 20
+        && d.wantedTraits is map;
+    }
+
+    // A student's card for recruiters, only while they choose to be visible.
+    match /candidates/{uid} {
+      allow read: if isOwner(uid) || approvedRecruiter() || isAdmin();
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly([
+             'fullName', 'college', 'degree', 'branch', 'graduationYear', 'city',
+             'targetRole', 'skills', 'projectTitles', 'links', 'traits',
+             'matchProfile', 'updatedAt'])
+        && shortString(request.resource.data.fullName, 100)
+        && request.resource.data.skills is list && request.resource.data.skills.size() <= 30
+        && request.resource.data.links is list && request.resource.data.links.size() <= 3
+        && request.resource.data.traits is map
+        && request.resource.data.matchProfile is map
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if isOwner(uid);
+    }
+
+    // Company reviews: one per person per company (id = companyId_uid),
+    // anonymous in the app. The team can hide reviews.
+    match /reviews/{reviewId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && validReview(reviewId, request.resource.data)
+        && request.resource.data.hidden == false;
+      allow update: if (signedIn() && resource.data.uid == request.auth.uid
+                        && validReview(reviewId, request.resource.data)
+                        && request.resource.data.hidden == resource.data.hidden)
+        || (isAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hidden']));
+      allow delete: if (signedIn() && resource.data.uid == request.auth.uid) || isAdmin();
+    }
+
+    function validReview(reviewId, d) {
+      return d.keys().hasOnly(['companyId', 'companyName', 'uid', 'author', 'workedThere',
+                               'overall', 'workLife', 'pay', 'security', 'text',
+                               'hidden', 'createdAt'])
+        && d.uid == request.auth.uid
+        && reviewId == d.companyId + '_' + request.auth.uid
+        && shortString(d.companyId, 80) && shortString(d.companyName, 120)
+        && d.author in ['Student', 'Intern', 'Employee']
+        && d.workedThere is bool
+        && d.overall is int && d.overall >= 1 && d.overall <= 5
+        && d.workLife is int && d.workLife >= 1 && d.workLife <= 5
+        && d.pay is int && d.pay >= 1 && d.pay <= 5
+        && d.security is int && d.security >= 1 && d.security <= 5
+        && shortString(d.text, 800)
+        && d.createdAt == request.time;
     }
 
     // Deny everything not matched above.

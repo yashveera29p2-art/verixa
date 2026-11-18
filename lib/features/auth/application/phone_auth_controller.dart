@@ -120,10 +120,7 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
           _startCooldown();
           return const CodeSent();
         case OtpAutoVerified(:final user):
-          final route = await routeForUser(
-            user,
-            ref.read(userRepositoryProvider),
-          );
+          final route = await routeForUser(ref.read, user);
           state = state.copyWith(isBusy: false);
           return SignedIn(route);
       }
@@ -148,7 +145,7 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
         verificationId: verificationId,
         code: code,
       );
-      final route = await routeForUser(user, ref.read(userRepositoryProvider));
+      final route = await routeForUser(ref.read, user);
       state = state.copyWith(isBusy: false);
       return route;
     } catch (e) {

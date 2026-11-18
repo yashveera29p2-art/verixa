@@ -93,3 +93,18 @@ Stream<({double beta, double gamma})> orientationStream() {
   );
   return controller.stream;
 }
+
+/// Opens [url] in a new browser tab.
+bool openInBrowser(String url) {
+  try {
+    globalContext.callMethod<JSAny?>(
+      'open'.toJS,
+      url.toJS,
+      '_blank'.toJS,
+      'noopener'.toJS,
+    );
+    return true;
+  } catch (_) {
+    return false;
+  }
+}

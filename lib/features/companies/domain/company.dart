@@ -48,6 +48,106 @@ class ResumePattern {
   );
 }
 
+/// Pay, job security and work-life summary plus placement prep.
+/// The team's indicative summary of public information (campus offer
+/// announcements, layoff news, public review trends): approximate.
+class CompanyInsights {
+  const CompanyInsights({
+    this.payBand = '',
+    this.payMaxLpa = 0,
+    this.payLevel = PayLevel.unknown,
+    this.layoffRisk = Level3.unknown,
+    this.workLife = WorkLife.unknown,
+    this.prep = const CompanyPrep(),
+  });
+
+  final String payBand;
+  final double payMaxLpa;
+  final PayLevel payLevel;
+  final Level3 layoffRisk;
+  final WorkLife workLife;
+  final CompanyPrep prep;
+
+  factory CompanyInsights.fromJson(Map<String, dynamic> json) => CompanyInsights(
+    payBand: json['payBand'] as String? ?? '',
+    payMaxLpa: (json['payMaxLpa'] as num?)?.toDouble() ?? 0,
+    payLevel: PayLevel.fromId(json['payLevel'] as String?),
+    layoffRisk: Level3.fromId(json['layoffRisk'] as String?),
+    workLife: WorkLife.fromId(json['workLife'] as String?),
+    prep: CompanyPrep.fromJson(json['prep'] as Map<String, dynamic>? ?? const {}),
+  );
+}
+
+/// Interview rounds, topics to study and commonly asked questions.
+class CompanyPrep {
+  const CompanyPrep({
+    this.rounds = const [],
+    this.topics = const [],
+    this.questions = const [],
+  });
+
+  final List<String> rounds;
+  final List<String> topics;
+  final List<String> questions;
+
+  bool get isEmpty => rounds.isEmpty && topics.isEmpty && questions.isEmpty;
+
+  factory CompanyPrep.fromJson(Map<String, dynamic> json) => CompanyPrep(
+    rounds: _stringList(json['rounds']),
+    topics: _stringList(json['topics']),
+    questions: _stringList(json['questions']),
+  );
+}
+
+enum PayLevel {
+  high('High package'),
+  good('Good pay'),
+  lower('Lower pay'),
+  unpaid('No pay'),
+  unknown('Pay not known');
+
+  const PayLevel(this.label);
+  final String label;
+
+  static PayLevel fromId(String? id) =>
+      values.firstWhere((v) => v.name == id, orElse: () => PayLevel.unknown);
+
+  /// From a yearly salary in rupees (0 = unpaid).
+  static PayLevel fromYearly(double? max) {
+    if (max == null) return PayLevel.unknown;
+    if (max <= 0) return PayLevel.unpaid;
+    final lpa = max / 100000;
+    return lpa >= 10 ? high : lpa >= 6 ? good : lower;
+  }
+}
+
+/// Low / medium / high (used for layoff risk).
+enum Level3 {
+  low('Low'),
+  medium('Medium'),
+  high('High'),
+  unknown('Not known');
+
+  const Level3(this.label);
+  final String label;
+
+  static Level3 fromId(String? id) =>
+      values.firstWhere((v) => v.name == id, orElse: () => Level3.unknown);
+}
+
+enum WorkLife {
+  good('Good work-life balance'),
+  average('Average work-life balance'),
+  demanding('Demanding hours'),
+  unknown('Work-life not known');
+
+  const WorkLife(this.label);
+  final String label;
+
+  static WorkLife fromId(String? id) =>
+      values.firstWhere((v) => v.name == id, orElse: () => WorkLife.unknown);
+}
+
 /// One company from `assets/data/companies.json`.
 ///
 /// Content is general guidance from public hiring patterns, not an
@@ -63,6 +163,7 @@ class Company {
     required this.resumePattern,
     required this.sources,
     required this.lastReviewed,
+    this.insights = const CompanyInsights(),
   });
 
   final String id;
@@ -76,6 +177,7 @@ class Company {
   /// Careers page URLs the guidance was checked against.
   final List<String> sources;
   final DateTime lastReviewed;
+  final CompanyInsights insights;
 
   /// The website to load the company's logo from, from its careers page
   /// URL: "www." hosts are kept as they are ("www.tcs.com" has an icon
@@ -130,6 +232,9 @@ class Company {
       ),
       sources: _stringList(json['sources']),
       lastReviewed: reviewed,
+      insights: CompanyInsights.fromJson(
+        json['insights'] as Map<String, dynamic>? ?? const {},
+      ),
     );
   }
 }

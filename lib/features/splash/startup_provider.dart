@@ -11,5 +11,5 @@ import '../auth/application/session.dart';
 final startupDestinationProvider = FutureProvider<String>((ref) async {
   final auth = ref.read(authServiceProvider);
   final user = await auth.authStateChanges().first;
-  return routeForUser(user, ref.read(userRepositoryProvider));
+  return routeForUser(ref.read, user);
 });

@@ -11,6 +11,7 @@ import '../application/company_providers.dart';
 import '../domain/company.dart';
 import 'widgets/company_avatar.dart';
 import 'widgets/detail_sections.dart';
+import '../../reviews/reviews.dart';
 
 /// What one company expects and the resume pattern that suits it.
 class CompanyDetailScreen extends ConsumerWidget {
@@ -88,6 +89,22 @@ class _Body extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xl),
 
                 ResumePatternCard(pattern: p),
+                const SizedBox(height: AppSpacing.xl),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text('Pay, job security & reviews',
+                          style: AppTypography.titleLarge),
+                    ),
+                    TextButton(
+                      onPressed: () => context.push(AppRoutes.prepFor(company.id)),
+                      child: const Text('Prepare →'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                CompanyReviewsSection(company: company),
                 const SizedBox(height: AppSpacing.xl),
 
                 GuidanceNote(

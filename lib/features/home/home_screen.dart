@@ -10,6 +10,7 @@ import '../../core/utils/greeting.dart';
 import '../auth/application/auth_providers.dart';
 import '../companies/domain/company_category.dart';
 import 'widgets/category_card.dart';
+import '../../app/tour_keys.dart';
 
 /// Home: time-of-day greeting and the three company-type cards.
 class HomeScreen extends ConsumerWidget {
@@ -18,7 +19,8 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final firstName = ref.watch(currentProfileProvider).value?.firstName;
-    final navInset = AppSizes.navBarHeight + MediaQuery.paddingOf(context).bottom;
+    final navInset =
+        AppSizes.navBarHeight + MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
       body: SafeArea(
@@ -36,39 +38,51 @@ class HomeScreen extends ConsumerWidget {
             Text(
               'Where are you applying? Pick a company type to see what they '
               'look for and how to shape your resume.',
-              style: AppTypography.bodyLarge.copyWith(color: AppColors.mutedText),
+              style: AppTypography.bodyLarge.copyWith(
+                color: AppColors.mutedText,
+              ),
             ),
             const SizedBox(height: AppSpacing.xl),
             Text(
               'COMPANY TYPES',
-              style: AppTypography.labelMedium
-                  .copyWith(color: AppColors.mutedText),
+              style: AppTypography.labelMedium.copyWith(
+                color: AppColors.mutedText,
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
             // Bento: MNC wide on top, SME and Startup as two squares below.
-            CategoryCard(
-              category: CompanyCategory.mnc,
-              onTap: () => _open(context, CompanyCategory.mnc),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            SizedBox(
-              height: AppSizes.bentoTileHeight,
-              child: Row(
+            KeyedSubtree(
+              key: TourKeys.companyTypes,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  for (final (i, c) in const [
-                    CompanyCategory.sme,
-                    CompanyCategory.startup,
-                  ].indexed) ...[
-                    if (i > 0) const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: CategoryCard(
-                        category: c,
-                        square: true,
-                        onTap: () => _open(context, c),
-                      ),
+                  // Bento: MNC wide on top, SME and Startup as two squares below.
+                  CategoryCard(
+                    category: CompanyCategory.mnc,
+                    onTap: () => _open(context, CompanyCategory.mnc),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  SizedBox(
+                    height: AppSizes.bentoTileHeight,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (final (i, c) in const [
+                          CompanyCategory.sme,
+                          CompanyCategory.startup,
+                        ].indexed) ...[
+                          if (i > 0) const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: CategoryCard(
+                              category: c,
+                              square: true,
+                              onTap: () => _open(context, c),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
-                  ],
+                  ),
                 ],
               ),
             ),

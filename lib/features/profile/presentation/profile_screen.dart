@@ -14,9 +14,13 @@ import '../../../core/widgets/glass_nav_bar.dart' show GlassPill;
 import 'widgets/completion_card.dart';
 import 'widgets/profile_popups.dart';
 import 'widgets/section_tile.dart';
+import '../../../core/utils/admin.dart';
+import '../../workstyle/workstyle.dart';
 
 /// Profile tab: completion indicator plus the step-by-step sections
 /// from CLAUDE.md §5.
+bool _published = false;
+
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -28,6 +32,17 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // If the student is visible to recruiters, republish their card once
+    // per app session so profile edits reach recruiters.
+    ref.listen(profileDataProvider, (_, next) {
+      final data = next.value;
+      final ws = ref.read(workStyleProvider).value;
+      final uid = ref.read(currentUserProvider)?.uid;
+      if (data != null && uid != null && ws?.visible == true && !_published) {
+        _published = true;
+        ref.read(candidateSyncProvider).publish(uid, data, ws!.traits).ignore();
+      }
+    });
     final profile = ref.watch(profileDataProvider);
     final phone = ref.watch(currentUserProvider)?.phoneNumber;
     final navInset =
@@ -109,6 +124,8 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                 ],
+                const SizedBox(height: AppSpacing.md),
+                const _RecruiterSection(),
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'RESUMES',
@@ -287,6 +304,90 @@ class _AboutCapsule extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+
+/// Work style quiz and "Visible to recruiters".
+class _RecruiterSection extends ConsumerWidget {
+  const _RecruiterSection();
+
+  Future<void> _toggle(BuildContext context, WidgetRef ref, bool on) async {
+    final uid = ref.read(currentUserProvider)?.uid;
+    if (uid == null) return;
+    final profile = ref.read(profileDataProvider).value;
+    final ws = ref.read(workStyleProvider).value ?? const WorkStyle();
+    try {
+      await ref
+          .read(candidateSyncProvider)
+          .setVisible(uid, on, profile, ws.traits)
+          .timeout(const Duration(seconds: 15));
+      if (on && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Approved recruiters can now find your profile.')));
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Couldn’t update. Check your connection.')));
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ws = ref.watch(workStyleProvider).value ?? const WorkStyle();
+    final admin = isAdmin(ref.watch(currentUserProvider));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'FOR RECRUITERS',
+          style: AppTypography.labelMedium.copyWith(color: AppColors.mutedText),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _LinkTile(
+          icon: Icons.psychology_outlined,
+          title: ws.taken ? 'Work style: ${ws.summary}' : 'Take the work-style quiz',
+          subtitle: ws.taken
+              ? 'Retake any time · used to match you with teams'
+              : '2 minutes · helps recruiters see how you like to work',
+          onTap: () => context.push(AppRoutes.workStyle),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Material(
+          color: AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            side: const BorderSide(color: AppColors.stone),
+          ),
+          child: SwitchListTile(
+            value: ws.visible,
+            onChanged: (on) => _toggle(context, ref, on),
+            activeThumbColor: AppColors.botanicalGreen,
+            secondary: const Icon(Icons.visibility_outlined, color: AppColors.botanicalGreen),
+            title: Text('Visible to recruiters',
+                style: AppTypography.labelLarge.copyWith(fontSize: 16)),
+            subtitle: Text(
+              ws.visible
+                  ? 'Approved recruiters can see your skills, projects, '
+                      'education and work style (not your phone number).'
+                  : 'Off: recruiters can’t find you.',
+              style: AppTypography.bodySmall,
+            ),
+          ),
+        ),
+        if (admin) ...[
+          const SizedBox(height: AppSpacing.sm),
+          _LinkTile(
+            icon: Icons.admin_panel_settings_outlined,
+            title: 'Admin',
+            subtitle: 'Approve recruiters, hide reviews and job posts',
+            onTap: () => context.push(AppRoutes.admin),
+          ),
+        ],
+      ],
     );
   }
 }

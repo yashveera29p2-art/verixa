@@ -32,6 +32,18 @@ import '../features/splash/splash_exit.dart';
 import '../core/widgets/aurora_background.dart';
 import 'app_shell.dart';
 import 'routes.dart';
+import '../core/utils/admin.dart';
+import '../features/jobs/domain/job_models.dart';
+import '../features/jobs/presentation/job_detail_screen.dart';
+import '../features/jobs/presentation/jobs_screen.dart';
+import '../features/legal/terms_screen.dart';
+import '../features/prep/prep_screens.dart';
+import '../features/recruiter/presentation/admin_screen.dart';
+import '../features/recruiter/presentation/find_talent_screen.dart';
+import '../features/recruiter/presentation/recruiter_jobs_screens.dart';
+import '../features/recruiter/presentation/recruiter_setup_screens.dart';
+import '../features/recruiter/presentation/recruiter_shell.dart';
+import '../features/workstyle/workstyle.dart';
 
 export 'routes.dart';
 
@@ -67,6 +79,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           isLogin: state.uri.queryParameters['mode'] == 'login',
           alreadyRegistered: state.uri.queryParameters['existing'] == '1',
           initialPhone: state.extra as String?,
+          recruiter: state.uri.queryParameters['role'] == 'recruiter',
         ),
       ),
       GoRoute(
@@ -99,9 +112,30 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: AppRoutes.jobs,
+                builder: (context, state) => const JobsScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.prep,
+                builder: (context, state) => const PrepScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: AppRoutes.profile,
                 builder: (context, state) => const ProfileScreen(),
                 routes: [
+                  GoRoute(
+                    path: 'work-style',
+                    parentNavigatorKey: _rootKey,
+                    builder: (context, state) => const WorkStyleQuizScreen(),
+                  ),
                   // Full-screen editors, above the bottom bar.
                   GoRoute(
                     path: 'edit/:section',
@@ -125,6 +159,69 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+
+      GoRoute(
+        path: AppRoutes.terms,
+        pageBuilder: (context, state) => _fadePage(state, const TermsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.jobDetail,
+        parentNavigatorKey: _rootKey,
+        redirect: (context, state) => state.extra is RankedJob ? null : AppRoutes.jobs,
+        builder: (context, state) => JobDetailScreen(ranked: state.extra! as RankedJob),
+      ),
+      GoRoute(
+        path: '${AppRoutes.prep}/:companyId',
+        parentNavigatorKey: _rootKey,
+        builder: (context, state) =>
+            PrepCompanyScreen(companyId: state.pathParameters['companyId']!),
+      ),
+
+      // Recruiter side.
+      GoRoute(
+        path: AppRoutes.recruiterSetup,
+        pageBuilder: (context, state) => _fadePage(state, const RecruiterSetupScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.recruiterPending,
+        pageBuilder: (context, state) => _fadePage(state, const RecruiterPendingScreen()),
+      ),
+      StatefulShellRoute(
+        pageBuilder: (context, state, shell) =>
+            _fadePage(state, RecruiterShell(navigationShell: shell), withNav: true),
+        navigatorContainerBuilder: (context, shell, children) =>
+            FadeThroughStack(index: shell.currentIndex, children: children),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.recruiterTalent,
+                builder: (context, state) => const FindTalentScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.recruiterJobs,
+                builder: (context, state) => const MyJobsScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        path: AppRoutes.recruiterPost,
+        parentNavigatorKey: _rootKey,
+        builder: (context, state) => const PostJobScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.admin,
+        parentNavigatorKey: _rootKey,
+        redirect: (context, state) =>
+            isAdmin(ref.read(authServiceProvider).currentUser) ? null : AppRoutes.home,
+        builder: (context, state) => const AdminScreen(),
       ),
 
       GoRoute(

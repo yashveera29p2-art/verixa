@@ -8,9 +8,33 @@ abstract final class AppRoutes {
   static const otp = '/auth/otp';
   static const onboarding = '/onboarding';
 
-  // Main tabs (inside the glass-nav shell).
+  /// Terms of use, accepted once per installation after signing in.
+  static const terms = '/terms';
+
+  // Main student tabs (inside the glass-nav shell).
   static const home = '/home';
+  static const jobs = '/jobs';
+  static const prep = '/prep';
   static const profile = '/profile';
+
+  /// One job (listing passed as `extra`).
+  static const jobDetail = '/jobs/detail';
+
+  /// Placement prep for one company: /prep/tcs
+  static String prepFor(String companyId) => '$prep/$companyId';
+
+  /// Work-style quiz.
+  static const workStyle = '/profile/work-style';
+
+  // Recruiter side.
+  static const recruiterSetup = '/recruiter/setup';
+  static const recruiterPending = '/recruiter/pending';
+  static const recruiterTalent = '/recruiter/talent';
+  static const recruiterJobs = '/recruiter/jobs';
+  static const recruiterPost = '/recruiter/post';
+
+  /// Verixa team: approve recruiters, hide reviews and job posts.
+  static const admin = '/admin';
 
   /// Company list for a category: /companies/mnc, /companies/sme, ...
   static const companies = '/companies';
@@ -39,8 +63,10 @@ abstract final class AppRoutes {
   static String resumePreview(String id) => '$resumes/$id/preview';
   static String coverLetter(String id) => '$resumes/$id/cover';
 
-  static String phoneFor({required bool isLogin}) =>
-      isLogin ? '$phone?mode=login' : phone;
+  static String phoneFor({required bool isLogin, bool recruiter = false}) {
+    final q = [if (isLogin) 'mode=login', if (recruiter) 'role=recruiter'];
+    return q.isEmpty ? phone : '$phone?${q.join('&')}';
+  }
 
   /// "Log in" for a number that already has an account; the number is
   /// passed as the route's `extra`.
@@ -60,6 +86,11 @@ abstract final class AppRoutes {
   /// True for routes that need a signed-in user.
   static bool isProtected(String path) =>
       path == onboarding ||
+      path == terms ||
+      path.startsWith(jobs) ||
+      path.startsWith(prep) ||
+      path.startsWith('/recruiter') ||
+      path == admin ||
       path == home ||
       path == profile ||
       path.startsWith('$profile/') ||

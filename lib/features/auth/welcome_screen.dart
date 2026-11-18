@@ -6,6 +6,8 @@ import '../../app/routes.dart';
 import '../../core/theme/theme.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/verixa_monogram.dart';
+import 'application/session.dart';
+import 'domain/user_profile.dart';
 
 /// First screen for signed-out users. Both buttons lead to the phone OTP
 /// flow; only the wording differs.
@@ -77,6 +79,11 @@ class _Intro extends StatelessWidget {
 class _ActionsPanel extends StatelessWidget {
   const _ActionsPanel();
 
+  void _start(BuildContext context, UserRole role, {required bool login}) {
+    SignInIntent.role = role;
+    context.push(AppRoutes.phoneFor(isLogin: login, recruiter: role == UserRole.recruiter));
+  }
+
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -111,19 +118,69 @@ class _ActionsPanel extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              AppButton(
-                label: 'Create account',
-                onDark: true,
-                onPressed: () =>
-                    context.push(AppRoutes.phoneFor(isLogin: false)),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      label: 'Create account',
+                      onDark: true,
+                      onPressed: () => _start(context, UserRole.student, login: false),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: AppButton(
+                      label: 'Log in',
+                      style: AppButtonStyle.outlined,
+                      onDark: true,
+                      onPressed: () => _start(context, UserRole.student, login: true),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: AppSpacing.sm),
-              AppButton(
-                label: 'Log in',
-                style: AppButtonStyle.outlined,
-                onDark: true,
-                onPressed: () =>
-                    context.push(AppRoutes.phoneFor(isLogin: true)),
+              const SizedBox(height: AppSpacing.md),
+              // Recruiters: same phone sign-in, then their own setup.
+              Material(
+                color: AppColors.ivory.withValues(alpha: 0.10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                  side: BorderSide(color: AppColors.ivory.withValues(alpha: 0.35)),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                  onTap: () => _start(context, UserRole.recruiter, login: false),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm + 2,
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.badge_outlined, color: AppColors.ivory),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'I’m a recruiter',
+                                style: AppTypography.labelLarge
+                                    .copyWith(color: AppColors.ivory),
+                              ),
+                              Text(
+                                'Find students by skills and work style',
+                                style: AppTypography.bodySmall.copyWith(
+                                  color: AppColors.ivory.withValues(alpha: 0.75),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.arrow_forward, color: AppColors.ivory, size: 20),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

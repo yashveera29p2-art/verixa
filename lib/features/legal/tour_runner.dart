@@ -1,0 +1,33 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../core/widgets/guided_tour.dart';
+import '../auth/application/auth_providers.dart';
+import '../recruiter/application/recruiter_providers.dart';
+
+/// Bumped by About -> 'Take the tour again'; the shells listen to it.
+final replayTour = ValueNotifier<int>(0);
+
+/// Plays the guided tour [tour] if this user hasn't seen it on this
+/// installation, then remembers it.
+Future<void> maybeRunTour(
+  BuildContext context,
+  WidgetRef ref,
+  String tour,
+  List<TourStep> steps, {
+  bool force = false,
+}) async {
+  final uid = ref.read(currentUserProvider)?.uid;
+  if (uid == null) return;
+  final consent = ref.read(consentRepositoryProvider);
+  try {
+    if (!force && await consent.tourDone(uid, tour)) return;
+  } catch (_) {
+    return; // offline: try again next launch
+  }
+  if (!context.mounted) return;
+  await showGuidedTour(context, steps);
+  try {
+    await consent.markTourDone(uid, tour);
+  } catch (_) {}
+}
