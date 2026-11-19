@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'parsed_resume.dart';
+import 'writing_report.dart';
 
 // JSON helpers.
 Map<String, dynamic> _m(Object? v) => (v as Map<String, dynamic>?) ?? const {};
@@ -148,6 +149,7 @@ class ScanReport {
     required this.breakdown,
     required this.suggestions,
     this.parsed,
+    this.writing,
   });
 
   final int atsScore;
@@ -159,6 +161,9 @@ class ScanReport {
   /// Visible-text parse, safe to import. Not kept in history.
   final ParsedResume? parsed;
 
+  /// NLP writing review of the resume. Not kept in history.
+  final WritingReport? writing;
+
   factory ScanReport.fromJson(Map<String, dynamic> j) => ScanReport(
     atsScore: _i(j, 'atsScore') ?? 0,
     riskLevel: RiskLevel.fromId(j['riskLevel'] as String?),
@@ -168,6 +173,7 @@ class ScanReport {
         .toList(),
     suggestions: _l(j['suggestions']).cast<String>(),
     parsed: j['parsed'] == null ? null : ParsedResume.fromJson(_m(j['parsed'])),
+    writing: j['writing'] == null ? null : WritingReport.fromJson(_m(j['writing'])),
   );
 }
 

@@ -8,6 +8,8 @@ import '../../core/widgets/app_button.dart';
 import '../auth/application/auth_providers.dart';
 import '../companies/domain/company.dart';
 import '../profile/application/profile_providers.dart';
+import '../jobs/application/jobs_controller.dart' show jobsApiProvider;
+import '../resume/domain/writing_report.dart' show ReviewAnalysis;
 
 /// One user review of a company, at `reviews/{companyId}_{uid}` (one per
 /// person per company; writing again updates it).
@@ -120,6 +122,22 @@ final companyReviewsProvider =
     StreamProvider.family<List<CompanyReview>, String>(
         (ref, companyId) => ref.watch(reviewsRepositoryProvider).watch(companyId));
 
+/// NLP sentiment and aspects of a company's reviews (null until there are
+/// reviews or if the server can't be reached).
+final reviewAnalysisProvider =
+    FutureProvider.family<ReviewAnalysis?, String>((ref, companyId) async {
+  final reviews = ref.watch(companyReviewsProvider(companyId)).value ?? const [];
+  if (reviews.isEmpty) return null;
+  try {
+    return await ref.read(jobsApiProvider).analyzeReviews(
+          [for (final r in reviews) r.text],
+          [for (final r in reviews) r.overall],
+        );
+  } catch (_) {
+    return null;
+  }
+});
+
 /// Pay, job security and work-life summary (curated) plus user reviews,
 /// with "Write a review".
 class CompanyReviewsSection extends ConsumerWidget {
@@ -157,6 +175,7 @@ class CompanyReviewsSection extends ConsumerWidget {
           ],
         ),
         if (list.isNotEmpty) ...[
+          _SentimentCard(companyId: company.id),
           Wrap(
             spacing: AppSpacing.md,
             runSpacing: AppSpacing.xxs,
@@ -347,6 +366,24 @@ class _WriteReviewSheetState extends ConsumerState<_WriteReviewSheet> {
       _saving = true;
       _error = null;
     });
+    // Reviews must be about working/interviewing there and respectful.
+    final text = _text.text.trim();
+    if (text.isNotEmpty) {
+      try {
+        final problem = await ref.read(jobsApiProvider).checkText('review', text);
+        if (problem != null) {
+          if (mounted) {
+            setState(() {
+              _saving = false;
+              _error = problem;
+            });
+          }
+          return;
+        }
+      } catch (_) {
+        // Server unreachable: the review is still moderated by the team.
+      }
+    }
     final profile = ref.read(profileDataProvider).value;
     final name = widget.company.name.toLowerCase();
     final entry = profile?.experience.entries.where((e) {
@@ -433,6 +470,93 @@ class _WriteReviewSheetState extends ConsumerState<_WriteReviewSheet> {
             AppButton(label: 'Post review', isLoading: _saving, onPressed: _save),
           ],
         ),
+      ),
+    );
+  }
+}
+
+
+/// "What reviewers say": overall sentiment bar and the aspects people
+/// mention (learning, pay, work-life …), from NLP analysis of the reviews.
+class _SentimentCard extends ConsumerWidget {
+  const _SentimentCard({required this.companyId});
+
+  final String companyId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final a = ref.watch(reviewAnalysisProvider(companyId)).value;
+    if (a == null || a.reviews == 0) return const SizedBox.shrink();
+    Color tone(String label) => switch (label) {
+          'positive' => AppColors.botanicalGreen,
+          'negative' => AppColors.charcoal,
+          _ => AppColors.softSage,
+        };
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.botanicalGreen.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: AppColors.botanicalGreen.withValues(alpha: 0.4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('What reviewers say', style: AppTypography.labelLarge),
+          const SizedBox(height: 2),
+          Text(a.summary, style: AppTypography.bodySmall.copyWith(color: AppColors.charcoal)),
+          const SizedBox(height: AppSpacing.sm),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: Row(
+              children: [
+                if (a.positivePercent > 0)
+                  Expanded(flex: a.positivePercent, child: Container(height: 8, color: AppColors.botanicalGreen)),
+                if (a.neutralPercent > 0)
+                  Expanded(flex: a.neutralPercent, child: Container(height: 8, color: AppColors.softSage)),
+                if (a.negativePercent > 0)
+                  Expanded(flex: a.negativePercent, child: Container(height: 8, color: AppColors.charcoal)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '${a.positivePercent}% positive · ${a.neutralPercent}% mixed · '
+            '${a.negativePercent}% negative',
+            style: AppTypography.bodySmall.copyWith(fontSize: 11.5),
+          ),
+          if (a.aspects.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.xs,
+              runSpacing: AppSpacing.xs,
+              children: [
+                for (final asp in a.aspects)
+                  Tooltip(
+                    message: asp.example,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
+                        border: Border.all(color: tone(asp.label)),
+                      ),
+                      child: Text(
+                        '${asp.label == 'positive' ? '+' : asp.label == 'negative' ? '−' : '±'} '
+                        '${asp.aspect}',
+                        style: AppTypography.labelMedium.copyWith(color: tone(asp.label)),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+          const SizedBox(height: 4),
+          Text('Analysed automatically from review text and ratings.',
+              style: AppTypography.bodySmall.copyWith(fontSize: 11)),
+        ],
       ),
     );
   }

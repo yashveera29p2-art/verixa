@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/theme.dart';
 import '../../domain/scan_report.dart';
 import '../../../../core/widgets/disclaimer_note.dart';
+import 'writing_report_view.dart';
 
 /// The full security + ATS report (features 2–4). Used for a fresh scan
 /// and for scans opened from history.
@@ -39,6 +40,11 @@ class ReportView extends StatelessWidget {
           const _Heading('How to improve'),
           for (var i = 0; i < report.suggestions.length; i++)
             _Suggestion(number: i + 1, text: report.suggestions[i]),
+        ],
+        if (report.writing != null) ...[
+          const SizedBox(height: AppSpacing.lg),
+          const _Heading('Writing quality'),
+          WritingReportView(report: report.writing!),
         ],
         const SizedBox(height: AppSpacing.md),
         const DisclaimerNote(

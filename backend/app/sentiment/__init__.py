@@ -57,7 +57,8 @@ ASPECTS: dict[str, tuple[str, ...]] = {
     "Growth": ("growth", "promotion", "career", "opportunit", "grow", "bench", "project"),
     "Job security": ("layoff", "fired", "secure", "security", "stable", "job cut",
                      "termination", "bench"),
-    "Interview": ("interview", "round", "hiring", "recruit", "test", "offer", "onboard"),
+    "Interview": ("interview", "round", "hiring", "recruit", "online test", "coding test",
+                  "aptitude test", "written test", "offer letter", "onboard"),
 }
 
 

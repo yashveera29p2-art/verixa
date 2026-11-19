@@ -278,6 +278,19 @@ text that gets parsed into fields.
     proven skills (projects / internships) count more than listed ones, "A or B" means either,
     plain-language reasons and gaps; used in both directions.
 
+16. **Input checks (NLP)** — uploads must be resumes (section structure, entities, cue phrases
+    and MiniLM similarity reject invoices, certificates, question papers, job descriptions,
+    essays); pasted job descriptions, recruiter posts / requirements and reviews are checked
+    too; profile fields are validated (`lib/core/utils/validators.dart`).
+17. **Resume writing checker (NLP)** — weak phrases, passive voice (spaCy POS), missing
+    numbers/impact, buzzwords, first person, long sentences, readability; in scan reports and
+    the resume editor ("Check writing").
+18. **Review sentiment (NLP)** — lexicon sentiment with negation/intensifiers plus aspects
+    (learning, pay, work-life, management, culture, growth, job security, interview) shown as
+    "What reviewers say" on company pages.
+
+Support email (Terms, About): verixa.tok3ns@gmail.com — the team's Gmail.
+
 Later: customer support (mail-only complaints and suggestions) and a creator/team dashboard
 (users, installs, feedback).
 

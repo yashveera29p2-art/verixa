@@ -9,6 +9,7 @@ import '../../application/profile_providers.dart';
 import '../../domain/profile_data.dart';
 import '../../domain/profile_section.dart';
 import 'editor_page.dart';
+import '../../../../core/utils/validators.dart';
 
 /// Section 1: name, location, links, optional date of birth and Gmail.
 class ContactEditor extends ConsumerStatefulWidget {
@@ -32,6 +33,7 @@ class _ContactEditorState extends ConsumerState<ContactEditor> {
       TextEditingController(text: widget.data.contact.portfolio);
   late DateTime? _dob = widget.data.contact.dateOfBirth;
   String? _nameError;
+  final _errors = <TextEditingController, String?>{};
   bool _linking = false;
 
   @override
@@ -43,10 +45,21 @@ class _ContactEditorState extends ConsumerState<ContactEditor> {
   }
 
   Future<bool> _save() async {
-    final nameError =
-        _name.text.trim().length < 2 ? 'Please enter your full name.' : null;
-    setState(() => _nameError = nameError);
-    if (nameError != null) return false;
+    final nameError = Validators.personName(_name.text);
+    final errors = {
+      _city: Validators.placeName(_city.text, 'city'),
+      _state: Validators.placeName(_state.text, 'state'),
+      _linkedin: Validators.linkedin(_linkedin.text),
+      _github: Validators.github(_github.text),
+      _portfolio: Validators.website(_portfolio.text),
+    };
+    setState(() {
+      _nameError = nameError;
+      _errors
+        ..clear()
+        ..addAll(errors);
+    });
+    if (nameError != null || errors.values.any((e) => e != null)) return false;
 
     final contact = ContactInfo(
       fullName: _name.text,
@@ -117,11 +130,13 @@ class _ContactEditorState extends ConsumerState<ContactEditor> {
         FieldRow(
           left: LabeledTextField(
             controller: _city,
+            errorText: _errors[_city],
             label: 'City',
             capitalization: TextCapitalization.words,
           ),
           right: LabeledTextField(
             controller: _state,
+            errorText: _errors[_state],
             label: 'State',
             capitalization: TextCapitalization.words,
           ),
@@ -129,6 +144,7 @@ class _ContactEditorState extends ConsumerState<ContactEditor> {
         const FormGroupLabel('Links'),
         LabeledTextField(
           controller: _linkedin,
+          errorText: _errors[_linkedin],
           label: 'LinkedIn',
           hint: 'linkedin.com/in/your-name',
           keyboardType: TextInputType.url,
@@ -136,6 +152,7 @@ class _ContactEditorState extends ConsumerState<ContactEditor> {
         ),
         LabeledTextField(
           controller: _github,
+          errorText: _errors[_github],
           label: 'GitHub',
           hint: 'github.com/your-name',
           keyboardType: TextInputType.url,
@@ -143,6 +160,7 @@ class _ContactEditorState extends ConsumerState<ContactEditor> {
         ),
         LabeledTextField(
           controller: _portfolio,
+          errorText: _errors[_portfolio],
           label: 'Portfolio (optional)',
           keyboardType: TextInputType.url,
           capitalization: TextCapitalization.none,

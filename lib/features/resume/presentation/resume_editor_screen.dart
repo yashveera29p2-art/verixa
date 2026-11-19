@@ -13,6 +13,9 @@ import '../data/resume_api.dart';
 import '../data/resume_repository.dart';
 import '../domain/resume_version.dart';
 import 'resumes_screen.dart';
+import '../../jobs/application/jobs_controller.dart' show jobsApiProvider;
+import 'widgets/writing_report_view.dart';
+import '../../profile/application/profile_providers.dart';
 
 /// Edit one resume version: template, summary, section order (feature 9–10).
 /// Changes save automatically.
@@ -155,6 +158,59 @@ class _EditorState extends ConsumerState<_Editor> {
     }
   }
 
+  bool _checking = false;
+
+  /// NLP writing review of this resume version's text.
+  Future<void> _checkWriting() async {
+    _save();
+    setState(() => _checking = true);
+    final content = readResumeContent(ref, _v);
+    if (content == null) {
+      setState(() => _checking = false);
+      _snack('Your profile is still loading.');
+      return;
+    }
+    try {
+      final report = await ref.read(jobsApiProvider).checkWriting(content.plainText);
+      if (!mounted) return;
+      await showModalBottomSheet<void>(
+        context: context,
+        useRootNavigator: true,
+        isScrollControlled: true,
+        backgroundColor: AppColors.ivory,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+        ),
+        builder: (context) => DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.8,
+          maxChildSize: 0.95,
+          builder: (context, scroll) => ListView(
+            controller: scroll,
+            padding: const EdgeInsets.all(AppSpacing.pageGutter),
+            children: [
+              Text('Writing check', style: AppTypography.headlineLarge),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'How your bullets read to a recruiter: action verbs, results, '
+                'clarity. Fix them in Profile → Projects / Experience.',
+                style: AppTypography.bodySmall,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              WritingReportView(report: report),
+            ],
+          ),
+        ),
+      );
+    } on ResumeApiException catch (e) {
+      _snack(e.message);
+    } catch (_) {
+      _snack('Couldn’t check the writing. Please try again.');
+    } finally {
+      if (mounted) setState(() => _checking = false);
+    }
+  }
+
   void _snack(String text) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
@@ -167,6 +223,8 @@ class _EditorState extends ConsumerState<_Editor> {
 
   @override
   Widget build(BuildContext context) {
+    // Keeps the profile loaded so the writing check and exports have it.
+    ref.watch(profileDataProvider);
     final v = _v;
     return SafeArea(
       top: false,
@@ -256,6 +314,13 @@ class _EditorState extends ConsumerState<_Editor> {
                 AppButton(
                   label: 'Preview & share PDF',
                   onPressed: () => _open(AppRoutes.resumePreview(v.id)),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                AppButton(
+                  label: 'Check writing',
+                  style: AppButtonStyle.outlined,
+                  isLoading: _checking,
+                  onPressed: _checkWriting,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Row(

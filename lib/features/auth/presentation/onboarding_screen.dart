@@ -9,6 +9,7 @@ import '../../../core/widgets/auth_page.dart';
 import '../application/onboarding_controller.dart';
 import '../domain/user_profile.dart';
 import '../application/session.dart';
+import '../../../core/utils/validators.dart';
 
 /// Step 3 (new users only): name, status, and college or company.
 /// Everything else is collected later from Profile.
@@ -32,9 +33,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     super.dispose();
   }
 
-  String? get _nameError => _nameController.text.trim().length < 2
-      ? 'Please enter your full name.'
-      : null;
+  String? get _nameError => Validators.personName(_nameController.text);
 
   String? get _statusError => _status == null ? 'Choose one option.' : null;
 
@@ -42,7 +41,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ? (_status?.asksForCompany ?? false
           ? 'Please enter your company.'
           : 'Please enter your college.')
-      : null;
+      : Validators.placeName(_orgController.text,
+          _status?.asksForCompany ?? false ? 'company name' : 'college name');
 
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();

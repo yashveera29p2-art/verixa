@@ -48,6 +48,22 @@ class ResumeContent {
   final List<String> contact;
   final List<ResumeBlock> blocks;
 
+  /// The resume as plain text, for the writing check.
+  String get plainText => [
+        name,
+        headline,
+        contact.join(' · '),
+        for (final b in blocks) ...[
+          b.title.toUpperCase(),
+          for (final i in b.items) ...[
+            if (_has(i.heading)) i.heading,
+            if (_has(i.subheading)) i.subheading,
+            if (_has(i.line)) i.line,
+            for (final bullet in i.bullets) '• $bullet',
+          ],
+        ],
+      ].where(_has).join('\n');
+
   Map<String, dynamic> toJson() => {
     'name': name,
     'headline': headline,

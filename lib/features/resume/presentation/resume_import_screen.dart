@@ -72,8 +72,9 @@ class _ResumeImportScreenState extends ConsumerState<ResumeImportScreen> {
       return AuthPage(
         title: 'Import your resume',
         subtitle: const Text(
-          'Upload an existing resume and we’ll fill in your profile for you. '
-          'You choose what gets imported.',
+          'Upload your existing resume (PDF or Word) and we’ll fill in your '
+          'profile for you. You choose what gets imported. Only resumes are '
+          'accepted; other documents are rejected.',
         ),
         bottom: AppButton(
           label: 'Choose PDF or DOCX',

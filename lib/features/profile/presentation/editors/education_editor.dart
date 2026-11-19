@@ -7,6 +7,7 @@ import '../../application/profile_providers.dart';
 import '../../domain/profile_data.dart';
 import '../../domain/profile_section.dart';
 import 'editor_page.dart';
+import '../../../../core/utils/validators.dart';
 
 /// Controllers for one 10th/12th record.
 class _SchoolFields {
@@ -82,7 +83,26 @@ class _EducationEditorState extends ConsumerState<EducationEditor> {
     super.dispose();
   }
 
-  Future<bool> _save() {
+  final _errors = <TextEditingController, String?>{};
+
+  Future<bool> _save() async {
+    final errors = <TextEditingController, String?>{
+      for (final f in [_class10, _class12]) ...{
+        f.score: Validators.score(f.score.text),
+        f.year: Validators.year(f.year.text, from: 1970),
+        f.board: Validators.placeName(f.board.text, 'board'),
+      },
+      for (final h in _higher) ...{
+        h.score: Validators.score(h.score.text),
+        h.year: Validators.year(h.year.text, from: 1970),
+      },
+    };
+    setState(() {
+      _errors
+        ..clear()
+        ..addAll(errors);
+    });
+    if (errors.values.any((e) => e != null)) return false;
     final education = EducationHistory(
       class10: _class10.toRecord(),
       class12: _class12.toRecord(),
@@ -104,9 +124,13 @@ class _EducationEditorState extends ConsumerState<EducationEditor> {
   List<Widget> _schoolFields(_SchoolFields f) => [
         FieldRow(
           left: LabeledTextField(
-              controller: f.board, label: 'Board', hint: 'CBSE / State'),
+              controller: f.board,
+              label: 'Board',
+              hint: 'CBSE / State',
+              errorText: _errors[f.board]),
           right: LabeledTextField(
               controller: f.year,
+              errorText: _errors[f.year],
               label: 'Year',
               hint: '2021',
               keyboardType: TextInputType.number,
@@ -118,7 +142,10 @@ class _EducationEditorState extends ConsumerState<EducationEditor> {
               label: 'School / college',
               capitalization: TextCapitalization.words),
           right: LabeledTextField(
-              controller: f.score, label: '% or CGPA', hint: '92%'),
+              controller: f.score,
+              label: '% or CGPA',
+              hint: '92%',
+              errorText: _errors[f.score]),
         ),
       ];
 
@@ -154,9 +181,12 @@ class _EducationEditorState extends ConsumerState<EducationEditor> {
           ),
           FieldRow(
             left: LabeledTextField(
-                controller: _higher[i].score, label: '% or CGPA'),
+                controller: _higher[i].score,
+                label: '% or CGPA',
+                errorText: _errors[_higher[i].score]),
             right: LabeledTextField(
                 controller: _higher[i].year,
+                errorText: _errors[_higher[i].year],
                 label: 'Year',
                 keyboardType: TextInputType.number,
                 inputFormatters: _yearFormat),

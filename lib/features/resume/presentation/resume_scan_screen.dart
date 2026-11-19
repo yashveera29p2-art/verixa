@@ -34,8 +34,9 @@ class ResumeScanScreen extends ConsumerWidget {
       return AuthPage(
         title: 'Scan your resume',
         subtitle: const Text(
-          'We check for tricks that recruiters and ATS software flag, and '
-          'estimate how well your resume will be read.',
+          'Upload a resume (PDF or Word). We check for tricks that recruiters '
+          'and ATS software flag, review the writing, and estimate how well '
+          'it will be read. Other documents are rejected.',
         ),
         actions: [historyButton],
         bottom: AppButton(

@@ -16,6 +16,7 @@ import '../../auth/application/session.dart';
 import '../../profile/presentation/widgets/profile_popups.dart';
 import '../../../app/tour_keys.dart';
 import '../../legal/tour_runner.dart';
+import '../../jobs/application/jobs_controller.dart' show jobsApiProvider;
 
 /// Post a job: shows in students' Jobs tab immediately.
 class PostJobScreen extends ConsumerStatefulWidget {
@@ -64,6 +65,24 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
       _saving = true;
       _error = null;
     });
+    // The description must read like a job posting (NLP check on the server).
+    try {
+      final problem = await ref.read(jobsApiProvider).checkText(
+            'job',
+            [_title.text, _description.text, 'Skills: ${_skills.text}'].join('\n'),
+          );
+      if (problem != null) {
+        if (mounted) {
+          setState(() {
+            _saving = false;
+            _error = problem;
+          });
+        }
+        return;
+      }
+    } catch (_) {
+      // Server unreachable: allow the post; the team can hide bad posts.
+    }
     try {
       await ref.read(recruiterRepositoryProvider).postJob(PostedJob(
             id: '',

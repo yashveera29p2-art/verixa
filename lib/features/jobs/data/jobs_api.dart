@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../resume/data/resume_api.dart' show ResumeApiException;
+import '../../resume/domain/writing_report.dart';
 import '../domain/job_models.dart';
 
 /// Backend calls for job search and matching v2 ranking.
@@ -71,6 +72,22 @@ class JobsApi {
     return _fits(body);
   }
 
+  /// Checks typed text: kind is "job", "requirements" or "review".
+  /// Returns null if it's fine, otherwise the message to show.
+  Future<String?> checkText(String kind, String text) async {
+    final body = await _post('/v1/text/check', {'kind': kind, 'text': text});
+    return body['ok'] == true ? null : body['message'] as String?;
+  }
+
+  /// NLP writing review of a resume's text.
+  Future<WritingReport> checkWriting(String text) async =>
+      WritingReport.fromJson(await _post('/v1/writing/check', {'text': text}));
+
+  /// Sentiment and aspects of a company's reviews.
+  Future<ReviewAnalysis> analyzeReviews(List<String> texts, List<int> ratings) async =>
+      ReviewAnalysis.fromJson(
+          await _post('/v1/reviews/analyze', {'texts': texts, 'ratings': ratings}));
+
   Map<String, JobFit> _fits(Map<String, dynamic> body) => {
         for (final r in body['results'] as List)
           (r as Map<String, dynamic>)['id'] as String: JobFit.fromJson(r),
@@ -102,6 +119,16 @@ class JobsApi {
     }
     if (r.statusCode == 401) {
       throw const ResumeApiException('Your session has expired. Please sign in again.');
+    }
+    // 400: the server explains what's wrong (e.g. "This doesn't look like a
+    // job description…").
+    if (r.statusCode == 400) {
+      try {
+        final detail = (jsonDecode(utf8.decode(r.bodyBytes)) as Map)['detail'];
+        if (detail is String) throw ResumeApiException(detail);
+      } on FormatException {
+        // fall through
+      }
     }
     throw ResumeApiException('Something went wrong (${r.statusCode}). Please try again.');
   }

@@ -8,6 +8,7 @@ import '../../application/profile_providers.dart';
 import '../../domain/profile_data.dart';
 import '../../domain/profile_section.dart';
 import 'editor_page.dart';
+import '../../../../core/utils/validators.dart';
 
 /// Section 2: questions branch by status (CLAUDE.md §5):
 /// Student → course details; Fresher → same + graduation and target role;
@@ -38,6 +39,7 @@ class _StatusEditorState extends ConsumerState<StatusEditor> {
   late final _startDate = TextEditingController(text: _d.startDate);
   late final _years = TextEditingController(text: _d.totalExperienceYears);
   String? _orgError;
+  final _errors = <TextEditingController, String?>{};
 
   List<TextEditingController> get _all => [
         _college, _degree, _branch, _currentYear, _gradYear, _cgpa,
@@ -59,8 +61,20 @@ class _StatusEditorState extends ConsumerState<StatusEditor> {
             ? 'Please enter your company.'
             : 'Please enter your college.')
         : null;
-    setState(() => _orgError = error);
-    if (error != null) return false;
+    final errors = {
+      _gradYear: Validators.year(_gradYear.text),
+      _cgpa: Validators.cgpa(_cgpa.text),
+      _years: Validators.yearsOfExperience(_years.text),
+      _college: _status.asksForCompany ? null : Validators.placeName(_college.text, 'college name'),
+      _company: _status.asksForCompany ? Validators.placeName(_company.text, 'company name') : null,
+    };
+    setState(() {
+      _orgError = error;
+      _errors
+        ..clear()
+        ..addAll(errors);
+    });
+    if (error != null || errors.values.any((e) => e != null)) return false;
 
     final details = StatusDetails(
       status: _status,
@@ -146,6 +160,7 @@ class _StatusEditorState extends ConsumerState<StatusEditor> {
         FieldRow(
           left: LabeledTextField(
             controller: _gradYear,
+            errorText: _errors[_gradYear],
             label: isStudent ? 'Expected graduation' : 'Graduation year',
             hint: '2027',
             keyboardType: TextInputType.number,
@@ -153,6 +168,7 @@ class _StatusEditorState extends ConsumerState<StatusEditor> {
           ),
           right: LabeledTextField(
             controller: _cgpa,
+            errorText: _errors[_cgpa],
             label: 'CGPA',
             hint: '8.2',
             keyboardType:
@@ -191,6 +207,7 @@ class _StatusEditorState extends ConsumerState<StatusEditor> {
           ),
           right: LabeledTextField(
             controller: _years,
+            errorText: _errors[_years],
             label: 'Experience (yrs)',
             hint: '2.5',
             keyboardType:
