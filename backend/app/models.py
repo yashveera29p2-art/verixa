@@ -169,6 +169,26 @@ class MatchReport(BaseModel):
     semantic: bool = True  # False if the fallback word matcher was used
 
 
+class WritingIssue(BaseModel):
+    kind: str  # weak_phrase | passive | no_impact | buzzword | first_person | long | repeated_start
+    excerpt: str
+    message: str
+    suggestion: str = ""
+
+
+class WritingReport(BaseModel):
+    score: int  # 0–100
+    readability: int  # Flesch reading ease, 0–100 (60–70 = plain English)
+    readabilityLabel: str
+    bullets: int
+    quantifiedPercent: int  # bullets with a number / impact
+    passiveCount: int
+    weakCount: int
+    buzzwordCount: int
+    issues: list[WritingIssue] = []
+    summary: str = ""
+
+
 class ScanReport(BaseModel):
     """Security scan + ATS report (features 1–4)."""
 
@@ -179,3 +199,5 @@ class ScanReport(BaseModel):
     suggestions: list[str] = []
     # Parsed from the VISIBLE text only — safe to import into the profile.
     parsed: ParsedResume
+    # How well the resume is written (NLP writing checker).
+    writing: WritingReport | None = None

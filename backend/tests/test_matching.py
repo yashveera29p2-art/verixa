@@ -192,4 +192,5 @@ def test_match_endpoint_rejects_tiny_jd(student):
     client = TestClient(app)
     r = client.post("/v1/jobs/match",
                     json={"jobDescription": "Java dev", "profile": student.model_dump()})
-    assert r.status_code == 422
+    assert r.status_code == 400
+    assert "job description" in r.json()["detail"]

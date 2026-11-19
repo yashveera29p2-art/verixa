@@ -26,7 +26,10 @@ from .matching.profile import ProfileIn
 from .matching.ranking import (RankCandidatesRequest, RankItem, RankJobsRequest,
                                rank_candidates, rank_jobs)
 from .jobs import JobListing, search_jobs
-from .models import MatchReport, ParsedResume, ScanReport
+from .sentiment import ReviewAnalysis, analyze_reviews
+from .validation import is_job_description, is_requirements, is_resume, review_problem
+from .writing import check_writing
+from .models import MatchReport, ParsedResume, ScanReport, WritingReport
 from .parsing import parse_resume
 from .parsing.common import nlp
 from .security import scan_resume
@@ -78,9 +81,16 @@ async def _read_document(file: UploadFile) -> ExtractedDocument:
     if not data:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "The file is empty.")
     try:
-        return extract(data)
+        document = extract(data)
     except UnsupportedFileError as exc:
         raise HTTPException(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, str(exc)) from exc
+    # Only resumes: invoices, certificates, question papers, job
+    # descriptions etc. are turned away with a message saying what it looks like.
+    verdict = is_resume(document.visible_text)
+    if not verdict.ok:
+        log.info("rejected upload: not a resume (%s)", verdict.kind or "unclear")
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, verdict.message)
+    return document
 
 
 @app.post("/v1/resumes/parse", response_model=ParsedResume)
@@ -107,6 +117,7 @@ async def scan(
     visible-text parse for importing genuine details."""
     document = await _read_document(file)
     report = scan_resume(document)
+    report.writing = check_writing(document.visible_text)
     log.info("scanned resume uid=%s type=%s risk=%s threats=%d score=%d",
              user.uid, document.file_type, report.riskLevel, len(report.threats),
              report.atsScore)
@@ -114,7 +125,7 @@ async def scan(
 
 
 class MatchRequest(BaseModel):
-    jobDescription: str = Field(min_length=50, max_length=20_000)
+    jobDescription: str = Field(min_length=1, max_length=20_000)
     profile: ProfileIn
 
 
@@ -125,6 +136,9 @@ def match_job(
 ) -> MatchReport:
     """Analyses a job description and matches it against the user's profile
     by meaning (feature 8). Runs in a worker thread: embedding is CPU work."""
+    verdict = is_job_description(body.jobDescription)
+    if not verdict.ok:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, verdict.message)
     report = match_profile(body.jobDescription, body.profile)
     log.info("matched job uid=%s requirements=%d score=%d semantic=%s",
              user.uid, len(report.requirements), report.matchScore, report.semantic)
@@ -169,9 +183,57 @@ def candidates_rank(body: RankCandidatesRequest,
                     user: CurrentUser = Depends(current_user)) -> RankResponse:
     """Ranks opted-in students for a recruiter's job (skills, evidence and
     optional work-style fit)."""
+    verdict = is_requirements(body.job.title + " " + body.job.description)
+    if not verdict.ok:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, verdict.message)
     results = rank_candidates(body)
     log.info("ranked candidates uid=%s n=%d", user.uid, len(results))
     return RankResponse(results=results)
+
+
+class WritingRequest(BaseModel):
+    text: str = Field(min_length=1, max_length=30_000)
+
+
+@app.post("/v1/writing/check", response_model=WritingReport)
+def writing_check(body: WritingRequest,
+                  user: CurrentUser = Depends(current_user)) -> WritingReport:
+    """NLP writing review of a resume's text: weak phrases, passive voice,
+    missing impact, buzzwords, first person, long sentences, readability."""
+    return check_writing(body.text)
+
+
+class ReviewsRequest(BaseModel):
+    texts: list[str] = Field(max_length=100)
+    ratings: list[int] = Field(default_factory=list, max_length=100)
+
+
+@app.post("/v1/reviews/analyze", response_model=ReviewAnalysis)
+def reviews_analyze(body: ReviewsRequest,
+                    user: CurrentUser = Depends(current_user)) -> ReviewAnalysis:
+    """Sentiment and aspects (learning, pay, work-life …) of a company's reviews."""
+    return analyze_reviews([t[:2000] for t in body.texts], body.ratings)
+
+
+class TextCheckRequest(BaseModel):
+    kind: str = Field(pattern="^(job|requirements|review)$")
+    text: str = Field(max_length=20_000)
+
+
+class TextCheckResponse(BaseModel):
+    ok: bool
+    message: str = ""
+
+
+@app.post("/v1/text/check", response_model=TextCheckResponse)
+def text_check(body: TextCheckRequest,
+               user: CurrentUser = Depends(current_user)) -> TextCheckResponse:
+    """Checks that typed text is what the screen asks for: a job
+    description, a recruiter's requirements, or a company review."""
+    check = {"job": is_job_description, "requirements": is_requirements,
+             "review": review_problem}[body.kind]
+    verdict = check(body.text)
+    return TextCheckResponse(ok=verdict.ok, message=verdict.message)
 
 
 DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
