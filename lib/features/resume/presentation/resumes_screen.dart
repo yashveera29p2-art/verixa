@@ -9,6 +9,8 @@ import '../../../core/utils/date_format.dart';
 import '../../../core/widgets/app_button.dart';
 import '../application/resume_builder_controller.dart';
 import '../domain/resume_version.dart';
+import '../../../app/tour_keys.dart';
+import '../../legal/tour_runner.dart';
 
 /// All saved resume versions (feature 10), with "New resume".
 class ResumesScreen extends ConsumerWidget {
@@ -83,10 +85,12 @@ class ResumesScreen extends ConsumerWidget {
                   AppSpacing.md,
                 ),
                 child: AppButton(
+                  key: TourKeys.resumesNew,
                   label: 'New resume',
                   onPressed: () => context.push(AppRoutes.resumeNew),
                 ),
               ),
+              PageTour(name: 'resumes', steps: () => TourKeys.resumes),
             ],
           ),
         ),

@@ -9,6 +9,8 @@ import '../../../core/widgets/auth_page.dart';
 import '../application/resume_scan_controller.dart';
 import 'resume_import_screen.dart';
 import 'widgets/report_view.dart';
+import '../../../app/tour_keys.dart';
+import '../../legal/tour_runner.dart';
 
 /// Upload a resume → security scan + ATS report (features 1–4), saved to
 /// scan history (feature 5). From the report, genuine (visible) details
@@ -37,11 +39,13 @@ class ResumeScanScreen extends ConsumerWidget {
         ),
         actions: [historyButton],
         bottom: AppButton(
+          key: TourKeys.scanChoose,
           label: 'Choose PDF or DOCX',
           isLoading: scanning,
           onPressed: controller.pickAndScan,
         ),
         children: [
+          PageTour(name: 'scan', steps: () => TourKeys.scan),
           if (scanning)
             _ScanningCard(fileName: state.fileName)
           else

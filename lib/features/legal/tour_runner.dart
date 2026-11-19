@@ -31,3 +31,36 @@ Future<void> maybeRunTour(
     await consent.markTourDone(uid, tour);
   } catch (_) {}
 }
+
+/// Drop into any screen to play that screen's guide the first time it
+/// opens on this installation. Draws nothing.
+class PageTour extends ConsumerStatefulWidget {
+  const PageTour({
+    super.key,
+    required this.name,
+    required this.steps,
+    this.delay = const Duration(milliseconds: 800),
+  });
+
+  final String name;
+  final List<TourStep> Function() steps;
+
+  /// Lets page transitions and entrance animations finish first.
+  final Duration delay;
+
+  @override
+  ConsumerState<PageTour> createState() => _PageTourState();
+}
+
+class _PageTourState extends ConsumerState<PageTour> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(widget.delay, () {
+      if (mounted) maybeRunTour(context, ref, widget.name, widget.steps());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
+}

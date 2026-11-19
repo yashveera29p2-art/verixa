@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import '../../../app/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/glass_nav_bar.dart';
+import '../../../app/tour_keys.dart';
+import '../../legal/tour_runner.dart';
 
 /// The centre button's menu: a stem grows up from the button like a
 /// seedling, splits into three branches, and an option card opens at the
@@ -143,12 +145,19 @@ class _BranchMenu extends StatelessWidget {
           ),
           for (var i = 0; i < 3; i++)
             _OptionCard(
+              key: [TourKeys.menuCreate, TourKeys.menuScan, TourKeys.menuMatch][i],
               option: _options[i],
               tip: g.tips[i],
               width: g.cardWidth,
               animation: cards[i],
               onTap: () => Navigator.of(context).pop(_options[i].route),
             ),
+          // First time the menu opens: what each option does.
+          PageTour(
+            name: 'menu',
+            steps: () => TourKeys.menu,
+            delay: const Duration(milliseconds: 1000),
+          ),
           // The centre button, now a close ×, sitting exactly over the bar's.
           Positioned(
             left: g.button.dx - AppSizes.navCentreButton / 2,
@@ -231,6 +240,7 @@ class _TreePainter extends CustomPainter {
 
 class _OptionCard extends StatelessWidget {
   const _OptionCard({
+    super.key,
     required this.option,
     required this.tip,
     required this.width,

@@ -9,6 +9,8 @@ import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/auth_page.dart';
 import '../application/jd_match_controller.dart';
 import 'widgets/match_report_view.dart';
+import '../../../app/tour_keys.dart';
+import '../../legal/tour_runner.dart';
 
 /// Paste a job description and see how well the profile matches it
 /// (feature 8).
@@ -92,12 +94,15 @@ class _JdMatchScreenState extends ConsumerState<JdMatchScreen> {
       ),
       actions: [historyButton],
       bottom: AppButton(
+        key: TourKeys.matchButton,
         label: 'Check my match',
         isLoading: state.matching,
         onPressed: () => controller.match(_jd.text),
       ),
       children: [
+        PageTour(name: 'match', steps: () => TourKeys.match),
         TextField(
+          key: TourKeys.matchBox,
           controller: _jd,
           minLines: 10,
           maxLines: 18,
@@ -106,7 +111,19 @@ class _JdMatchScreenState extends ConsumerState<JdMatchScreen> {
           keyboardType: TextInputType.multiline,
           style: AppTypography.bodyMedium,
           decoration: const InputDecoration(
-            hintText: 'Paste the job title, responsibilities and requirements…',
+            hintText: 'Paste the full job posting here, for example:\n\n'
+                'Job title: Software Engineer Intern\n'
+                'Company: ABC Technologies, Bengaluru\n\n'
+                'Responsibilities:\n'
+                '• Build and test REST APIs\n'
+                '• Work with the team on new features\n\n'
+                'Required: Java or Python, SQL, data structures\n'
+                'Preferred: Spring Boot, Git, cloud basics\n'
+                'Experience: 0–1 years (freshers welcome)\n'
+                'Education: B.Tech / BE in CS or related\n\n'
+                'Tip: include “Required” and “Preferred” sections if the '
+                'posting has them.',
+            hintMaxLines: 20,
             alignLabelWithHint: true,
           ),
           onChanged: (_) => setState(() {}),

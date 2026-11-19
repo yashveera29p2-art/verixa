@@ -28,7 +28,7 @@ Future<bool> confirmSignOut(BuildContext button) async {
           Text('Sign out of Verixa?', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.xxs),
           Text(
-            'Your profile and resumes stay saved to your number.',
+            'Everything stays saved to your number.',
             textAlign: TextAlign.center,
             style: AppTypography.bodySmall.copyWith(color: AppColors.mutedText),
           ),

@@ -17,9 +17,27 @@ class TourStep {
 /// highlighted, and a small message bubble points at it with Skip and
 /// Next / Got it. Steps whose option isn't on screen are skipped.
 /// Completes when the user finishes or skips.
+/// The guide on screen right now; the next one waits for it.
+Future<void>? _showing;
+
 Future<void> showGuidedTour(BuildContext context, List<TourStep> steps) async {
+  // One guide at a time: wait for any guide already on screen.
+  while (_showing != null) {
+    await _showing;
+  }
+  if (!context.mounted) return;
   final visible = steps.where((s) => s.target.currentContext != null).toList();
   if (visible.isEmpty) return;
+  final run = _run(context, visible);
+  _showing = run;
+  try {
+    await run;
+  } finally {
+    if (identical(_showing, run)) _showing = null;
+  }
+}
+
+Future<void> _run(BuildContext context, List<TourStep> visible) async {
   // An overlay, not a page: pushing a page would fade out the screen the
   // tour is pointing at.
   final done = Completer<void>();

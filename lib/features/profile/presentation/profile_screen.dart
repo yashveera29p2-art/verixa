@@ -16,6 +16,9 @@ import 'widgets/profile_popups.dart';
 import 'widgets/section_tile.dart';
 import '../../../core/utils/admin.dart';
 import '../../workstyle/workstyle.dart';
+import '../../auth/application/session.dart';
+import '../../../app/tour_keys.dart';
+import '../../legal/tour_runner.dart';
 
 /// Profile tab: completion indicator plus the step-by-step sections
 /// from CLAUDE.md §5.
@@ -26,7 +29,7 @@ class ProfileScreen extends ConsumerWidget {
 
   Future<void> _signOut(BuildContext button, WidgetRef ref) async {
     if (!await confirmSignOut(button)) return;
-    await ref.read(authServiceProvider).signOut();
+    await signOutAndResetGuides(ref.read);
     if (button.mounted) button.go(AppRoutes.welcome);
   }
 
@@ -76,6 +79,7 @@ class ProfileScreen extends ConsumerWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Builder(
+                    key: TourKeys.profileAbout,
                     builder: (button) => _AboutCapsule(
                       onTap: () => showAboutPanel(
                         button,
@@ -95,7 +99,9 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.xs),
                 _Header(data: data, phone: phone),
                 const SizedBox(height: AppSpacing.lg),
+                PageTour(name: 'profile', steps: () => TourKeys.profile),
                 CompletionCard(
+                  key: TourKeys.profileProgress,
                   completion: data.completion,
                   completedCount: data.completedCoreCount,
                   next: data.nextIncomplete,
@@ -125,7 +131,7 @@ class ProfileScreen extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.sm),
                 ],
                 const SizedBox(height: AppSpacing.md),
-                const _RecruiterSection(),
+                _RecruiterSection(key: TourKeys.profileRecruiters),
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'RESUMES',
@@ -311,7 +317,7 @@ class _AboutCapsule extends StatelessWidget {
 
 /// Work style quiz and "Visible to recruiters".
 class _RecruiterSection extends ConsumerWidget {
-  const _RecruiterSection();
+  const _RecruiterSection({super.key});
 
   Future<void> _toggle(BuildContext context, WidgetRef ref, bool on) async {
     final uid = ref.read(authServiceProvider).currentUser?.uid;

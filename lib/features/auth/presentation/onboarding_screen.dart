@@ -6,7 +6,6 @@ import '../../../app/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/auth_page.dart';
-import '../application/auth_providers.dart';
 import '../application/onboarding_controller.dart';
 import '../domain/user_profile.dart';
 import '../application/session.dart';
@@ -60,7 +59,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Future<void> _signOut() async {
-    await ref.read(authServiceProvider).signOut();
+    await signOutAndResetGuides(ref.read);
     if (mounted) context.go(AppRoutes.welcome);
   }
 

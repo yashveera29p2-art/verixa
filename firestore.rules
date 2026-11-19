@@ -122,7 +122,8 @@ service cloud.firestore {
         allow read: if isOwner(uid);
         allow create, update: if isOwner(uid)
           && request.resource.data.keys().hasOnly(
-               ['termsVersion', 'termsAcceptedAt', 'tour_student', 'tour_recruiter']);
+               ['termsVersion', 'termsAcceptedAt', 'tour_student', 'tour_recruiter', 'tours'])
+          && (!('tours' in request.resource.data) || request.resource.data.tours is map);
         allow delete: if false;
       }
 

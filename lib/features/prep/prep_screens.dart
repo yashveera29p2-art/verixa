@@ -10,6 +10,8 @@ import '../companies/presentation/widgets/company_avatar.dart';
 import '../profile/application/profile_providers.dart';
 import '../profile/domain/profile_data.dart';
 import '../reviews/reviews.dart';
+import '../../app/tour_keys.dart';
+import '../legal/tour_runner.dart';
 
 /// Prep tab: pick a company to prepare for.
 class PrepScreen extends ConsumerStatefulWidget {
@@ -45,7 +47,9 @@ class _PrepScreenState extends ConsumerState<PrepScreen> {
               style: AppTypography.bodyMedium.copyWith(color: AppColors.mutedText),
             ),
             const SizedBox(height: AppSpacing.md),
+            PageTour(name: 'prep', steps: () => TourKeys.prep),
             TextField(
+              key: TourKeys.prepSearch,
               onChanged: (v) => setState(() => _filter = v.trim().toLowerCase()),
               decoration: const InputDecoration(
                 hintText: 'Search companies',
@@ -53,8 +57,9 @@ class _PrepScreenState extends ConsumerState<PrepScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            for (final c in shown) ...[
+            for (final (i, c) in shown.indexed) ...[
               PressScale(
+                key: i == 0 ? TourKeys.prepFirst : null,
                 child: Material(
                   color: AppColors.white,
                   shape: RoundedRectangleBorder(

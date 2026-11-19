@@ -10,6 +10,8 @@ import '../../workstyle/workstyle.dart';
 import '../application/recruiter_providers.dart';
 import '../application/talent_controller.dart';
 import '../domain/recruiter_models.dart';
+import '../../../app/tour_keys.dart';
+import '../../legal/tour_runner.dart';
 
 /// Recruiters: students who opted in, ranked for one of the recruiter's
 /// jobs (or typed requirements) by skills they've proven and work style.
@@ -73,8 +75,11 @@ class _FindTalentScreenState extends ConsumerState<FindTalentScreen> {
             padding: EdgeInsets.fromLTRB(AppSpacing.pageGutter, AppSpacing.md,
                 AppSpacing.pageGutter, navInset + AppSpacing.lg),
             children: [
+              PageTour(name: 'talent', steps: () => TourKeys.talent,
+                  delay: const Duration(milliseconds: 2600)),
               // Charcoal "console" header.
               Container(
+                key: TourKeys.talentHeader,
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppColors.charcoal.withValues(alpha: 0.94),
@@ -97,11 +102,20 @@ class _FindTalentScreenState extends ConsumerState<FindTalentScreen> {
                           .copyWith(color: AppColors.ivory.withValues(alpha: 0.8)),
                     ),
                     const SizedBox(height: AppSpacing.md),
+                    // Label above the field: a floating label gets clipped
+                    // against the dark header.
+                    Text('Rank candidates for',
+                        style: AppTypography.labelMedium.copyWith(color: AppColors.ivory)),
+                    const SizedBox(height: AppSpacing.xs),
                     DropdownButtonFormField<String?>(
                       initialValue: _jobId,
                       isExpanded: true,
                       dropdownColor: AppColors.ivory,
-                      decoration: const InputDecoration(labelText: 'Rank for'),
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md, vertical: AppSpacing.sm + 2),
+                      ),
                       items: [
                         const DropdownMenuItem(value: null, child: Text('Custom requirements')),
                         for (final j in jobs)

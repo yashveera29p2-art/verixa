@@ -49,3 +49,11 @@ Future<String> routeForUser(ProviderReader read, User? user) async {
     return AppRoutes.home;
   }
 }
+
+/// Signs out after forgetting which guides were seen on this installation,
+/// so they play again when the person (or someone else) signs in.
+Future<void> signOutAndResetGuides(ProviderReader read) async {
+  final uid = read(authServiceProvider).currentUser?.uid;
+  if (uid != null) await read(consentRepositoryProvider).resetTours(uid);
+  await read(authServiceProvider).signOut();
+}

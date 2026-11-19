@@ -8,6 +8,8 @@ import '../../../core/utils/links.dart';
 import '../../companies/domain/company.dart';
 import '../application/jobs_controller.dart';
 import '../domain/job_models.dart';
+import '../../../app/tour_keys.dart';
+import '../../legal/tour_runner.dart';
 
 /// Jobs tab: listings ranked by fit (matching v2), with filters for pay,
 /// layoffs, work-life balance and job type.
@@ -68,7 +70,9 @@ class _JobsScreenState extends ConsumerState<JobsScreen> {
                     style: AppTypography.bodyMedium.copyWith(color: AppColors.mutedText),
                   ),
                   const SizedBox(height: AppSpacing.md),
+                  PageTour(name: 'jobs', steps: () => TourKeys.jobs),
                   TextField(
+                    key: TourKeys.jobsSearch,
                     controller: _query,
                     textInputAction: TextInputAction.search,
                     onSubmitted: (_) => _search(),
@@ -84,6 +88,7 @@ class _JobsScreenState extends ConsumerState<JobsScreen> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Wrap(
+                    key: TourKeys.jobsFilters,
                     spacing: AppSpacing.xs,
                     runSpacing: AppSpacing.xs,
                     children: [
@@ -109,7 +114,11 @@ class _JobsScreenState extends ConsumerState<JobsScreen> {
                     ],
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  _SourceNote(source: state.source, ranked: state.ranked, loading: state.loading),
+                  KeyedSubtree(
+                    key: TourKeys.jobsList,
+                    child: _SourceNote(
+                        source: state.source, ranked: state.ranked, loading: state.loading),
+                  ),
                   if (state.ranking)
                     Padding(
                       padding: const EdgeInsets.only(top: AppSpacing.xs),

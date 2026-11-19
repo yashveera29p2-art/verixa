@@ -12,6 +12,10 @@ import '../../auth/application/auth_providers.dart';
 import '../../workstyle/workstyle.dart';
 import '../application/recruiter_providers.dart';
 import '../domain/recruiter_models.dart';
+import '../../auth/application/session.dart';
+import '../../profile/presentation/widgets/profile_popups.dart';
+import '../../../app/tour_keys.dart';
+import '../../legal/tour_runner.dart';
 
 /// Post a job: shows in students' Jobs tab immediately.
 class PostJobScreen extends ConsumerStatefulWidget {
@@ -100,9 +104,18 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
         'It appears in students’ Jobs tab right away, ranked for each '
         'student by how well they fit.',
       ),
-      bottom: AppButton(label: 'Post job', isLoading: _saving, onPressed: _post),
+      bottom: AppButton(
+          key: TourKeys.postButton2,
+          label: 'Post job',
+          isLoading: _saving,
+          onPressed: _post),
       children: [
-        LabeledTextField(controller: _title, label: 'Job title', hint: 'e.g. Backend Developer Intern'),
+        PageTour(name: 'post', steps: () => TourKeys.post),
+        LabeledTextField(
+            key: TourKeys.postForm,
+            controller: _title,
+            label: 'Job title',
+            hint: 'e.g. Backend Developer Intern'),
         const FormGroupLabel('Type'),
         ChoiceChips<JobType>(
           options: JobType.values,
@@ -199,13 +212,16 @@ class MyJobsScreen extends ConsumerWidget {
             Row(
               children: [
                 Expanded(child: Text('My jobs', style: AppTypography.displayMedium)),
-                IconButton(
-                  tooltip: 'Sign out',
-                  icon: const Icon(Icons.logout),
-                  onPressed: () async {
-                    await ref.read(authServiceProvider).signOut();
-                    if (context.mounted) context.go(AppRoutes.welcome);
-                  },
+                Builder(
+                  builder: (button) => IconButton(
+                    tooltip: 'Sign out',
+                    icon: const Icon(Icons.logout),
+                    onPressed: () async {
+                      if (!await confirmSignOut(button)) return;
+                      await signOutAndResetGuides(ref.read);
+                      if (context.mounted) context.go(AppRoutes.welcome);
+                    },
+                  ),
                 ),
               ],
             ),

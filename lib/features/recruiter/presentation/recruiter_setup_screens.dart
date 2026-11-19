@@ -10,6 +10,8 @@ import '../../../core/widgets/form_fields.dart';
 import '../../auth/application/auth_providers.dart';
 import '../application/recruiter_providers.dart';
 import '../domain/recruiter_models.dart';
+import '../../auth/application/session.dart';
+import '../../profile/presentation/widgets/profile_popups.dart';
 
 /// New recruiter: name, company, designation and work email. The account
 /// then waits for the Verixa team's approval.
@@ -100,12 +102,15 @@ class _RecruiterSetupScreenState extends ConsumerState<RecruiterSetupScreen> {
           keyboardType: TextInputType.emailAddress,
         ),
         InlineError(_error),
-        TextButton(
-          onPressed: () async {
-            await ref.read(authServiceProvider).signOut();
-            if (context.mounted) context.go(AppRoutes.welcome);
-          },
-          child: const Text('Not a recruiter? Sign out'),
+        Builder(
+          builder: (button) => TextButton(
+            onPressed: () async {
+              if (!await confirmSignOut(button)) return;
+              await signOutAndResetGuides(ref.read);
+              if (context.mounted) context.go(AppRoutes.welcome);
+            },
+            child: const Text('Not a recruiter? Sign out'),
+          ),
         ),
       ],
     );
@@ -161,13 +166,16 @@ class RecruiterPendingScreen extends ConsumerWidget {
                   style: AppTypography.bodyLarge.copyWith(color: AppColors.mutedText),
                 ),
                 const Spacer(flex: 2),
-                AppButton(
-                  label: 'Sign out',
-                  style: AppButtonStyle.outlined,
-                  onPressed: () async {
-                    await ref.read(authServiceProvider).signOut();
-                    if (context.mounted) context.go(AppRoutes.welcome);
-                  },
+                Builder(
+                  builder: (button) => AppButton(
+                    label: 'Sign out',
+                    style: AppButtonStyle.outlined,
+                    onPressed: () async {
+                      if (!await confirmSignOut(button)) return;
+                      await signOutAndResetGuides(ref.read);
+                      if (context.mounted) context.go(AppRoutes.welcome);
+                    },
+                  ),
                 ),
               ],
             ),
