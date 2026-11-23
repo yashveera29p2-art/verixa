@@ -222,11 +222,12 @@ def test_textbee_sends_when_phone_reports_sent(monkeypatch):
     monkeypatch.setattr(sms, "settings", dataclasses.replace(sms.settings, textbee_wait_seconds=5))
     calls = []
     monkeypatch.setattr(sms.requests, "post", lambda url, **kw: calls.append(url) or
+                        calls.append(kw["json"]["recipients"]) or
                         _Resp(200, {"data": {"smsBatchId": "b1"}}))
     monkeypatch.setattr(sms.requests, "get", lambda url, **kw:
                         _Resp(200, {"data": [{"status": "sent"}]}))
     sms.send_otp("+919876543210", "123456")
-    assert calls == ["https://api.textbee.dev/api/v1/gateway/send-sms"]
+    assert calls == ["https://api.textbee.dev/api/v1/gateway/send-sms", ["9876543210"]]
 
 
 def test_falls_back_to_fast2sms_when_phone_offline(monkeypatch):

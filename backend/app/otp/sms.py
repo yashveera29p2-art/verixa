@@ -78,7 +78,9 @@ def _send_textbee(phone: str, code: str) -> None:
     if not key:
         raise OtpError("textbee is not configured")
     headers = {"x-api-key": key}
-    body: dict = {"recipients": [phone], "message": otp_text(code)}
+    # Local 10-digit format: the sending SIM is Indian, and some SIMs fail
+    # ("mobile radio could not send") when the number has the +91 prefix.
+    body: dict = {"recipients": [phone[-10:]], "message": otp_text(code)}
     if settings.textbee_device_id:
         body["deviceId"] = settings.textbee_device_id
     try:
