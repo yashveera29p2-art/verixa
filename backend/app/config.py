@@ -38,7 +38,7 @@ class Settings:
     # Optional: which registered phone sends (default: textbee picks).
     textbee_device_id: str = os.getenv("VERIXA_TEXTBEE_DEVICE_ID", "")
     # How long to wait for the phone to report "sent" before using the backup.
-    textbee_wait_seconds: float = float(os.getenv("VERIXA_TEXTBEE_WAIT", "15"))
+    textbee_wait_seconds: float = float(os.getenv("VERIXA_TEXTBEE_WAIT", "30"))
     # Fast2SMS Quick SMS (paid backup, ~₹7/SMS); capped per day to protect balance.
     fast2sms_api_key: str = os.getenv("VERIXA_FAST2SMS_API_KEY", "")
     fast2sms_daily_cap: int = int(os.getenv("VERIXA_FAST2SMS_DAILY_CAP", "10"))

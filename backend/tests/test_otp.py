@@ -273,3 +273,22 @@ def test_code_works_only_once(fresh_limits, monkeypatch):
     assert ok.status_code == 200
     again = client.post("/v1/auth/otp/verify", json={"session": start["session"], "code": code})
     assert again.status_code == 400 and "already used" in again.json()["detail"]
+
+
+def test_textbee_alone_accepts_a_slow_phone(monkeypatch):
+    sms = _sms_settings(monkeypatch, "textbee")
+    monkeypatch.setattr(sms.requests, "post", lambda url, **kw:
+                        _Resp(200, {"data": {"smsBatchId": "b1"}}))
+    monkeypatch.setattr(sms.requests, "get", lambda url, **kw:
+                        _Resp(200, {"data": [{"status": "dispatched"}]}))
+    sms.send_otp("+919876543210", "123456")  # no error: the code arrives late
+
+
+def test_textbee_failure_still_reports_error(monkeypatch):
+    sms = _sms_settings(monkeypatch, "textbee")
+    monkeypatch.setattr(sms.requests, "post", lambda url, **kw:
+                        _Resp(200, {"data": {"smsBatchId": "b1"}}))
+    monkeypatch.setattr(sms.requests, "get", lambda url, **kw:
+                        _Resp(200, {"data": [{"status": "failed"}]}))
+    with pytest.raises(codes.OtpError, match="Couldn’t send"):
+        sms.send_otp("+919876543210", "123456")

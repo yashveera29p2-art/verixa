@@ -47,7 +47,12 @@ def send_otp(phone: str, code: str) -> None:
             log.error("unknown SMS provider %r", name)
             continue
         try:
-            sender(phone, code)
+            if name == "textbee":
+                # With no backup after it, a slow phone still counts: the
+                # code is on its way, just late.
+                _send_textbee(phone, code, last=name == names[-1])
+            else:
+                sender(phone, code)
             if name != names[0]:
                 log.warning("otp sent via backup provider %s", name)
             return
@@ -70,7 +75,7 @@ def _send_console(phone: str, code: str) -> None:
 TEXTBEE = "https://api.textbee.dev/api/v1"
 
 
-def _send_textbee(phone: str, code: str) -> None:
+def _send_textbee(phone: str, code: str, last: bool = False) -> None:
     """Queues the SMS on the textbee phone, then waits until the phone
     reports it as sent. A phone that is off or offline leaves the message
     pending; after the wait we give up so the backup provider can send."""
@@ -98,10 +103,10 @@ def _send_textbee(phone: str, code: str) -> None:
         if data.get("successCount"):
             return  # pushed to the phone straight away
         raise OtpError("no batch id in response")
-    _wait_until_sent(batch, headers)
+    _wait_until_sent(batch, headers, accept_slow=last)
 
 
-def _wait_until_sent(batch: str, headers: dict) -> None:
+def _wait_until_sent(batch: str, headers: dict, accept_slow: bool = False) -> None:
     deadline = time.monotonic() + settings.textbee_wait_seconds
     status = "pending"
     while time.monotonic() < deadline:
@@ -117,6 +122,9 @@ def _wait_until_sent(batch: str, headers: dict) -> None:
             return
         if status == "failed":
             raise OtpError("the phone could not send the SMS")
+    if accept_slow and status in ("pending", "dispatched"):
+        log.warning("textbee phone is slow (status %s); the SMS will arrive late", status)
+        return
     raise OtpError(f"phone did not send in time (status {status})")
 
 
