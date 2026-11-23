@@ -14,10 +14,10 @@ class Settings:
     auth_mode: str = os.getenv("VERIXA_AUTH_MODE", "firebase")
 
     # ── Phone OTP login (our own, not Firebase SMS) ─────────────────────
-    # "messagecentral" sends SMS through Message Central VerifyNow (their
-    # DLT-approved template, no registration needed); "2factor" uses
-    # 2Factor.in (voice call unless you have your own DLT template);
-    # "console" only logs the code (local development and tests).
+    # Comma-separated, tried in order: e.g. "textbee,fast2sms" sends from
+    # your textbee phone and falls back to Fast2SMS if the phone can't.
+    # Others: "messagecentral" (VerifyNow, on its own), "2factor", and
+    # "console" (only logs the code; local development and tests).
     sms_provider: str = os.getenv("VERIXA_SMS_PROVIDER", "console")
     twofactor_api_key: str = os.getenv("VERIXA_2FACTOR_API_KEY", "")
     # Message Central: customer id plus EITHER the auth token generated in
@@ -33,6 +33,15 @@ class Settings:
     otp_secret: str = os.getenv("VERIXA_OTP_SECRET", "")
     # Stop sending SMS after this many per day (protects your SMS balance).
     sms_daily_cap: int = int(os.getenv("VERIXA_SMS_DAILY_CAP", "300"))
+    # textbee: free SMS from your own Android phone (app installed on it).
+    textbee_api_key: str = os.getenv("VERIXA_TEXTBEE_API_KEY", "")
+    # Optional: which registered phone sends (default: textbee picks).
+    textbee_device_id: str = os.getenv("VERIXA_TEXTBEE_DEVICE_ID", "")
+    # How long to wait for the phone to report "sent" before using the backup.
+    textbee_wait_seconds: float = float(os.getenv("VERIXA_TEXTBEE_WAIT", "15"))
+    # Fast2SMS Quick SMS (paid backup, ~₹7/SMS); capped per day to protect balance.
+    fast2sms_api_key: str = os.getenv("VERIXA_FAST2SMS_API_KEY", "")
+    fast2sms_daily_cap: int = int(os.getenv("VERIXA_FAST2SMS_DAILY_CAP", "10"))
     # Numbers that never get an SMS and accept a fixed code, e.g.
     # "+919999999999:123456" (comma-separated). For demos and testing.
     test_phones: str = os.getenv("VERIXA_TEST_PHONES", "+919999999999:123456")

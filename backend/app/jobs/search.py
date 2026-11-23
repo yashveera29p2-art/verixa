@@ -42,7 +42,9 @@ class JobListing(BaseModel):
 
 
 def _clean(text: str) -> str:
-    return re.sub(r"<[^>]+>", "", text or "").strip()
+    # Adzuna wraps matched words in <strong>; dropping the tags can leave
+    # double spaces ("Java  SQL"), so whitespace is collapsed too.
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", text or "")).strip()
 
 
 def _contract(title: str, contract_time: str | None, contract_type: str | None) -> str:

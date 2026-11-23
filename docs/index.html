@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Get Verixa</title>
-<meta name="description" content="Verixa: build genuine, ATS-friendly resumes and check resumes for manipulation. Android app and iPhone web app.">
-<meta property="og:title" content="Download Verixa">
-<meta property="og:description" content="Genuine, ATS-friendly resumes. Free for Android and iPhone.">
+<meta name="description" content="Verixa helps students and professionals build genuine, ATS-friendly resumes. Free Android app.">
+<meta property="og:title" content="Download Verixa for Android">
+<meta property="og:description" content="Build genuine, ATS-friendly resumes and check them for hidden tricks. Free Android app.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@
   .alert b { color: var(--green); }
   .alert .btn { background: var(--green); color: var(--ivory); margin-top: 12px; }
   h3 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 22px; margin: 0 0 12px; }
-  ol { list-style: none; padding: 0; margin: 0 0 24px; counter-reset: s; }
+  ol { list-style: none; padding: 0; margin: 0 0 20px; counter-reset: s; }
   ol li {
     counter-increment: s; position: relative; background: var(--white);
     border: 1px solid var(--stone); border-radius: 12px; padding: 14px 14px 14px 56px; margin-bottom: 10px;
@@ -52,128 +52,85 @@
     display: grid; place-items: center; font-size: 14px;
   }
   ol li b { color: var(--green); }
-  .note { border-left: 3px solid var(--sage); padding: 4px 0 4px 12px; color: var(--muted); font-size: 14px; margin: 0 0 14px; }
-  footer { color: var(--muted); font-size: 13px; margin-top: 28px; }
+  .note { border-left: 3px solid var(--sage); padding: 4px 0 4px 12px; color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+  footer { color: var(--muted); font-size: 13px; margin-top: 24px; }
   a { color: var(--green); }
+  /* Shown on iPhone, iPad and computers while Verixa is Android-only. */
+  .only { display: none; min-height: 100vh; align-items: center; justify-content: center; padding: 24px 16px; }
+  .only .box { max-width: 440px; text-align: center; }
+  .only h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 28px; margin: 18px 0 10px; }
+  .only p { color: var(--muted); margin: 0 0 10px; }
+  body.not-android main { display: none; }
+  body.not-android .only { display: flex; }
 </style>
 </head>
 <body>
 <main>
   <h1 class="brand">VERIXA</h1>
-  <p class="tag">Genuine, ATS-friendly resumes, and a scanner that catches manipulated ones.</p>
+  <p class="tag">Build genuine, ATS-friendly resumes for students and professionals.
+    Check any resume for hidden tricks and match it to real jobs.</p>
 
-  <!-- Shown inside WhatsApp / Instagram / Facebook etc., which often block downloads. -->
+  <!-- Shown inside WhatsApp / Instagram etc., which often block downloads. -->
   <section class="alert" id="inapp">
     <b>Open this page in your browser to download.</b><br>
-    Apps like WhatsApp and Instagram can’t download files themselves.
+    Apps like WhatsApp can’t download files themselves.
     <a class="btn" id="openBrowser" href="#">Open in browser</a>
     <div style="font-size:13px;color:var(--muted);margin-top:8px">If nothing happens: tap <b>⋮</b> (top right) → <b>Open in browser</b>.</div>
   </section>
 
-  <!-- iPhone: the web app, added to the home screen. -->
-  <div id="iphone">
-    <section class="card">
-      <h2>Get Verixa on iPhone</h2>
-      <p>Free. Runs from your home screen like an app, with the iPhone glass look. No App Store needed.</p>
-      <a class="btn" id="openApp" href="app/" target="_blank" rel="noopener">Open Verixa</a>
-      <div class="meta">Works on iPhone and iPad · always the latest version</div>
-    </section>
-
-    <section class="alert" id="iosInApp">
-      <b>Open this page in Safari first.</b><br>
-      Apps like WhatsApp and Instagram can’t add to the home screen. Tap <b>⋯</b> or the compass icon → <b>Open in Safari</b>.
-    </section>
-
-    <h3>Add it to your home screen</h3>
-    <ol>
-      <li>Tap <b>Open Verixa</b> above (in <b>Safari</b>). It opens in a <b>new tab</b>, so this page with the steps stays open in the old tab.</li>
-      <li>Tap the <b>Share</b> button <b>⬆︎</b> at the bottom of Safari (on newer iPhones it may be under <b>⋯</b>).</li>
-      <li>Scroll down, tap <b>Add to Home Screen</b>, then <b>Add</b>. Open Verixa from its new icon from now on.</li>
-    </ol>
-    <p class="note">Opening from the home-screen icon gives the full-screen app and keeps you signed in.</p>
-  </div>
-
-  <div id="android">
-  <section class="card" id="get">
+  <section class="card">
     <h2>Get the Android app</h2>
-    <p>Free. Works on any Android phone (Android 7 or newer).</p>
+    <p>Free. Works on Android 7 or newer.</p>
     <a class="btn" id="download" href="Verixa.apk" download="Verixa.apk" type="application/vnd.android.package-archive">Download Verixa</a>
-    <div class="meta">About 21 MB · Android only · always the latest version</div>
-    <div class="status" id="status">⬇️ Downloading Verixa.apk… When it finishes, <span id="openHint">tap <b>Open</b></span>.</div>
+    <div class="meta">About 21 MB · always the latest version</div>
+    <div class="status" id="status">Downloading Verixa.apk… When it finishes, <span id="openHint">tap <b>Open</b></span>.</div>
   </section>
 
-  <h3>Install in 3 taps</h3>
+  <h3>Install in 3 steps</h3>
   <ol>
-    <li>Tap <b>Download Verixa</b>. If your browser asks, tap <b>Download</b> (or <b>Download anyway</b>).</li>
-    <li id="step2">When it finishes, tap <b>Open</b> in the download message, or tap the <b>download notification</b>.</li>
-    <li>Tap <b>Install</b> (or <b>Update</b>), then <b>Open</b>. Verixa is now on your home screen.</li>
+    <li>Tap <b>Download Verixa</b>. If asked, tap <b>Download</b> (or <b>Download anyway</b>).</li>
+    <li id="step2">When it finishes, tap <b>Open</b> in the download message or notification.</li>
+    <li>Tap <b>Install</b> (or <b>Update</b>), then <b>Open</b>.</li>
   </ol>
 
-  <p class="note">First time? If Android says installs from this source aren’t allowed, tap <b>Settings</b>, turn on <b>Allow from this source</b>, go back and tap <b>Install</b>.</p>
-  <p class="note">If Play Protect says the app is unknown, tap <b>More details → Install anyway</b>. Android shows this for every app that isn’t from the Play Store.</p>
-  <p class="note">Very old phone and it says <b>“App not installed”</b>? Use the <a href="Verixa-32bit.apk" download="Verixa.apk">version for older phones</a> instead.</p>
-  <p class="note">Can’t find the file? Open your <b>Files</b> (or <b>My Files</b>) app → <b>Downloads</b> → <b>Verixa.apk</b>.</p>
-  </div>
+  <p class="note">If Android blocks the install, tap <b>Settings</b>, turn on <b>Allow from this source</b>, then go back and tap <b>Install</b>. If Play Protect warns, tap <b>More details → Install anyway</b>.</p>
+  <p class="note">“App not installed” on a very old phone? Use the <a href="Verixa-32bit.apk" download="Verixa.apk">version for older phones</a>.</p>
 
-  <p class="note" id="otherDevice"></p>
-
-  <footer>
-    Verixa is an independent academic NLP project. Resume files are processed in memory and never stored.
-    Not affiliated with or endorsed by any company mentioned in the app; company names and logos belong to their owners.
-    Scores and company guidance are estimates, not guarantees.
-    · <a href="https://github.com/yashveera29p2-art/verixa/releases/latest">All versions</a>
-  </footer>
+  <footer>An academic project · <a href="terms.pdf">Terms of use</a></footer>
 </main>
+
+<section class="only" aria-live="polite">
+  <div class="box">
+    <h1 class="brand">VERIXA</h1>
+    <h2>Available on Android only</h2>
+    <p>Thank you for your interest in Verixa. The app is currently available only for Android phones.</p>
+    <p>Kindly open this link on an Android phone to download it. We appreciate your understanding.</p>
+  </div>
+</section>
+
 <script>
   (function () {
     var ua = navigator.userAgent || '';
     var isAndroid = /Android/i.test(ua);
-    var isIOS = /iPhone|iPad|iPod/i.test(ua);
+    // iPhone/iPad and computers see only the "Android only" notice.
+    // (The iPhone web app in /app stays online; it's just not offered here.)
+    if (!isAndroid) { document.body.classList.add('not-android'); return; }
+
     var inApp = /WhatsApp|Instagram|FBAN|FBAV|FB_IAB|Line\/|LinkedInApp|Snapchat|Twitter|; wv\)|Telegram/i.test(ua);
-
-    var iphone = document.getElementById('iphone');
-    var android = document.getElementById('android');
-    var other = document.getElementById('otherDevice');
-    if (isIOS) {
-      // iPhone: web app only; the APK can't be installed.
-      android.remove();
-      other.innerHTML = 'On Android? Open this same link there to get the Android app.';
-      if (!inApp) document.getElementById('iosInApp').remove();
-      else document.getElementById('iosInApp').classList.add('show');
-    } else {
-      document.getElementById('iosInApp').remove();
-      if (isAndroid) {
-        iphone.remove();
-        other.innerHTML = 'On iPhone? Open this same link there to get the iPhone version.';
-      } else {
-        // Computer: show both, Android first.
-        android.parentNode.insertBefore(android, iphone);
-        other.remove();
-      }
-    }
-
-    if (isIOS) {
-      document.getElementById('inapp').remove();
-      return; // nothing below applies to iPhones
-    }
-    if (isAndroid && inApp) {
+    if (inApp) {
       document.getElementById('inapp').classList.add('show');
       // Android intent: opens this same page in the phone's default browser.
       var here = location.href.replace(/^https?:\/\//, '');
       document.getElementById('openBrowser').href =
         'intent://' + here + '#Intent;scheme=https;action=android.intent.action.VIEW;end';
-    } else {
-      document.getElementById('inapp').remove();
     }
 
     // Where each browser shows the finished download.
     var where =
       /EdgA/i.test(ua) ? 'tap <b>Open</b> at the bottom of Edge, or the download notification' :
-      /SamsungBrowser/i.test(ua) ? 'tap the <b>download notification</b> (or Menu ☰ → <b>Downloads</b> → Verixa.apk)' :
+      /SamsungBrowser/i.test(ua) ? 'tap the <b>download notification</b> (or Menu ☰ → <b>Downloads</b>)' :
       /Firefox/i.test(ua) ? 'tap <b>Open</b> in Firefox’s download message, or the notification' :
-      /OPR|Opera/i.test(ua) ? 'tap <b>Open</b> in Opera’s download message, or the notification' :
       /MiuiBrowser|XiaoMi/i.test(ua) ? 'tap the <b>download notification</b> (or Files → Downloads)' :
-      navigator.brave ? 'tap <b>Open</b> at the bottom of Brave, or the download notification' :
       'tap <b>Open</b> at the bottom of the screen, or the download notification';
     document.getElementById('openHint').innerHTML = where;
     document.getElementById('step2').innerHTML = 'When it finishes, ' + where + '.';

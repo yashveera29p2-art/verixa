@@ -62,25 +62,31 @@ class HomeScreen extends ConsumerWidget {
                     onTap: () => _open(context, CompanyCategory.mnc),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  SizedBox(
-                    height: AppSizes.bentoTileHeight,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        for (final (i, c) in const [
-                          CompanyCategory.sme,
-                          CompanyCategory.startup,
-                        ].indexed) ...[
-                          if (i > 0) const SizedBox(width: AppSpacing.sm),
-                          Expanded(
-                            child: CategoryCard(
-                              category: c,
-                              square: true,
-                              onTap: () => _open(context, c),
+                  // At least the bento height; taller when the text needs it
+                  // (narrow phones, large font settings), so nothing overflows.
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minHeight: AppSizes.bentoTileHeight,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          for (final (i, c) in const [
+                            CompanyCategory.sme,
+                            CompanyCategory.startup,
+                          ].indexed) ...[
+                            if (i > 0) const SizedBox(width: AppSpacing.sm),
+                            Expanded(
+                              child: CategoryCard(
+                                category: c,
+                                square: true,
+                                onTap: () => _open(context, c),
+                              ),
                             ),
-                          ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ],

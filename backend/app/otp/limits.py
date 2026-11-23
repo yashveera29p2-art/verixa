@@ -58,6 +58,26 @@ class DailyCap:
             return True
 
 
+class UsedSessions:
+    """Remembers sessions that already signed someone in, so each code
+    works only once (sessions expire after 5 minutes anyway)."""
+
+    def __init__(self):
+        self._used: dict[str, float] = {}
+        self._lock = threading.Lock()
+
+    def claim(self, sid: str, expires: float, now: float | None = None) -> bool:
+        """True the first time [sid] is claimed; False after that."""
+        now = time.time() if now is None else now
+        with self._lock:
+            for k in [k for k, e in self._used.items() if e < now]:
+                del self._used[k]
+            if sid in self._used:
+                return False
+            self._used[sid] = expires
+            return True
+
+
 class OtpLimits:
     def __init__(self, daily_cap: int):
         self.resend = SlidingWindow(1, 30)            # one SMS per number per 30 s
@@ -67,3 +87,4 @@ class OtpLimits:
         self.failed_phone = SlidingWindow(15, 3600)   # 15 wrong codes per number per hour
         self.daily = DailyCap(daily_cap)
         self.lookups = SlidingWindow(30, 3600)       # 30 account checks per IP per hour
+        self.used = UsedSessions()                    # each code signs in once

@@ -193,3 +193,82 @@ def test_account_exists(monkeypatch, fresh_limits):
     monkeypatch.setattr(otp, "account_exists", lambda phone: phone == "+919876543210")
     assert otp.exists("98765 43210", "1.2.3.4") == ("+919876543210", True)
     assert otp.exists("+91 91234 56789", "1.2.3.4") == ("+919123456789", False)
+
+
+# ── Providers: textbee first, Fast2SMS as backup ───────────────────────────
+
+class _Resp:
+    def __init__(self, status, body):
+        self.status_code, self._body = status, body
+
+    def json(self):
+        return self._body
+
+
+def _sms_settings(monkeypatch, provider):
+    import dataclasses
+    from app.otp import sms
+    monkeypatch.setattr(sms, "settings", dataclasses.replace(
+        sms.settings, sms_provider=provider, textbee_api_key="tb-key",
+        fast2sms_api_key="f2-key", textbee_wait_seconds=0.01, textbee_device_id=""))
+    monkeypatch.setattr(sms.time, "sleep", lambda s: None)
+    monkeypatch.setattr(sms, "_fast2sms_cap", DailyCap(2))
+    return sms
+
+
+def test_textbee_sends_when_phone_reports_sent(monkeypatch):
+    sms = _sms_settings(monkeypatch, "textbee,fast2sms")
+    import dataclasses
+    monkeypatch.setattr(sms, "settings", dataclasses.replace(sms.settings, textbee_wait_seconds=5))
+    calls = []
+    monkeypatch.setattr(sms.requests, "post", lambda url, **kw: calls.append(url) or
+                        _Resp(200, {"data": {"smsBatchId": "b1"}}))
+    monkeypatch.setattr(sms.requests, "get", lambda url, **kw:
+                        _Resp(200, {"data": [{"status": "sent"}]}))
+    sms.send_otp("+919876543210", "123456")
+    assert calls == ["https://api.textbee.dev/api/v1/gateway/send-sms"]
+
+
+def test_falls_back_to_fast2sms_when_phone_offline(monkeypatch):
+    sms = _sms_settings(monkeypatch, "textbee,fast2sms")
+    posts = []
+
+    def post(url, **kw):
+        posts.append((url, kw))
+        if "textbee" in url:
+            return _Resp(200, {"data": {"smsBatchId": "b1"}})
+        return _Resp(200, {"return": True})
+
+    monkeypatch.setattr(sms.requests, "post", post)
+    monkeypatch.setattr(sms.requests, "get", lambda url, **kw:
+                        _Resp(200, {"data": [{"status": "pending"}]}))
+    sms.send_otp("+919876543210", "654321")
+    url, kw = posts[-1]
+    assert "fast2sms" in url
+    assert kw["data"]["numbers"] == "9876543210"
+    assert "654321" in kw["data"]["message"]
+
+
+def test_fast2sms_daily_cap_and_clear_error(monkeypatch):
+    sms = _sms_settings(monkeypatch, "fast2sms")
+    monkeypatch.setattr(sms.requests, "post", lambda url, **kw: _Resp(200, {"return": True}))
+    sms.send_otp("+919876543210", "111111")
+    sms.send_otp("+919876543210", "222222")
+    with pytest.raises(codes.OtpError, match="Couldn’t send"):
+        sms.send_otp("+919876543210", "333333")
+
+
+def test_otp_text_is_plain_gsm():
+    from app.otp.sms import otp_text
+    text = otp_text("123456")
+    assert text.isascii() and len(text) <= 160
+
+
+def test_code_works_only_once(fresh_limits, monkeypatch):
+    client = TestClient(app)
+    start = client.post("/v1/auth/otp/start", json={"phone": "9876543210"}).json()
+    code = fresh_limits[-1][1]
+    ok = client.post("/v1/auth/otp/verify", json={"session": start["session"], "code": code})
+    assert ok.status_code == 200
+    again = client.post("/v1/auth/otp/verify", json={"session": start["session"], "code": code})
+    assert again.status_code == 400 and "already used" in again.json()["detail"]

@@ -124,7 +124,7 @@ class AuroraState extends ChangeNotifier {
     _watchSpeed(raw);
     time += dt;
     // Ease towards the latest reading so the motion is fluid, not jittery.
-    tilt = Offset.lerp(tilt, _targetTilt, (dt * 5).clamp(0.0, 1.0))!;
+    tilt = Offset.lerp(tilt, _targetTilt, (dt * 6).clamp(0.0, 1.0))!;
     notifyListeners();
   }
 
@@ -267,7 +267,7 @@ class _LeafPainter extends CustomPainter {
 
       // Parallax: nearer (bigger) leaves shift more against the tilt.
       final depth = ((leaf.size - 26) / 38).clamp(0.0, 1.0) * 0.7 + 0.3;
-      final shift = Offset(-tilt.dx * 40 * depth, tilt.dy * 40 * depth);
+      final shift = Offset(-tilt.dx * 55 * depth, tilt.dy * 55 * depth);
 
       canvas.save();
       canvas.translate(x + shift.dx, y + shift.dy);
