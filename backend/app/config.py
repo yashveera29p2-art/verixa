@@ -35,7 +35,8 @@ class Settings:
     sms_daily_cap: int = int(os.getenv("VERIXA_SMS_DAILY_CAP", "300"))
     # textbee: free SMS from your own Android phone (app installed on it).
     # Truecaller SDK client ID (not secret; also in the Android manifest).
-    truecaller_client_id: str = os.getenv("VERIXA_TRUECALLER_CLIENT_ID", "")
+    truecaller_client_id: str = os.getenv(
+        "VERIXA_TRUECALLER_CLIENT_ID", "5ulu0dqyonrhlqym-t6owpojelqghgqmmfkesuhn-sm")
     textbee_api_key: str = os.getenv("VERIXA_TEXTBEE_API_KEY", "")
     # Optional: which registered phone sends (default: textbee picks).
     textbee_device_id: str = os.getenv("VERIXA_TEXTBEE_DEVICE_ID", "")
