@@ -301,6 +301,35 @@ def account_exists(body: OtpStart, request: Request) -> dict:
     return {"phone": phone, "exists": exists}
 
 
+class TruecallerLogin(BaseModel):
+    authorizationCode: str = Field(default="", max_length=600)
+    codeVerifier: str = Field(default="", max_length=200)
+    accessToken: str = Field(default="", max_length=200)
+
+
+@app.post("/v1/auth/method")
+def auth_method(body: OtpStart) -> dict:
+    """How to verify this number: "code" (team test numbers) or "truecaller"."""
+    try:
+        phone, method = otp.login_method(body.phone)
+    except otp.OtpError as exc:
+        raise _otp_error(exc) from exc
+    return {"phone": phone, "method": method}
+
+
+@app.post("/v1/auth/truecaller")
+def auth_truecaller(body: TruecallerLogin, request: Request) -> dict:
+    """Checks a Truecaller verification and returns a Firebase custom token
+    for the account that owns the verified number."""
+    try:
+        phone, token, is_new = otp.finish_truecaller(
+            _client_ip(request), authorization_code=body.authorizationCode,
+            code_verifier=body.codeVerifier, access_token=body.accessToken)
+    except otp.OtpError as exc:
+        raise _otp_error(exc) from exc
+    return {"phone": phone, "firebaseToken": token, "isNewUser": is_new}
+
+
 @app.post("/v1/auth/otp/verify")
 def otp_verify(body: OtpVerify) -> dict:
     """Checks the code and returns a Firebase custom token for the one

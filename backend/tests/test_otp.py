@@ -292,3 +292,56 @@ def test_textbee_failure_still_reports_error(monkeypatch):
                         _Resp(200, {"data": [{"status": "failed"}]}))
     with pytest.raises(codes.OtpError, match="Couldn’t send"):
         sms.send_otp("+919876543210", "123456")
+
+
+# ── Truecaller login ───────────────────────────────────────────────────────
+
+def _tc(monkeypatch):
+    import dataclasses
+    from app.otp import truecaller
+    monkeypatch.setattr(truecaller, "settings",
+                        dataclasses.replace(truecaller.settings, truecaller_client_id="cid"))
+    return truecaller
+
+
+def test_login_method_test_numbers_use_code(monkeypatch):
+    client = TestClient(app)
+    monkeypatch.setattr(otp, "_test_codes", lambda: {"+919999999999": "123456"})
+    assert client.post("/v1/auth/method", json={"phone": "9999999999"}).json()["method"] == "code"
+    assert client.post("/v1/auth/method", json={"phone": "9876543210"}).json()["method"] == "truecaller"
+
+
+def test_truecaller_access_token_signs_in_verified_number(monkeypatch):
+    tc = _tc(monkeypatch)
+    seen = {}
+    monkeypatch.setattr(tc.requests, "get", lambda url, **kw: seen.update(url=url, kw=kw) or
+                        _Resp(200, {"phoneNumber": 919876543210, "countryCode": "IN"}))
+    r = TestClient(app).post("/v1/auth/truecaller", json={"accessToken": "71d8367e-39f7-4de5"})
+    assert r.status_code == 200
+    assert r.json() == {"phone": "+919876543210", "firebaseToken": "token-for-+919876543210",
+                        "isNewUser": False}
+    assert seen["kw"]["headers"] == {"clientId": "cid"}
+
+
+def test_truecaller_oauth_code_flow(monkeypatch):
+    tc = _tc(monkeypatch)
+    monkeypatch.setattr(tc.requests, "post", lambda url, **kw: _Resp(200, {"access_token": "at"}))
+    monkeypatch.setattr(tc.requests, "get", lambda url, **kw: _Resp(200, {
+        "phone_number": "919876543211", "phone_number_verified": True}))
+    r = TestClient(app).post("/v1/auth/truecaller",
+                             json={"authorizationCode": "code", "codeVerifier": "verifier"})
+    assert r.status_code == 200 and r.json()["phone"] == "+919876543211"
+
+
+def test_truecaller_rejects_invalid_token(monkeypatch):
+    tc = _tc(monkeypatch)
+    monkeypatch.setattr(tc.requests, "get", lambda url, **kw:
+                        _Resp(404, {"code": 1404, "message": "Invalid access token."}))
+    r = TestClient(app).post("/v1/auth/truecaller", json={"accessToken": "bad-token-123"})
+    assert r.status_code == 400 and "Truecaller" in r.json()["detail"]
+
+
+def test_truecaller_needs_proof(monkeypatch):
+    _tc(monkeypatch)
+    r = TestClient(app).post("/v1/auth/truecaller", json={})
+    assert r.status_code == 400

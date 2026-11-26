@@ -11,6 +11,7 @@ from .accounts import account_exists, custom_token_for
 from .codes import OtpError
 from .limits import OtpLimits
 from .sms import send_otp
+from . import truecaller
 
 log = logging.getLogger("verixa.otp")
 
@@ -84,3 +85,27 @@ def finish(token: str, code: str) -> tuple[str, str, bool]:
         raise OtpError("This code was already used. Tap “Resend code” to get a new one.")
     firebase_token, is_new = custom_token_for(session.phone)
     return session.phone, firebase_token, is_new
+
+
+def login_method(raw_phone: str) -> tuple[str, str]:
+    """How the app should verify [raw_phone]: "code" for team test numbers
+    (fixed code, no SMS), "truecaller" for everyone else."""
+    phone = codes.normalise_phone(raw_phone)
+    return phone, ("code" if phone in _test_codes() else "truecaller")
+
+
+def finish_truecaller(client: str, *, authorization_code: str = "", code_verifier: str = "",
+                      access_token: str = "") -> tuple[str, str, bool]:
+    """Checks a Truecaller verification with Truecaller's server and signs in
+    to the verified number's account. Returns (phone, Firebase token, is_new)."""
+    if not limits.lookups.hit(client):
+        raise RateLimited("Too many requests. Please try again later.", 3600)
+    if authorization_code and code_verifier:
+        phone = truecaller.phone_from_oauth(authorization_code, code_verifier)
+    elif access_token:
+        phone = truecaller.phone_from_access_token(access_token)
+    else:
+        raise OtpError("We couldn’t confirm your number with Truecaller. Please try again.")
+    firebase_token, is_new = custom_token_for(phone)
+    log.info("truecaller login %s****%s", phone[:5], phone[-2:])
+    return phone, firebase_token, is_new
