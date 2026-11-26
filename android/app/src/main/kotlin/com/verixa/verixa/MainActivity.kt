@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -65,6 +66,32 @@ class MainActivity : FlutterFragmentActivity() {
                             permissionResult?.success(false)
                             permissionResult = result
                             requestPermissions(missing.toTypedArray(), PHONE_PERMISSIONS)
+                        }
+                    }
+                    // Whether those permissions are granted (no prompt).
+                    "hasPhonePermissions" -> result.success(
+                        phonePermissions().all {
+                            checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+                        }
+                    )
+                    // Verixa's App info page, with the Permissions row
+                    // highlighted where Android supports it. (Apps can't open
+                    // the Permissions screen itself; only system apps can.)
+                    "openAppSettings" -> {
+                        try {
+                            val args = Bundle().apply {
+                                putString(":settings:fragment_args_key", "permission_settings")
+                            }
+                            startActivity(
+                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                    .setData(Uri.fromParts("package", packageName, null))
+                                    .putExtra(":settings:fragment_args_key", "permission_settings")
+                                    .putExtra(":settings:show_fragment_args", args)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            )
+                            result.success(true)
+                        } catch (e: Exception) {
+                            result.success(false)
                         }
                     }
                     else -> result.notImplemented()

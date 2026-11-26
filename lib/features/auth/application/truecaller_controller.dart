@@ -17,6 +17,9 @@ enum TcStep {
   /// Truecaller's consent sheet is open (Truecaller app users).
   consent,
 
+  /// Call-log permission is off: the user is shown how to allow it.
+  needsPermission,
+
   /// Waiting for Truecaller's missed call on this phone.
   waitingCall,
 
@@ -144,13 +147,58 @@ class TruecallerController extends Notifier<TcState> {
   }
 
   /// No Truecaller app (or the user picked another number): Truecaller
-  /// gives this phone a missed call, or sends an SMS code.
+  /// gives this phone a missed call, which needs call-log permission so the
+  /// app can spot it. Without the permission the user is shown how to allow
+  /// it (or can choose an SMS code instead).
   Future<void> _verifyByCall() async {
     state = state.copyWith(step: TcStep.starting);
+    var granted = false;
     try {
-      // Lets the SDK spot its missed call; without it Truecaller uses SMS.
-      await _device.invokeMethod<bool>('phonePermissions');
+      granted = await _device.invokeMethod<bool>('phonePermissions') ?? false;
     } catch (_) {}
+    if (!granted) {
+      state = state.copyWith(step: TcStep.needsPermission);
+      return;
+    }
+    await _requestVerification();
+  }
+
+  /// Opens Verixa's App info page so the user can allow call logs.
+  Future<void> openSettings() async {
+    try {
+      await _device.invokeMethod<bool>('openAppSettings');
+    } catch (_) {}
+  }
+
+  /// Back from Settings: carry on if the permission is now on.
+  Future<void> recheckPermission() async {
+    if (state.step != TcStep.needsPermission) return;
+    var granted = false;
+    try {
+      granted = await _device.invokeMethod<bool>('hasPhonePermissions') ?? false;
+    } catch (_) {}
+    if (granted) {
+      state = state.copyWith(step: TcStep.starting);
+      try {
+        await _requestVerification();
+      } catch (e) {
+        _fail(e);
+      }
+    }
+  }
+
+  /// Skip the missed call: Truecaller sends a code by SMS instead.
+  Future<void> useSmsCode() async {
+    if (state.step != TcStep.needsPermission) return;
+    state = state.copyWith(step: TcStep.starting);
+    try {
+      await _requestVerification();
+    } catch (e) {
+      _fail(e);
+    }
+  }
+
+  Future<void> _requestVerification() async {
     final digits = (state.phone ?? '').replaceAll(RegExp(r'\D'), '');
     _watch(TcStep.starting);
     await _send(

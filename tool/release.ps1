@@ -19,7 +19,9 @@
 param(
   [Parameter(Mandatory = $true)][string]$ApiUrl,
   [Parameter(Mandatory = $true)][string]$Version,
-  [switch]$Draft
+  [switch]$Draft,
+  # iPhone web app is paused: only rebuilt when -Web is passed.
+  [switch]$Web
 )
 
 $ErrorActionPreference = 'Stop'
@@ -37,12 +39,14 @@ flutter build apk @common --target-platform android-arm
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 Copy-Item build\app\outputs\flutter-apk\app-release.apk "$out\Verixa-32bit.apk"
 
-# iPhone web app. WebAssembly renderer where Safari supports it; Flutter
-# falls back to the JavaScript one on older iPhones by itself.
-flutter build web --release --wasm --base-href /verixa/app/ "--dart-define=VERIXA_API_URL=$ApiUrl" "--dart-define=VERIXA_VERSION=$Version"
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-if (Test-Path docs/app) { Remove-Item -Recurse -Force docs/app }
-Copy-Item -Recurse build/web docs/app
+if ($Web) {
+  # iPhone web app. WebAssembly renderer where Safari supports it; Flutter
+  # falls back to the JavaScript one on older iPhones by itself.
+  flutter build web --release --wasm --base-href /verixa/app/ "--dart-define=VERIXA_API_URL=$ApiUrl" "--dart-define=VERIXA_VERSION=$Version"
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+  if (Test-Path docs/app) { Remove-Item -Recurse -Force docs/app }
+  Copy-Item -Recurse build/web docs/app
+}
 
 New-Item -ItemType Directory release -Force | Out-Null
 Copy-Item "$out\Verixa.apk" "release\Verixa-$Version.apk"
@@ -55,8 +59,7 @@ git push
 $notes = @"
 Verixa $Version
 
-**Install:** open https://yashveera29p2-art.github.io/verixa on the phone. Android: tap Download.
-iPhone: tap Open Verixa, then Share → Add to Home Screen.
+**Install:** open https://yashveera29p2-art.github.io/verixa on your Android phone and tap Download.
 The same link always gives the newest version; to update, download again and tap **Update**.
 
 Files: **Verixa.apk** for almost all phones; **Verixa-32bit.apk** only for very old phones

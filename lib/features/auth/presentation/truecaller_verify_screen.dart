@@ -27,9 +27,16 @@ class _TruecallerVerifyScreenState
     extends ConsumerState<TruecallerVerifyScreen> {
   final _otp = TextEditingController();
 
+  /// Coming back from Settings re-checks the call-log permission.
+  late final AppLifecycleListener _lifecycle = AppLifecycleListener(
+    onResume: () =>
+        ref.read(truecallerControllerProvider.notifier).recheckPermission(),
+  );
+
   @override
   void initState() {
     super.initState();
+    _lifecycle;
     WidgetsBinding.instance.addPostFrameCallback((_) => _start());
   }
 
@@ -40,6 +47,7 @@ class _TruecallerVerifyScreenState
 
   @override
   void dispose() {
+    _lifecycle.dispose();
     _otp.dispose();
     super.dispose();
   }
@@ -79,6 +87,11 @@ class _TruecallerVerifyScreenState
           onPressed: () => _submitOtp(),
         ),
         TcStep.failed => AppButton(label: 'Try again', onPressed: _start),
+        TcStep.needsPermission => AppButton(
+          label: 'Open settings',
+          onPressed: () =>
+              ref.read(truecallerControllerProvider.notifier).openSettings(),
+        ),
         _ => const SizedBox.shrink(),
       },
       children: [
@@ -99,6 +112,18 @@ class _TruecallerVerifyScreenState
             onChanged: (v) {
               if (v.length == 6) _submitOtp();
             },
+          ),
+        ],
+        if (s.step == TcStep.needsPermission) ...[
+          const SizedBox(height: AppSpacing.md),
+          const _PermissionSteps(),
+          const SizedBox(height: AppSpacing.xs),
+          Center(
+            child: TextButton(
+              onPressed: () =>
+                  ref.read(truecallerControllerProvider.notifier).useSmsCode(),
+              child: const Text('Verify by SMS code instead'),
+            ),
           ),
         ],
         if (s.step == TcStep.failed) ...[
@@ -148,6 +173,12 @@ class _StatusCard extends StatelessWidget {
         Icons.touch_app_outlined,
         'Confirm in Truecaller',
         'Tap Continue on the Truecaller sheet to share your verified number.',
+      ),
+      TcStep.needsPermission => (
+        Icons.phone_locked_outlined,
+        'Allow call logs',
+        'Truecaller confirms your number with a missed call. Verixa needs '
+            'call-log access to spot it — it never reads or keeps your calls.',
       ),
       TcStep.waitingCall => (
         Icons.phone_callback_outlined,
@@ -210,6 +241,54 @@ class _StatusCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// The taps to allow call logs, from Verixa's App info page.
+class _PermissionSteps extends StatelessWidget {
+  const _PermissionSteps();
+
+  static const _steps = [
+    'Tap Open settings below — Verixa’s App info opens.',
+    'If Call logs is greyed out: tap ⋮ (top right) → Allow restricted '
+        'settings, and confirm.',
+    'Tap Permissions → Call logs → Allow. Also allow Phone if it’s off.',
+    'Come back to Verixa — it carries on by itself.',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final (i, step) in _steps.indexed)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.botanicalGreen,
+                  ),
+                  child: Text(
+                    '${i + 1}',
+                    style: AppTypography.labelMedium.copyWith(
+                      color: AppColors.ivory,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(child: Text(step, style: AppTypography.bodyMedium)),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }
