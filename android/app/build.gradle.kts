@@ -39,6 +39,9 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // Truecaller SDK client ID (not secret): Truecaller developer console
+        // -> project Verixa -> Android credential.
+        manifestPlaceholders["truecallerClientId"] = "PENDING_TRUECALLER_CLIENT_ID"
     }
 
     signingConfigs {

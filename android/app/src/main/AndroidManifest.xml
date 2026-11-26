@@ -1,6 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- google_fonts downloads DM Serif Display / DM Sans on first run. -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Truecaller number verification: detects its missed call. Asked
+         only when a user verifies by missed call. -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
+    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" android:maxSdkVersion="25"/>
     <application
         android:label="Verixa"
         android:name="${applicationName}"
@@ -9,7 +15,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -28,6 +34,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- Truecaller SDK client ID (from the Truecaller developer console). -->
+        <meta-data
+            android:name="com.truecaller.android.sdk.ClientId"
+            android:value="${truecallerClientId}" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

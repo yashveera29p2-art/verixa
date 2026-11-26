@@ -26,27 +26,84 @@ class OtpAutoVerified extends OtpRequestResult {
 
 /// Sign-in service. Phone number is the account identity.
 ///
-/// Codes are sent and checked by Verixa's own backend ([OtpApi]), which
-/// then hands back a Firebase custom token for the one account that owns
-/// the number. Firebase still stores the account and session.
+/// Android app: Truecaller verifies the number (one tap for Truecaller
+/// users, a missed call for everyone else) and the backend turns that into
+/// a Firebase custom token. Team test numbers and the web app use the
+/// backend's code login. Every path signs in to the same Firebase account
+/// for a number, so existing users keep their data.
 class AuthService {
   AuthService(this._auth, this._otp);
 
   final FirebaseAuth _auth;
   final OtpApi _otp;
 
+  /// Firebase Phone Auth needs the Blaze plan. Until then numbers are
+  /// verified by Truecaller ([signInWithTruecaller]); team test numbers
+  /// and the web app use the backend's code login.
+  static const _firebaseSms = false;
+
   Stream<User?> authStateChanges() => _auth.authStateChanges();
 
   User? get currentUser => _auth.currentUser;
 
   /// Sends an OTP to [phoneNumber] (E.164, e.g. +919876543210).
-  /// [resendToken] is unused (kept so callers don't change).
   Future<OtpRequestResult> sendOtp(
     String phoneNumber, {
     int? resendToken,
   }) async {
-    final session = await _otp.start(phoneNumber);
-    return OtpSent(verificationId: session);
+    if (!_firebaseSms) {
+      final session = await _otp.start(phoneNumber);
+      return OtpSent(verificationId: session);
+    }
+    final result = Completer<OtpRequestResult>();
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      forceResendingToken: resendToken,
+      timeout: const Duration(seconds: 60),
+      // Android read the SMS (or verified instantly): sign in right away.
+      verificationCompleted: (credential) async {
+        try {
+          final signedIn = await _auth.signInWithCredential(credential);
+          if (!result.isCompleted) {
+            result.complete(OtpAutoVerified(signedIn.user!));
+          }
+        } catch (e) {
+          if (!result.isCompleted) result.completeError(e);
+        }
+      },
+      verificationFailed: (e) {
+        if (!result.isCompleted) result.completeError(e);
+      },
+      codeSent: (verificationId, token) {
+        if (!result.isCompleted) {
+          result.complete(
+            OtpSent(verificationId: verificationId, resendToken: token),
+          );
+        }
+      },
+      codeAutoRetrievalTimeout: (_) {},
+    );
+    return result.future;
+  }
+
+  /// "code" for team test numbers (fixed code), "truecaller" otherwise.
+  /// The web app always uses codes (Truecaller's SDK is Android-only).
+  Future<String> loginMethod(String phoneNumber) async =>
+      kIsWeb ? 'code' : _otp.loginMethod(phoneNumber);
+
+  /// Signs in with a Truecaller verification, checked by the backend.
+  Future<User> signInWithTruecaller({
+    String authorizationCode = '',
+    String codeVerifier = '',
+    String accessToken = '',
+  }) async {
+    final token = await _otp.truecaller(
+      authorizationCode: authorizationCode,
+      codeVerifier: codeVerifier,
+      accessToken: accessToken,
+    );
+    final result = await _auth.signInWithCustomToken(token);
+    return result.user!;
   }
 
   /// Whether [phoneNumber] already has an account; null if the server
@@ -64,6 +121,17 @@ class AuthService {
     required String verificationId,
     required String code,
   }) async {
+    if (_firebaseSms) {
+      // Android may already have signed in by reading the SMS itself.
+      final already = _auth.currentUser;
+      if (already != null && already.phoneNumber != null) return already;
+      final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: code,
+      );
+      final result = await _auth.signInWithCredential(credential);
+      return result.user!;
+    }
     final token = await _otp.verify(session: verificationId, code: code);
     final result = await _auth.signInWithCustomToken(token);
     return result.user!;

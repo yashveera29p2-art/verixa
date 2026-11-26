@@ -11,7 +11,8 @@ String friendlyAuthError(Object error) {
   }
   return switch (error.code) {
     'invalid-phone-number' => 'That phone number doesn’t look right.',
-    'invalid-verification-code' => 'That code is incorrect. Check and try again.',
+    'invalid-verification-code' =>
+      'That code is incorrect. Check and try again.',
     'session-expired' || 'code-expired' =>
       'This code has expired. Tap “Resend code” to get a new one.',
     'too-many-requests' =>
@@ -20,6 +21,10 @@ String friendlyAuthError(Object error) {
       'We can’t send more codes right now. Please try again later.',
     'operation-not-allowed' =>
       'Phone sign-in isn’t available for this number’s country yet.',
+    'billing-not-enabled' ||
+    'app-not-authorized' ||
+    'missing-client-identifier' =>
+      'SMS login isn’t available right now. Please try again later.',
     'network-request-failed' =>
       'No internet connection. Check your network and try again.',
     'credential-already-in-use' || 'account-exists-with-different-credential' =>

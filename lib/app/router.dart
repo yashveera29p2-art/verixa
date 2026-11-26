@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/application/auth_providers.dart';
 import '../features/auth/presentation/onboarding_screen.dart';
 import '../features/auth/presentation/otp_screen.dart';
+import '../features/auth/presentation/truecaller_verify_screen.dart';
 import '../features/auth/presentation/phone_screen.dart';
 import '../features/auth/welcome_screen.dart';
 import '../features/companies/domain/company_category.dart';
@@ -85,6 +86,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.otp,
         builder: (context, state) => const OtpScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.verifyPhone,
+        builder: (context, state) =>
+            TruecallerVerifyScreen(phone: state.extra as String? ?? ''),
       ),
       GoRoute(
         path: AppRoutes.onboarding,

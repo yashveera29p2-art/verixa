@@ -99,6 +99,20 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
     return exists ?? false;
   }
 
+  /// How to verify [phoneNumber]: "code" or "truecaller". Null (with the
+  /// error in state) if the server couldn't be asked.
+  Future<String?> loginMethod(String phoneNumber) async {
+    state = state.copyWith(isBusy: true, clearError: true);
+    try {
+      final method = await _auth.loginMethod(phoneNumber);
+      state = state.copyWith(isBusy: false);
+      return method;
+    } catch (e) {
+      state = state.copyWith(isBusy: false, error: friendlyAuthError(e));
+      return null;
+    }
+  }
+
   /// Sends the code again to the same number.
   Future<SendCodeOutcome> resendCode() async {
     final phone = state.phoneNumber;

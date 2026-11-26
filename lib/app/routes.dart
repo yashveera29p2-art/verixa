@@ -6,6 +6,9 @@ abstract final class AppRoutes {
   /// Phone entry. Add `?mode=login` for "Log in" wording.
   static const phone = '/auth/phone';
   static const otp = '/auth/otp';
+
+  /// Truecaller number check (Android); the E.164 number is the `extra`.
+  static const verifyPhone = '/auth/verify';
   static const onboarding = '/onboarding';
 
   /// Terms of use, accepted once per installation after signing in.

@@ -47,6 +47,29 @@ class OtpApi {
     return body['firebaseToken'] as String;
   }
 
+  /// How [phone] is verified: "code" (team test numbers, fixed code) or
+  /// "truecaller" (everyone else).
+  Future<String> loginMethod(String phone) async {
+    final body = await _post('/v1/auth/method', {'phone': phone});
+    return body['method'] as String? ?? 'truecaller';
+  }
+
+  /// Checks a Truecaller verification on the server. Pass the OAuth
+  /// [authorizationCode] + [codeVerifier] (Truecaller app users) or the SDK
+  /// [accessToken] (missed call / OTP). Returns a Firebase custom token.
+  Future<String> truecaller({
+    String authorizationCode = '',
+    String codeVerifier = '',
+    String accessToken = '',
+  }) async {
+    final body = await _post('/v1/auth/truecaller', {
+      'authorizationCode': authorizationCode,
+      'codeVerifier': codeVerifier,
+      'accessToken': accessToken,
+    });
+    return body['firebaseToken'] as String;
+  }
+
   Future<Map<String, dynamic>> _post(
     String path,
     Map<String, String> body,

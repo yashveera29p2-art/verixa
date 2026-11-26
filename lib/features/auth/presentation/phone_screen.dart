@@ -86,6 +86,14 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
       return;
     }
     if (!mounted) return;
+    // Real numbers are confirmed by Truecaller; team test numbers (and the
+    // web app) use a code.
+    final method = await controller.loginMethod(phone);
+    if (!mounted || method == null) return;
+    if (method == 'truecaller') {
+      context.push(AppRoutes.verifyPhone, extra: phone);
+      return;
+    }
     final outcome = await ref
         .read(phoneAuthControllerProvider.notifier)
         .sendCode(phone);
@@ -118,13 +126,13 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
                   'accounts are reviewed by the Verixa team before you can '
                   'search students.'
             : widget.isLogin
-            ? 'Enter the phone number you signed up with. We’ll text you a '
-                  '6-digit code.'
-            : 'Your phone number is your Verixa account. We’ll text you a '
-                  '6-digit code to confirm it.',
+            ? 'Enter the phone number you signed up with. We’ll confirm it '
+                  'in a moment.'
+            : 'Your phone number is your Verixa account. We’ll confirm it '
+                  'in a moment.',
       ),
       bottom: AppButton(
-        label: 'Send code',
+        label: 'Continue',
         isLoading: state.isBusy,
         onPressed: _submit,
       ),
@@ -174,8 +182,9 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
         InlineError(error),
         const SizedBox(height: AppSpacing.lg),
         Text(
-          'Standard SMS rates may apply. Gmail is optional — you can link it '
-          'later from your profile.',
+          'Your number is confirmed for free by Truecaller (a one-tap check '
+          'or a missed call). Gmail is optional — you can link it later from '
+          'your profile.',
           style: AppTypography.bodySmall,
         ),
       ],
